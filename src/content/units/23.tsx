@@ -218,9 +218,7 @@ const content: UnitContent = {
   theory,
   practiceIntro: (
     <p className="text-body-sm text-fg-2">
-      下面两次调用都围绕这一节的核心：<strong className="font-semibold text-fg">它到底能改自己什么</strong>，
-      以及<strong className="font-semibold text-fg">它给自己打分可不可信</strong>。
-      第二次尤其值得你自己跑一遍——你会亲眼看到「自我评估」有多不可靠。
+      问它到底能改自己什么，以及它给自己打分可不可信。
     </p>
   ),
   demos: [

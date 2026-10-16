@@ -59,8 +59,7 @@ const content: UnitContent = {
   theory,
   practiceIntro: (
     <p className="text-body-sm text-fg-2">
-      下面这次调用就是“单次调用”最纯粹的样子：只发一句话，别的什么都不带。
-      你自己跑一遍，就明白为什么它答不出来。
+      这段 Python 把单次调用的请求体原样写出来。
     </p>
   ),
   demos: [

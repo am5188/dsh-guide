@@ -65,9 +65,7 @@ const content: UnitContent = {
   theory,
   practiceIntro: (
     <p className="text-body-sm text-fg-2">
-      在真正打开界面之前，先解决一个更根本的问题：
-      <strong className="font-semibold text-fg">怎么把话说成它能执行的</strong>
-      。下面这次调用会让模型自己演示一遍——你给它一句含糊的话，它告诉你该怎么改。
+      先解决一个更根本的问题：怎么把话说成它能执行的。
     </p>
   ),
   demos: [

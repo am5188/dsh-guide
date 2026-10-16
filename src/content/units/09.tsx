@@ -144,10 +144,7 @@ const content: UnitContent = {
   theory,
   practiceIntro: (
     <p className="text-body-sm text-fg-2">
-      下面这次调用是这一节最实用的动作：
-      <strong className="font-semibold text-fg">把一段你看不懂的报错丢给它</strong>
-      ，让它先解释、再列原因、但<strong className="font-semibold text-fg">不许动手改</strong>
-      。这个话术可以直接搬去用。
+      把一段看不懂的报错丢给它，只让它解释、不许动手。
     </p>
   ),
   demos: [

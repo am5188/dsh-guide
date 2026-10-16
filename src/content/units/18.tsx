@@ -86,8 +86,7 @@ const content: UnitContent = {
   theory,
   practiceIntro: (
     <p className="text-body-sm text-fg-2">
-      下面这次调用让模型做一次「最坏情况推演」。
-      它会给你一份清单——那份清单，就是你每次点“同意”之前该想一遍的东西。
+      让它做一次最坏情况推演。
     </p>
   ),
   demos: [

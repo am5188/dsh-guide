@@ -258,10 +258,7 @@ const content: UnitContent = {
   theory: <Theory />,
   practiceIntro: (
     <p className="text-body-sm text-fg-2">
-      成本这件事，光看别人写的判断表记不住。下面三次调用做的是三件事：
-      让模型把“钱花在哪”讲成生活话、把加钱的习惯一条条揪出来、
-      再给你一份真能照着做的回滚清单。跑完记得看一眼每次的 token 数，
-      那个数字比这一页的字都直观。
+      让它把「钱花在哪」讲成生活里的话。
     </p>
   ),
   demos: [

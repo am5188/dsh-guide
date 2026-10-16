@@ -119,9 +119,7 @@ const content: UnitContent = {
   theory,
   practiceIntro: (
     <p className="text-body-sm text-fg-2">
-      回到第 1 节那道墙。当时你问「我电脑 D:\Work 里有哪些文件」，
-      它只能说“我看不到”。现在你已经知道 DSH 是怎么处理这件事的了——
-      下面让模型自己把这条链路完整说一遍，作为第三部的收尾。
+      回到第 1 节那道墙，看它现在能不能碰到你的文件。
     </p>
   ),
   demos: [

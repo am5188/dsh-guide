@@ -254,10 +254,7 @@ const content: UnitContent = {
   theory,
   practiceIntro: (
     <p className="text-body-sm text-fg-2">
-      这一节本来可以不放演示，但有一个很值得试：
       把一段满是行话的话丢给它，让它翻成人话。
-      你会看到那些听起来很专业的词，被拆开之后其实都很朴素——
-      这也是为什么这一页的字你不需要背。
     </p>
   ),
   demos: [

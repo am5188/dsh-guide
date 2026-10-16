@@ -88,9 +88,7 @@ const content: UnitContent = {
   theory,
   practiceIntro: (
     <p className="text-body-sm text-fg-2">
-      下面两次调用是这两类活儿的真实样例：一次是纯动嘴的改写，
-      一次是要求它<strong className="font-semibold text-fg">把“材料里有的”和“推断的”分开</strong>
-      ——后者这个要求，值得你抄下来反复用。
+      两类活儿的真实样例：一次纯动嘴，一次要求分清事实与推断。
     </p>
   ),
   demos: [

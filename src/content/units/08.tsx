@@ -103,8 +103,7 @@ const content: UnitContent = {
   theory,
   practiceIntro: (
     <p className="text-body-sm text-fg-2">
-      文件是它写出来的，你没法在这里看到成品，但<strong className="font-semibold text-fg">可以让它先把设计交给你</strong>
-      ——下面这次调用就是让模型先给出一个表格的字段设计。方案对了，再让它去写文件。
+      成品文件在这里看不到，但可以让它先把设计交出来。
     </p>
   ),
   demos: [

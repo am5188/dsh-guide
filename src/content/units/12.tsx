@@ -118,9 +118,7 @@ const content: UnitContent = {
   theory,
   practiceIntro: (
     <p className="text-body-sm text-fg-2">
-      下面这次调用让你亲手做一次压缩，并且会立刻发现压缩最难的地方：
-      <strong className="font-semibold text-fg">哪些信息打死也不能丢</strong>
-      。跑完看看它有没有漏掉那句金额限制。
+      亲手做一次压缩，看它丢掉哪些、留下哪些。
     </p>
   ),
   demos: [

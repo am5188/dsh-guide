@@ -112,9 +112,7 @@ const content: UnitContent = {
   theory,
   practiceIntro: (
     <p className="text-body-sm text-fg-2">
-      下面这次调用很实用：让模型帮你判断
-      <strong className="font-semibold text-fg">哪类活儿值得做成技能</strong>
-      。判断标准是它自己总结的，你可以拿去对照自己的工作。
+      让它自己说清「该用哪个工具」。
     </p>
   ),
   demos: [

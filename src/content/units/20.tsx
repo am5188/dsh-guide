@@ -319,11 +319,7 @@ const content: UnitContent = {
   theory,
   practiceIntro: (
     <p className="text-body-sm text-fg-2">
-      自动化这件事最容易犯的错，是<strong className="font-semibold text-fg">
-        把还没想清楚的事先定上时间
-      </strong>
-      。下面三次调用，是让模型帮你把这件事想清楚：先筛一遍这活该不该自动化，
-      再解释那条“十次”的经验到底在防什么，最后设计一个你当天就能知道的失败通知。
+      让模型帮你把「这件事该不该自动化」想清楚。
     </p>
   ),
   demos: [

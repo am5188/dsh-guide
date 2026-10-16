@@ -83,9 +83,7 @@ const content: UnitContent = {
   theory,
   practiceIntro: (
     <p className="text-body-sm text-fg-2">
-      下面这个问题很有意思：直接问模型「要让我电脑里的文件真的被改掉，你需要什么」。
-      它通常能<strong className="font-semibold text-fg">准确说出自己缺什么</strong>
-      ——这恰好说明了上一节那道墙到底在哪。
+      问它「要让我电脑里的文件真的被改掉，你需要什么」。
     </p>
   ),
   demos: [

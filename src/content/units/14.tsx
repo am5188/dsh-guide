@@ -51,9 +51,7 @@ const content: UnitContent = {
   theory,
   practiceIntro: (
     <p className="text-body-sm text-fg-2">
-      下面这次调用让模型演示它真实的“动作”：它没有工具，
-      但可以让它把<strong className="font-semibold text-fg">“如果我有工具，我会怎么请求”</strong>
-      写成结构化格式。你会看到，它输出的只是文字。
+      先看它怎么「请求调用工具」，再看真正的两次往返。
     </p>
   ),
   demos: [

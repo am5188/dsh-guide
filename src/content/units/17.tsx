@@ -71,9 +71,7 @@ const content: UnitContent = {
   theory,
   practiceIntro: (
     <p className="text-body-sm text-fg-2">
-      下面这次调用让模型帮你判断
-      <strong className="font-semibold text-fg">手上的活儿该不该拆</strong>
-      ，以及拆了之后怎么保证合并时不出乱子。
+      让几个分身并行做同一批活，再把结果汇总。
     </p>
   ),
   demos: [

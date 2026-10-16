@@ -91,9 +91,7 @@ const content: UnitContent = {
   theory,
   practiceIntro: (
     <p className="text-body-sm text-fg-2">
-      下面这次调用让你练最容易上手的一招：
-      <strong className="font-semibold text-fg">把一句模糊的大活儿拆成带检查点的步骤</strong>
-      。拆得好的话，你照着做就行。
+      让它把一句模糊的需求，改写成可验收的目标。
     </p>
   ),
   demos: [

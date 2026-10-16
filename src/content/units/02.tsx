@@ -97,13 +97,7 @@ const content: UnitContent = {
   theory,
   practiceIntro: (
     <p className="text-body-sm text-fg-2">
-      这条线里最先出现、也最容易理解的一步是
-      <strong className="font-semibold text-fg">“记得住”</strong>
-      。下面两次调用是同一个问题、同一个模型，唯一的区别是
-      <strong className="font-semibold text-fg">
-        有没有把前面的对话一起发过去
-      </strong>
-      。先跑第一次，再跑第二次，差别立刻就出来了。
+      下面两次是同一个问题、同一个模型，区别只在有没有带上历史。
     </p>
   ),
   demos: [

@@ -162,10 +162,7 @@ const content: UnitContent = {
   theory: <Theory />,
   practiceIntro: (
     <p className="text-body-sm text-fg-2">
-      下面这次调用是 RAG 的最小形态：把一段材料连同问题一起给它，
-      并且<strong className="font-semibold text-fg">明确要求它只依据材料回答</strong>
-      。注意材料里故意放了一条“超过 1200 元必须两人签字”——
-      看它能不能抓住。
+      RAG 的最小形态：把材料连同问题一起发过去。
     </p>
   ),
   demos: [

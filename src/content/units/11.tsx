@@ -66,9 +66,7 @@ const content: UnitContent = {
   theory,
   practiceIntro: (
     <p className="text-body-sm text-fg-2">
-      下面两次调用用的是<strong className="font-semibold text-fg">同一个模型、同一个问题</strong>
-      ，唯一的区别是第二次把前面的对话一起发了过去。
-      这个对比是整本书里最值得你自己跑一遍的一个。
+      同一个问题问两次，区别只在第二次带上了前文。
     </p>
   ),
   demos: [

@@ -77,10 +77,7 @@ const content: UnitContent = {
   theory,
   practiceIntro: (
     <p className="text-body-sm text-fg-2">
-      下面三次调用都是<strong className="font-semibold text-fg">真的</strong>
-      ：请求从你的浏览器直接发到 DeepSeek，输出是模型此刻的真实回答。
-      第一跑看它有多能干，第二跑、第三跑看它有多敢编。
-      这三个结果，就是整本书要解决的问题清单。
+      下面三次调用都是真的，请求从你的浏览器直连 DeepSeek。
     </p>
   ),
   demos: [

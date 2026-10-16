@@ -113,8 +113,7 @@ const content: UnitContent = {
   theory,
   practiceIntro: (
     <p className="text-body-sm text-fg-2">
-      下面两次调用是<strong className="font-semibold text-fg">同一件事</strong>
-      ，只改了说法。先跑第一次看它怎么猜，再跑第二次看差别有多大。
+      让它自己判断：一句含糊的话里缺了哪些要件。
     </p>
   ),
   demos: [

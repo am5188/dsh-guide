@@ -139,8 +139,7 @@ const content: UnitContent = {
   theory,
   practiceIntro: (
     <p className="text-body-sm text-fg-2">
-      下面两次调用让模型给你当一次「风险顾问」——这是它在没有动手能力时最擅长的事：
-      把风险讲清楚。第二个问题尤其值得你自己跑一遍。
+      让它当一次风险顾问，把动手前该核对的事列出来。
     </p>
   ),
   demos: [
