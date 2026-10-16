@@ -1,24 +1,7 @@
 import type { UnitContent } from "../types";
 import { SequenceAnim } from "@/components/anim/SequenceAnim";
+import { SandboxPicker } from "@/components/SandboxPicker";
 import { Callout, Unverified } from "@/components/Note";
-
-const SANDBOX: [string, string, string][] = [
-  [
-    "只读",
-    "read-only",
-    "什么都不能改。适合“只想让它读一读、告诉我结论”的场合。",
-  ],
-  [
-    "限定工作区",
-    "workspace-write",
-    "只能改你当前这个文件夹里的东西，出了这个范围就动不了。日常最常用。",
-  ],
-  [
-    "全开",
-    "danger-full-access",
-    "没有围栏。它想动哪里就动哪里。除非你非常清楚在做什么，否则别开。",
-  ],
-];
 
 const JUDGE: [string, string][] = [
   ["可以直接同意", "读文件、看目录、搜索——只要不往外发东西，风险都低。"],
@@ -46,34 +29,13 @@ const theory = (
     </p>
 
     <h3>它会被允许做到什么程度</h3>
-    <p>这个程度由「沙箱」决定，大致三档：</p>
+    <p>
+      这个程度由「沙箱」决定，大致三档。下面这个是可以点的——
+      <strong>点一下换一档，看它分别允许什么</strong>
+      ，比看表格直观。
+    </p>
 
-    <div className="my-9 overflow-x-auto">
-      <table className="w-full border-collapse text-meta">
-        <thead>
-          <tr className="text-fg-3">
-            <th className="px-3 py-3 text-left font-medium whitespace-nowrap">
-              档位
-            </th>
-            <th className="px-3 py-3 text-left font-medium whitespace-nowrap">
-              设置里的名字
-            </th>
-            <th className="px-3 py-3 text-left font-medium">意味着什么</th>
-          </tr>
-        </thead>
-        <tbody>
-          {SANDBOX.map(([name, key, desc]) => (
-            <tr key={key} className="border-t border-hair align-top">
-              <td className="px-3 py-3 whitespace-nowrap text-fg">{name}</td>
-              <td className="px-3 py-3 font-mono text-caption text-fg-3">
-                {key}
-              </td>
-              <td className="px-3 py-3 text-fg-2">{desc}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <SandboxPicker />
 
     <p>
       另外还有一个开关叫「审批」：它决定每次动手前要不要问你。
