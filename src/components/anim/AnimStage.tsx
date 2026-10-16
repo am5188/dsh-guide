@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export type Sketch = (
   ctx: CanvasRenderingContext2D,
@@ -70,9 +70,11 @@ export function alpha(hex: string, a: number): string {
 /**
  * 逐帧动画容器。
  * - 时间是纯函数：draw(t)，不累积状态，所以能暂停、能重播、能适应任意帧率
+ * - 帧计数用整数累加，长时间运行不会漂移（循环动画要靠它做到无缝）
  * - 离屏自动暂停（省电、不拖累滚动）
  * - prefers-reduced-motion 时只画一帧静止画面
  * - 跟随系统主题切换重新取色
+ * - 带播放/暂停按钮（参考 ciechanow.ski 的做法：读者能自己关掉动画）
  */
 export function AnimStage({
   sketch,
@@ -84,6 +86,9 @@ export function AnimStage({
   label?: string;
 }) {
   const ref = useRef<HTMLCanvasElement>(null);
+  const pausedRef = useRef(false);
+  const [paused, setPaused] = useState(false);
+  const [reduced, setReduced] = useState(false);
 
   useEffect(() => {
     const canvas = ref.current;
@@ -92,11 +97,20 @@ export function AnimStage({
     if (!ctx) return;
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const theme = readTheme(true);
-    void theme;
+    setReduced(reduce);
+    readTheme(true);
+
+    /**
+     * 测试钩子：?animframe=N 把动画冻结在第 N 帧。
+     * 循环动画的正确性可以这样严格验证 —— 渲染第 0 帧和第 PERIOD 帧，
+     * 两图应当逐像素相同。生产环境不带这个参数时没有任何影响。
+     */
+    const forcedRaw = new URLSearchParams(window.location.search).get("animframe");
+    const forced = forcedRaw === null ? null : Number(forcedRaw);
+    const forcedFrame = Number.isFinite(forced) ? forced : null;
+
     let raf = 0;
-    let start = performance.now();
-    let elapsed = 0;
+    let frameCount = 0; // 整数帧计数：不漂移
     let visible = true;
     let cssW = 0;
     let cssH = height;
@@ -111,27 +125,30 @@ export function AnimStage({
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
 
-    const draw = (t: number) => {
+    const draw = () => {
       ctx.clearRect(0, 0, cssW, cssH);
-      sketch(ctx, t, cssW, cssH);
+      sketch(ctx, frameCount / 60, cssW, cssH);
     };
 
-    const loop = (now: number) => {
+    const loop = () => {
       raf = requestAnimationFrame(loop);
-      if (!visible) {
-        start = now - elapsed; // 离屏时把时间冻住
-        return;
-      }
-      elapsed = now - start;
-      draw(elapsed / 1000);
+      if (!visible || pausedRef.current) return;
+      frameCount += 1;
+      draw();
     };
 
     resize();
-    draw(reduce ? 1.6 : 0); // reduced-motion：画在动作中段，信息量最大
+    if (forcedFrame !== null) {
+      frameCount = forcedFrame;
+      draw();
+    } else {
+      frameCount = Math.round(1.6 * 60); // reduced-motion：停在动作中段
+      draw();
+    }
 
     const ro = new ResizeObserver(() => {
       resize();
-      draw(reduce ? 1.6 : elapsed / 1000);
+      draw();
     });
     ro.observe(canvas);
 
@@ -143,17 +160,19 @@ export function AnimStage({
     );
     io.observe(canvas);
 
-    // 主题切换时重新取色
     const mo = new MutationObserver(() => {
       readTheme(true);
-      draw(reduce ? 1.6 : elapsed / 1000);
+      draw();
     });
     mo.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ["data-theme"],
     });
 
-    if (!reduce) raf = requestAnimationFrame(loop);
+    if (!reduce && forcedFrame === null) {
+      frameCount = 0;
+      raf = requestAnimationFrame(loop);
+    }
 
     return () => {
       cancelAnimationFrame(raf);
@@ -164,11 +183,27 @@ export function AnimStage({
   }, [sketch, height]);
 
   return (
-    <canvas
-      ref={ref}
-      role="img"
-      aria-label={label}
-      style={{ width: "100%", height, display: "block" }}
-    />
+    <div style={{ position: "relative" }}>
+      <canvas
+        ref={ref}
+        role="img"
+        aria-label={label}
+        style={{ width: "100%", height, display: "block" }}
+      />
+      {!reduced && (
+        <button
+          type="button"
+          onClick={() => {
+            pausedRef.current = !pausedRef.current;
+            setPaused(pausedRef.current);
+          }}
+          aria-label={paused ? "播放动画" : "暂停动画"}
+          title={paused ? "播放动画" : "暂停动画"}
+          className="absolute bottom-2 left-2 grid size-7 place-items-center rounded-sm bg-canvas/85 text-caption text-fg-3 backdrop-blur-sm transition-colors duration-150 hover:text-fg"
+        >
+          <span aria-hidden="true">{paused ? "▶" : "❚❚"}</span>
+        </button>
+      )}
+    </div>
   );
 }

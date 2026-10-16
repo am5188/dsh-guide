@@ -60,6 +60,32 @@ const FONT =
    质感层
    ════════════════════════════════════════════════════════════════ */
 
+/**
+ * 分裂调色（split-tone）。
+ * 设计配色 ≠ 成片影调：前者管“用了哪几个颜色”，后者管“整片看起来是什么调”。
+ * 暗部统一偏冷、亮部统一偏暖，全片一致 —— 这是从“网页截图感”变成“成片感”最便宜的一步。
+ */
+const Grade: React.FC = () => (
+  <>
+    <AbsoluteFill
+      style={{
+        background:
+          "linear-gradient(165deg, rgba(255,214,170,0.65) 0%, rgba(43,90,140,0.65) 100%)",
+        mixBlendMode: "soft-light",
+        opacity: 0.17,
+      }}
+    />
+    <AbsoluteFill
+      style={{
+        background:
+          "radial-gradient(ellipse 70% 55% at 50% 28%, rgba(255,196,128,0.12), transparent 70%)",
+        mixBlendMode: "screen",
+        opacity: 0.6,
+      }}
+    />
+  </>
+);
+
 /** 胶片颗粒（每帧轻微偏移，避免死板） */
 const Grain: React.FC = () => {
   const frame = useCurrentFrame();
@@ -791,6 +817,32 @@ const SFX: Sfx[] = [
   { at: at(10, 0.52), src: "sfx/ding.wav", volume: 0.3 },
 ];
 
+/**
+ * 旁白期间把垫乐压低（ducking）。
+ * 旁白前 10 帧开始下压、结束后 24 帧恢复，避免生硬的台阶。
+ * 没有这一步，旁白一开口就会被垫乐糊住——这是最便宜的一次性提升。
+ */
+const PAD_LOUD = 0.17;
+const PAD_QUIET = 0.055;
+
+const duckPad = (f: number): number => {
+  let v = PAD_LOUD;
+  for (const s of shots) {
+    const start = s.from;
+    const end = s.from + Math.round(s.seconds * FPS) + 4;
+    if (f >= start && f <= end) {
+      v = Math.min(v, PAD_QUIET);
+    } else if (f >= start - 10 && f < start) {
+      const k = (f - (start - 10)) / 10;
+      v = Math.min(v, PAD_LOUD - (PAD_LOUD - PAD_QUIET) * k);
+    } else if (f > end && f < end + 24) {
+      const k = (f - end) / 24;
+      v = Math.min(v, PAD_QUIET + (PAD_LOUD - PAD_QUIET) * k);
+    }
+  }
+  return v;
+};
+
 /* ════════════════════════════════════════════════════════════════
    主合成
    ════════════════════════════════════════════════════════════════ */
@@ -842,11 +894,12 @@ export const TheWall: React.FC = () => {
 
       {/* ── 前景质感层 ───────────────────────────────────── */}
       <LightSweep />
+      <Grade />
       <Vignette />
       <Grain />
 
       {/* ── 声音 ─────────────────────────────────────────── */}
-      <Audio src={staticFile("sfx/pad.wav")} volume={0.16} />
+      <Audio src={staticFile("sfx/pad.wav")} volume={duckPad} />
       {shots.map((s) => (
         <Sequence key={s.id} from={s.from} durationInFrames={s.durationInFrames}>
           <Audio src={staticFile(s.audio)} />
