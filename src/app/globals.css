@@ -374,25 +374,6 @@ body {
   animation: ring-b 6s var(--ease-dsh) infinite;
 }
 
-/* 顺序点亮：用来说明“能力一个个长出来”“任务一步步推进” */
-@keyframes light-up {
-  0%,
-  6% {
-    opacity: 0.32;
-  }
-  14%,
-  72% {
-    opacity: 1;
-  }
-  84%,
-  100% {
-    opacity: 0.32;
-  }
-}
-.light-up {
-  animation: light-up 7s var(--ease-dsh) infinite;
-}
-
 /* 首屏结构图：能力顺着这条线流下去 */
 @keyframes flow-down {
   0% {
@@ -417,92 +398,12 @@ body {
   animation-delay: 1.2s;
 }
 
-/* 教学动画（第 1 节） */
-@keyframes nudge {
-  0%,
-  100% {
-    transform: translateX(0);
-    opacity: 0.55;
-  }
-  50% {
-    transform: translateX(9px);
-    opacity: 1;
-  }
-}
-.nudge {
-  animation: nudge 3.6s var(--ease-dsh) infinite;
-}
-.nudge-2 {
-  animation-delay: 1.2s;
-}
-.nudge-3 {
-  animation-delay: 2.4s;
-}
-
-@keyframes bounce-back {
-  0%,
-  44% {
-    transform: translateX(0);
-    opacity: 0.55;
-  }
-  56% {
-    transform: translateX(16px);
-    opacity: 1;
-  }
-  68% {
-    transform: translateX(0);
-    opacity: 0.75;
-  }
-  100% {
-    transform: translateX(0);
-    opacity: 0.55;
-  }
-}
-.bounce-back {
-  animation: bounce-back 3.6s var(--ease-dsh) infinite;
-}
-
-@keyframes wall-pulse {
-  0%,
-  100% {
-    opacity: 0.45;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-.wall-pulse {
-  animation: wall-pulse 3.6s var(--ease-dsh) infinite;
-}
-
-/* 入场：DSH 的 0.3s 慢速曲线 */
-@keyframes rise {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-.rise {
-  animation: rise 0.3s var(--ease-dsh) both;
-}
-
 @media (prefers-reduced-motion: reduce) {
   /* 装饰性动画：直接停掉，而不是压缩时长（压缩会留下闪烁） */
-  .nudge,
-  .nudge-2,
-  .nudge-3,
-  .bounce-back,
-  .wall-pulse,
   .flow-dot,
   .flow-dot-2,
-  .light-up,
   .ring-a,
-  .ring-b,
-  .rise {
+  .ring-b {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
