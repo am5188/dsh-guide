@@ -8,8 +8,13 @@ export type PlaygroundDemo = {
   label: string;
   /** 展示给读者的“你会问它什么” */
   ask: string;
-  /** 实际发出去的 prompt */
+  /** 单轮时实际发出去的 prompt */
   prompt: string;
+  /**
+   * 多轮时实际发出的完整消息数组。
+   * 给了这个就忽略 prompt —— 用来演示“带不带历史”的差别。
+   */
+  messages?: { role: "user" | "assistant"; content: string }[];
   maxTokens: number;
   /** 你应该看到什么 */
   expect: string;
@@ -117,7 +122,9 @@ export function Playground({ demos }: { demos: PlaygroundDemo[] }) {
         },
         body: JSON.stringify({
           model: MODEL,
-          messages: [{ role: "user", content: active.prompt }],
+          messages: active.messages ?? [
+            { role: "user", content: active.prompt },
+          ],
           max_tokens: active.maxTokens,
         }),
       });

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { TopBar } from "@/components/TopBar";
+import { CommandBlock } from "@/components/CommandBlock";
 import { Playground } from "@/components/Playground";
 import {
   IconDiagram,
@@ -7,7 +8,7 @@ import {
   IconTerminal,
   type IconProps,
 } from "@/components/icons";
-import { unitContent } from "@/content/units";
+import { unitContent } from "@/content";
 import { abilities, units, type Unit } from "@/lib/curriculum";
 
 function Slot({
@@ -90,7 +91,7 @@ export function UnitPage({ unit }: { unit: Unit }) {
                     id="anim"
                     Icon={IconFilm}
                     label="先看一眼"
-                    title="它在做什么，它做不到什么"
+                    title={content.animTitle ?? "先建立直觉"}
                   >
                     {content.anim}
                   </Slot>
@@ -105,7 +106,7 @@ export function UnitPage({ unit }: { unit: Unit }) {
                     {content.theory}
                   </Slot>
                 )}
-                {content.demos && content.demos.length > 0 && (
+                {(content.demos?.length || content.commands?.length) && (
                   <Slot
                     id="practice"
                     Icon={IconTerminal}
@@ -114,7 +115,12 @@ export function UnitPage({ unit }: { unit: Unit }) {
                   >
                     <div className="space-y-6">
                       {content.practiceIntro}
-                      <Playground demos={content.demos} />
+                      {content.demos && content.demos.length > 0 && (
+                        <Playground demos={content.demos} />
+                      )}
+                      {content.commands && content.commands.length > 0 && (
+                        <CommandBlock commands={content.commands} />
+                      )}
                     </div>
                   </Slot>
                 )}

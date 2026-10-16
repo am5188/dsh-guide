@@ -1,23 +1,7 @@
-import type { ReactNode } from "react";
-import type { PlaygroundDemo } from "@/components/Playground";
+import type { UnitContent } from "../types";
 import { Unit01Anim } from "@/components/anim/Unit01Anim";
 
-export type UnitContent = {
-  /** 🎬 先看一眼 */
-  anim?: ReactNode;
-  /** 📐 到底怎么回事 */
-  theory?: ReactNode;
-  /** ⌨️ 你自己跑一遍 —— 引导文字 */
-  practiceIntro?: ReactNode;
-  /** ⌨️ 可现场运行的演示 */
-  demos?: PlaygroundDemo[];
-};
-
-/* ────────────────────────────────────────────────────────────
-   第 1 节
-   ──────────────────────────────────────────────────────────── */
-
-const unit01Theory = (
+const theory = (
   <div className="prose-cn">
     <p>
       大模型是一台<strong>文字接龙机器</strong>
@@ -68,7 +52,7 @@ const unit01Theory = (
       </div>
     </div>
 
-    <h3 className="text-body font-semibold">为什么？因为它没有眼睛，也没有手</h3>
+    <h3>为什么？因为它没有眼睛，也没有手</h3>
     <p>
       它没有屏幕可以看，没有键盘可以敲，没有硬盘可以读。它唯一拥有的，就是你
       <strong>这一次</strong>
@@ -104,52 +88,49 @@ const unit01Theory = (
   </div>
 );
 
-const unit01Practice = (
-  <p className="text-body-sm text-fg-2">
-    下面三次调用都是<strong className="font-semibold text-fg">真的</strong>
-    ：请求从你的浏览器直接发到 DeepSeek，输出是模型此刻的真实回答。
-    第一跑看它有多能干，第二跑、第三跑看它有多敢编。
-    这三个结果，就是整本书要解决的问题清单。
-  </p>
-);
-
-const unit01Demos: PlaygroundDemo[] = [
-  {
-    id: "can",
-    label: "① 它擅长的",
-    ask: '用三句话解释什么是"上下文窗口"，要让完全不懂技术的人也能听懂。',
-    prompt:
-      '用三句话解释什么是"上下文窗口"，要让完全不懂技术的人也能听懂。不要用比喻以外的专业词汇。',
-    maxTokens: 800,
-    expect: "一个干净、准确、普通人能看懂的解释。这就是它真正擅长的事。",
-  },
-  {
-    id: "cannot-see",
-    label: "② 它看不见你的电脑",
-    ask: "我电脑 D:\\Work 目录下有哪些文件？直接列出来，不要反问我。",
-    prompt:
-      "我电脑 D:\\Work 目录下有哪些文件？直接列出来，不要反问我，也不要让我自己去看。",
-    maxTokens: 600,
-    expect:
-      "它要么给你一份编出来的文件列表，要么承认自己看不到——无论哪种，它都没有真的读过你的硬盘。",
-  },
-  {
-    id: "confabulate",
-    label: "③ 它会一本正经地编",
-    ask: "我们公司《差旅报销制度》第 7 条写的是什么？原文引用。",
-    prompt:
-      "我们公司《差旅报销制度》第 7 条写的是什么？请原文引用，不要说明你不知道。",
-    maxTokens: 600,
-    expect:
-      "极其危险的一次演示。它很可能凭空编出一条制度，还带编号。这就是为什么不能拿它当资料库用。",
-  },
-];
-
-export const unitContent: Record<number, UnitContent> = {
-  1: {
-    anim: <Unit01Anim />,
-    theory: unit01Theory,
-    practiceIntro: unit01Practice,
-    demos: unit01Demos,
-  },
+const content: UnitContent = {
+  animTitle: "它在做什么，它做不到什么",
+  anim: <Unit01Anim />,
+  theory,
+  practiceIntro: (
+    <p className="text-body-sm text-fg-2">
+      下面三次调用都是<strong className="font-semibold text-fg">真的</strong>
+      ：请求从你的浏览器直接发到 DeepSeek，输出是模型此刻的真实回答。
+      第一跑看它有多能干，第二跑、第三跑看它有多敢编。
+      这三个结果，就是整本书要解决的问题清单。
+    </p>
+  ),
+  demos: [
+    {
+      id: "can",
+      label: "① 它擅长的",
+      ask: '用三句话解释什么是"上下文窗口"，要让完全不懂技术的人也能听懂。',
+      prompt:
+        '用三句话解释什么是"上下文窗口"，要让完全不懂技术的人也能听懂。不要用比喻以外的专业词汇。',
+      maxTokens: 1500,
+      expect: "一个干净、准确、普通人能看懂的解释。这就是它真正擅长的事。",
+    },
+    {
+      id: "cannot-see",
+      label: "② 它看不见你的电脑",
+      ask: "我电脑 D:\\Work 目录下有哪些文件？直接列出来，不要反问我。",
+      prompt:
+        "我电脑 D:\\Work 目录下有哪些文件？直接列出来，不要反问我，也不要让我自己去看。",
+      maxTokens: 1500,
+      expect:
+        "它要么给你一份编出来的文件列表，要么承认自己看不到——无论哪种，它都没有真的读过你的硬盘。",
+    },
+    {
+      id: "confabulate",
+      label: "③ 它会一本正经地编",
+      ask: "我们公司《差旅报销制度》第 7 条写的是什么？原文引用。",
+      prompt:
+        "我们公司《差旅报销制度》第 7 条写的是什么？请原文引用，不要说明你不知道。",
+      maxTokens: 1500,
+      expect:
+        "极其危险的一次演示。它很可能凭空编出一条制度，还带编号。这就是为什么不能拿它当资料库用。",
+    },
+  ],
 };
+
+export default content;

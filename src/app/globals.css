@@ -344,6 +344,25 @@ body {
   color: var(--fg);
 }
 
+/* 顺序点亮：用来说明“能力一个个长出来”“任务一步步推进” */
+@keyframes light-up {
+  0%,
+  6% {
+    opacity: 0.32;
+  }
+  14%,
+  72% {
+    opacity: 1;
+  }
+  84%,
+  100% {
+    opacity: 0.32;
+  }
+}
+.light-up {
+  animation: light-up 7s var(--ease-dsh) infinite;
+}
+
 /* 首屏结构图：能力顺着这条线流下去 */
 @keyframes flow-down {
   0% {
@@ -450,6 +469,7 @@ body {
   .wall-pulse,
   .flow-dot,
   .flow-dot-2,
+  .light-up,
   .rise {
     animation: none !important;
     opacity: 1 !important;
