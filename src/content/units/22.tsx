@@ -174,14 +174,14 @@ const theory = (
       往下翻两行就是。
     </p>
 
-    <dl className="my-9 space-y-5">
+    <div className="my-7 grid gap-3 sm:grid-cols-2">
       {TERMS.map(([term, desc]) => (
-        <div key={term} className="flex flex-col gap-1 sm:flex-row sm:gap-5">
-          <dt className="w-44 shrink-0 text-body-sm font-semibold">{term}</dt>
-          <dd className="text-meta leading-relaxed text-fg-2">{desc}</dd>
+        <div key={term} className="rounded-lg bg-surface px-5 py-4">
+          <div className="text-body-sm font-semibold text-accent">{term}</div>
+          <p className="mt-1.5 text-meta leading-relaxed text-fg-2">{desc}</p>
         </div>
       ))}
-    </dl>
+    </div>
 
     <Unverified>
       这份词表里有两处我没有精确核实，先说清楚：
