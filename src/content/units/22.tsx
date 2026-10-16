@@ -1,5 +1,6 @@
 import type { UnitContent } from "../types";
 import { SequenceAnim } from "@/components/anim/SequenceAnim";
+import { FlowAnim } from "@/components/anim/diagrams";
 import { Callout, Unverified } from "@/components/Note";
 
 const TERMS: [string, string][] = [
@@ -167,6 +168,11 @@ const theory = (
       你背不下来的词，它自己解释得比谁都好。这一页真正的价值是让你知道
       “原来这件事有个名字”，有了名字你才问得出口。
     </Callout>
+
+    <FlowAnim
+      nodes={["先查术语表", "再查速查表", "还是不行就直接问它"]}
+      caption="这一节是全书唯一不需要从头读的。卡住的时候按这个顺序查——查不到就直接问 DSH，它解释得比谁都好。"
+    />
 
     <h3>术语表：二十个词，人话版</h3>
     <p>

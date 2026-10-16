@@ -1,5 +1,6 @@
 import type { UnitContent } from "../types";
 import { SequenceAnim } from "@/components/anim/SequenceAnim";
+import { FlowAnim } from "@/components/anim/diagrams";
 import { Callout, Unverified } from "@/components/Note";
 
 const theory = (
@@ -9,6 +10,11 @@ const theory = (
       读文件的、写文件的、跑命令的、搜网页的、生成 Word 的、生成 Excel 的……
       几十个工具摆在面前，怎么用？
     </p>
+
+    <FlowAnim
+      nodes={["一个工具", "几十个工具", "技能：把做法打包", "插件：给系统换零件"]}
+      caption="能力是一层层加上去的：单个工具解决一个动作；工具多了就需要技能把做法打包；再往上，插件给整个系统换零件。越往后越强，也越要小心。"
+    />
 
     <h2>工具多了，会带来三个新麻烦</h2>
     <div className="my-7 grid gap-4 sm:grid-cols-3">

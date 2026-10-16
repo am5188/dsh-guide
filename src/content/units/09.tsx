@@ -1,5 +1,6 @@
 import type { UnitContent } from "../types";
 import { SequenceAnim } from "@/components/anim/SequenceAnim";
+import { SplitAnim } from "@/components/anim/diagrams";
 import { Callout } from "@/components/Note";
 
 const SYMPTOMS: [string, string, string][] = [
@@ -48,6 +49,18 @@ const theory = (
       ——重问是最常见的错误反应，问题没解决，还多花一次钱，
       而且它很可能换个方式再错一遍。
     </p>
+
+    <SplitAnim
+      left={{
+        title: "错误反应",
+        items: ["马上重问一遍", "换个说法再问", "多花一次钱", "它换个方式再错一遍"],
+      }}
+      right={{
+        title: "正确反应",
+        items: ["先停下来", "读它到底说了什么", "归到七类里的哪一类", "再决定怎么办"],
+      }}
+      caption="重问是最常见的错误反应——问题没解决，还多花一次钱。下面这张表是七种常见现象和对应的处理办法。"
+    />
 
     <div className="my-9 overflow-x-auto">
       <table className="w-full border-collapse text-meta">

@@ -1,5 +1,6 @@
 import type { UnitContent } from "../types";
 import { SequenceAnim } from "@/components/anim/SequenceAnim";
+import { FlowAnim } from "@/components/anim/diagrams";
 import { Callout } from "@/components/Note";
 
 const EVOLUTION: [string, string, string, string][] = [
@@ -26,6 +27,11 @@ const theory = (
       。每一个新能力，都是被一个具体的失败逼出来的。
       所以第 10 节往后，我会按这条线一节一节走，每节先给你看那个失败长什么样。
     </p>
+
+    <FlowAnim
+      nodes={["撞上一个具体的失败", "为它加一块能力", "继续用，继续撞", "再加下一块"]}
+      caption="没有一步是「顺便做做」的。每一个新能力，都是被一个具体的失败逼出来的——所以第 10 节往后，我会按这条线一节一节走，每节先给你看那个失败长什么样。"
+    />
 
     <div className="my-9 overflow-x-auto">
       <table className="w-full border-collapse text-meta">

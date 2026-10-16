@@ -1,5 +1,6 @@
 import type { UnitContent } from "../types";
 import { CompareAnim } from "@/components/anim/CompareAnim";
+import { SplitAnim } from "@/components/anim/diagrams";
 import { Callout } from "@/components/Note";
 
 const theory = (
@@ -13,6 +14,18 @@ const theory = (
       现在它能动手了，最坏的结果变成了<strong>做错事</strong>。
       这两者的性质完全不同——说错话你可以不理，做错事可能要花几天去收拾。
     </p>
+
+    <SplitAnim
+      left={{
+        title: "它只会说的时代",
+        items: ["最坏是说错话", "你可以不理它", "代价按分钟算", "不需要有人守门"],
+      }}
+      right={{
+        title: "它能动手之后",
+        items: ["最坏是做错事", "可能要收拾几天", "代价可能不可逆", "必须有人守门"],
+      }}
+      caption="这就是为什么权限和沙箱和前面那些能力同等重要。能力越大，越需要一道闸。"
+    />
 
     <div className="my-9 rounded-lg bg-surface p-6">
       <div className="text-body-sm font-semibold">一个必须接受的现实</div>

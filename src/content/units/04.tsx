@@ -1,5 +1,6 @@
 import type { UnitContent } from "../types";
 import { GuiWireframe } from "@/components/anim/GuiWireframe";
+import { FlowAnim } from "@/components/anim/diagrams";
 import { Callout, Unverified } from "@/components/Note";
 
 const FIRST_RUN: [string, string][] = [
@@ -24,14 +25,10 @@ const theory = (
     </p>
 
     <h3>第一次打开，照着这四步做</h3>
-    <dl className="my-9 space-y-4">
-      {FIRST_RUN.map(([step, desc]) => (
-        <div key={step} className="flex flex-col gap-1 sm:flex-row sm:gap-5">
-          <dt className="w-40 shrink-0 text-body-sm font-semibold">{step}</dt>
-          <dd className="text-meta leading-relaxed text-fg-2">{desc}</dd>
-        </div>
-      ))}
-    </dl>
+    <FlowAnim
+      nodes={["新建会话", "说一件小事", "它请求授权", "看右边变化"]}
+      caption="别一上来就派大活——先让它做一件你两分钟能验收的事。它要读或写文件时会先停下来问你（第 6 节专门讲）。而右边变没变，是判断它有没有真的干活的唯一凭据。"
+    />
 
     <Callout>
       一个很实用的心理准备：

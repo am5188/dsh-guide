@@ -1,5 +1,6 @@
 import type { UnitContent } from "../types";
 import { SequenceAnim } from "@/components/anim/SequenceAnim";
+import { SplitAnim } from "@/components/anim/diagrams";
 import { Callout, Unverified } from "@/components/Note";
 
 const FORMATS: [string, string, string][] = [
@@ -22,6 +23,18 @@ const theory = (
       这一节是很多人最想要的能力：<strong>不是给你一段文字，而是直接生成一个能打开的文件</strong>
       。这是 DSH 相对网页版聊天最直观的差别之一。
     </p>
+
+    <SplitAnim
+      left={{
+        title: "它能直接给你",
+        items: ["Word 报告与说明", "Excel 台账与汇总表", "PPT 汇报页面", "转成 PDF"],
+      }}
+      right={{
+        title: "必须你自己验的",
+        items: ["文件能不能打开", "数字对不对得上", "公式算得出吗", "有没有加进原材料没有的内容"],
+      }}
+      caption="生成文件是它最直观的能力之一，但「交付」不等于「验收」。右栏这四项每次都要自己过一遍。"
+    />
 
     <h3>四种文件，各自擅长什么</h3>
     <div className="my-9 overflow-x-auto">

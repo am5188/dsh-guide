@@ -1,6 +1,6 @@
 import type { UnitContent } from "../types";
 import { CompareAnim } from "@/components/anim/CompareAnim";
-import { StackAnim } from "@/components/anim/diagrams";
+import { StackAnim, GaugeAnim } from "@/components/anim/diagrams";
 import { Callout, Unverified } from "@/components/Note";
 
 const KEEP: [string, string][] = [
@@ -37,6 +37,15 @@ const theory = (
         </div>
       </div>
     </div>
+    <GaugeAnim
+      value={0.375}
+      label="单次输出上限 ÷ 上下文窗口"
+      hint="393,216 ÷ 1,048,576"
+      threshold={0.6}
+      thresholdLabel="直觉上以为输出能占一半"
+      caption="两个数字都是实测来的，比值是算术。输出上限只占窗口的三分之一多一点——所以「装不下」这件事，输入和输出两头都会发生。"
+    />
+
     <p>
       这两个数字都是我们实测来的。另外记住：token 不是“字”，
       粗略理解成<strong>词的碎片</strong>就行，不用背精确换算——

@@ -1,5 +1,6 @@
 import type { UnitContent } from "../types";
 import { SequenceAnim } from "@/components/anim/SequenceAnim";
+import { FlowAnim } from "@/components/anim/diagrams";
 import { SandboxPicker } from "@/components/SandboxPicker";
 import { Callout, Unverified } from "@/components/Note";
 
@@ -84,6 +85,10 @@ const theory = (
     <SandboxPicker />
 
     <h2>怎么判断该不该点同意</h2>
+    <FlowAnim
+      nodes={["它要动什么", "范围清不清楚", "搞坏了能不能重来", "再决定同不同意"]}
+      caption="点同意之前先过这三问。最常见的情况是范围含糊（“清理一下”）——那就不该同意，先让它说清到底要动哪些文件。"
+    />
     <div className="my-7 space-y-3">
       {JUDGE.map((j) => (
         <div key={j.tag} className="rounded-lg bg-surface p-5">

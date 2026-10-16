@@ -1,5 +1,6 @@
 import type { UnitContent } from "../types";
 import { Unit01Anim } from "@/components/anim/Unit01Anim";
+import { SplitAnim } from "@/components/anim/diagrams";
 
 const theory = (
   <div className="prose-cn">
@@ -11,46 +12,29 @@ const theory = (
       。它能做什么、不能做什么，全都是这一件事的推论。
     </p>
 
-    <div className="my-9 grid gap-4 sm:grid-cols-2">
-      <div className="rounded-lg bg-surface p-6">
-        <div className="flex items-center gap-2 text-body-sm font-semibold">
-          <span className="size-1.5 rounded-full bg-ok-500" aria-hidden="true" />
-          它真的擅长的
-        </div>
-        <ul className="mt-4 space-y-2 text-meta text-fg-2">
-          {[
-            "把一段话写清楚、写好看",
-            "把长的缩短、把短的扩写",
-            "翻译、改写语气、换文体",
-            "按你给的格式整理内容",
-            "解释一个概念给你听",
-          ].map((t) => (
-            <li key={t}>{t}</li>
-          ))}
-        </ul>
-      </div>
-
-      <div className="rounded-lg bg-surface p-6">
-        <div className="flex items-center gap-2 text-body-sm font-semibold">
-          <span
-            className="size-1.5 rounded-full bg-warn-500"
-            aria-hidden="true"
-          />
-          做不到、却常常装作能做到
-        </div>
-        <ul className="mt-4 space-y-2 text-meta text-fg-2">
-          {[
-            "说出你电脑里有哪些文件",
-            "读你刚做的那个 Excel",
-            "知道你公司内部的规定",
-            "查到今天的实时价格",
-            "替你把文件真的改掉",
-          ].map((t) => (
-            <li key={t}>{t}</li>
-          ))}
-        </ul>
-      </div>
-    </div>
+    <SplitAnim
+      left={{
+        title: "它真的擅长的",
+        items: [
+          "把一段话写清楚、写好看",
+          "把长的缩短、把短的扩写",
+          "翻译、改写语气、换文体",
+          "按你给的格式整理内容",
+          "解释一个概念给你听",
+        ],
+      }}
+      right={{
+        title: "做不到、却常装作能做到",
+        items: [
+          "说出你电脑里有哪些文件",
+          "读你刚做的那个 Excel",
+          "知道你公司内部的规定",
+          "查到今天的实时价格",
+          "替你把文件真的改掉",
+        ],
+      }}
+      caption="左栏全部是「把给它的文字重新排列组合」，右栏全部需要「看到或碰到文字以外的东西」——它两样都没有。而它不会说「我不知道」，它会顺着话头接出一段听起来很合理的文字。"
+    />
 
     <h3>为什么？因为它没有眼睛，也没有手</h3>
     <p>

@@ -1,5 +1,6 @@
 import type { UnitContent } from "../types";
 import { SequenceAnim } from "@/components/anim/SequenceAnim";
+import { GaugeAnim } from "@/components/anim/diagrams";
 import { Callout, Unverified } from "@/components/Note";
 
 /* ── 花费刻度：等级 1–5，用条形一眼看懂谁贵 ───────────────── */
@@ -154,6 +155,15 @@ function Theory() {
         关键在第二件事上：<strong>每多聊一轮，前面所有内容都要重发一次</strong>
         。所以“长会话”和“长任务”贵起来的真正原因，不是它一次算了多少，而是同一批字被算了多少遍。
       </Callout>
+
+      <GaugeAnim
+        value={0.9}
+        label="第 10 轮请求里，重复内容占多少"
+        hint="前九轮 9 份 + 本轮 1 份 = 10 份"
+        threshold={0.5}
+        thresholdLabel="直觉上以为重复只占一半"
+        caption="这是算术，不是估算：每一轮都要把前面所有内容重发一遍。所以长会话贵起来的真正原因，不是它一次算了多少，而是同一批字被算了多少遍。"
+      />
 
       <h2>哪些操作贵，一眼看刻度</h2>
       <div className="my-7 space-y-2">

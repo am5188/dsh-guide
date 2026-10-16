@@ -1,5 +1,6 @@
 import type { UnitContent } from "../types";
 import { CompareAnim } from "@/components/anim/CompareAnim";
+import { SplitAnim } from "@/components/anim/diagrams";
 import { Callout, Unverified } from "@/components/Note";
 
 /** 验证层级：从最强到最弱。这是这一节最该记住的一张表。 */
@@ -62,9 +63,17 @@ const theory = (
         </div>
       ))}
     </div>
-    <p>
-      这三个词经常被混着用。混着用的后果是：<strong>你分不清对方说的是「已经很常见的事」还是「还没有证据的事」</strong>。
-    </p>
+    <SplitAnim
+      left={{
+        title: "已经在发生",
+        items: ["部署后继续微调", "它自己写工具、改提示", "人在旁边逐项验收"],
+      }}
+      right={{
+        title: "还没有证据",
+        items: ["无人干预的持续自我改写", "改进速度越来越快", "脱离外部验证的自我打分"],
+      }}
+      caption="这三个词经常被混着用。混着用的后果是：你分不清对方说的是「已经很常见的事」还是「还没有证据的事」。"
+    />
 
     <h2>一张表看清「改什么」与「怎么改」</h2>
     <div className="my-8 overflow-x-auto">

@@ -1,5 +1,6 @@
 import type { UnitContent } from "../types";
 import { SequenceAnim } from "@/components/anim/SequenceAnim";
+import { FlowAnim } from "@/components/anim/diagrams";
 import { Callout, Unverified } from "@/components/Note";
 
 const THREE: [string, string, string][] = [
@@ -74,22 +75,10 @@ const theory = (
     </div>
 
     <h3>最容易误会的一件事：定时任务本身不干活</h3>
-    <div className="my-7 grid gap-4 sm:grid-cols-2">
-      <div className="rounded-lg bg-surface p-5">
-        <div className="text-caption text-fg-3">它实际做的事</div>
-        <p className="mt-2 text-meta text-fg-2">
-          到点，往<strong className="text-fg">当初创建它的那个会话</strong>
-          里发一条消息。仅此而已。
-        </p>
-      </div>
-      <div className="rounded-lg bg-surface p-5">
-        <div className="text-caption text-fg-3">谁真的干活</div>
-        <p className="mt-2 text-meta text-fg-2">
-          接到那条消息的会话里的它——和你平时派活时是同一个它，
-          能力一样，毛病也一样。
-        </p>
-      </div>
-    </div>
+    <FlowAnim
+      nodes={["时间到了", "往会话里发一条消息", "会话里的它接着干", "结果留给你"]}
+      caption="定时任务只负责第一步——到点发消息。真正干活的是接到消息的那个会话，和你平时派活时是同一个它：能力一样，毛病也一样。"
+    />
 
     <Callout>
       <strong>定时任务是闹钟，不是工人。</strong>

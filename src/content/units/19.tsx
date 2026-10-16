@@ -1,5 +1,6 @@
 import type { UnitContent } from "../types";
 import { SequenceAnim } from "@/components/anim/SequenceAnim";
+import { FlowAnim } from "@/components/anim/diagrams";
 import { Callout } from "@/components/Note";
 
 const RECAP: [string, string][] = [
@@ -20,6 +21,11 @@ const theory = (
       它们各自解决一个具体的失败，但解决完之后，
       <strong>彼此之间还要能配合</strong>。而“让它们配合起来”，本身就是一件很难的事。
     </p>
+
+    <FlowAnim
+      nodes={["九块零件", "互相配合", "拼成一个运行时", "Harness"]}
+      caption="单独看每一块，都只是一个补丁。拼在一起、并且能稳定运转，才叫 Harness——最后一格是这本书真正的主角。"
+    />
 
     <div className="my-7 grid gap-3 sm:grid-cols-2">
       {RECAP.map(([k, v]) => (
