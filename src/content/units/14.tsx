@@ -1,0 +1,95 @@
+import type { UnitContent } from "../types";
+import { CompareAnim } from "@/components/anim/CompareAnim";
+import { Callout } from "@/components/Note";
+
+const theory = (
+  <div className="prose-cn">
+    <p>
+      前三节解决的是“它知道什么”。从这一节开始，我们处理“它能做什么”。
+      而这一步的跨法，比很多人想的要朴素得多。
+    </p>
+
+    <h3>它自己什么都没执行</h3>
+    <p>
+      这是最容易误解的一点：开启“工具能力”之后，
+      <strong>模型依然不能读文件、不能跑命令、不能联网</strong>。
+      它做的事情只有一件——<strong>输出一段结构化的文字，说明“我想调用某个工具，参数是这些”</strong>
+      。
+    </p>
+    <p>
+      真正去执行的是外面那层系统。它读到这段文字，去把工具跑一遍，
+      再把结果<strong>当作一段新文字</strong>发回给模型。
+      模型看到结果，再决定下一步。
+    </p>
+
+    <div className="my-9 rounded-lg bg-surface p-6">
+      <div className="text-body-sm font-semibold">所以循环是这样的</div>
+      <p className="mt-3 text-meta leading-relaxed text-fg-2">
+        模型说「我要读 D:\发票\三月.pdf」→ 外面的系统去读 →
+        把文件内容发回给模型 → 模型说「我看到金额了，我要写一个新文件」→
+        外面的系统去写…… 一圈一圈，直到模型说「我做完了」。
+      </p>
+    </div>
+
+    <Callout>
+      这个循环有名字，叫<strong>工具调用</strong>。第 3 节那张“一句话变成一堆动作”的图，
+      说的就是它。理解了这一节，你就理解了整套系统是怎么转起来的。
+    </Callout>
+
+    <h3>为什么这是个突破</h3>
+    <p>
+      因为它把模型从“只会说”变成了“会指挥”。
+      模型负责判断该干什么，系统负责真的去干。
+      第 1 节那道过不去的墙，就是这样被绕过去的——
+      <strong>不是模型越过了墙，是墙外有人替它递东西</strong>。
+    </p>
+
+    <h3>一个重要的推论</h3>
+    <p>
+      既然是“外面负责执行”，那么<strong>能执行什么、允许执行什么，
+      完全由外面决定</strong>，而不是由模型决定。
+      这就是为什么权限和沙箱如此重要——
+      模型可以提出任何请求，但答不答应，是系统和你说了算。
+    </p>
+  </div>
+);
+
+const content: UnitContent = {
+  animTitle: "模型只负责“说要调什么”",
+  anim: (
+    <CompareAnim
+      title="模型只负责“说要调什么”"
+      left={{
+        label: "没有工具时",
+        lines: ["你：把那个文件读一下", "它：我做不到", "（真的做不到）", "对话到此为止"],
+      }}
+      right={{
+        label: "有工具时",
+        lines: ["你：把那个文件读一下", "它：请调用读文件工具", "外面的系统真的去读", "结果发回来，它继续"],
+      }}
+      caption="右边这一栏里，模型自己依然什么都没碰。它只是提出了一个请求，然后读到了别人递给它的结果。所谓“动手能力”，是分工的产物。"
+    />
+  ),
+  theory,
+  practiceIntro: (
+    <p className="text-body-sm text-fg-2">
+      下面这次调用让模型演示它真实的“动作”：它没有工具，
+      但可以让它把<strong className="font-semibold text-fg">“如果我有工具，我会怎么请求”</strong>
+      写成结构化格式。你会看到，它输出的只是文字。
+    </p>
+  ),
+  demos: [
+    {
+      id: "toolcall",
+      label: "① 看它“请求调用工具”长什么样",
+      ask: "模拟一次工具调用：读 D:\\发票\\三月.pdf 并提取金额。",
+      prompt:
+        "假设你有一个名为 read_file 的工具，它接受一个参数 path。\n\n现在请以 JSON 格式输出你这样一次工具调用的请求，格式为：\n{\"tool\": \"工具名\", \"arguments\": {参数}}\n\n任务：读取 D:\\发票\\三月.pdf 并提取其中的金额。\n\n输出 JSON 之后，用一句话说明：为什么你输出这段 JSON 之后，自己并不能真的读到那个文件。",
+      maxTokens: 4000,
+      expect:
+        "它会输出一段 JSON，然后承认自己并没有真的读文件。这段 JSON 就是“工具调用”的真身——一串文字而已，执行者是别人。",
+    },
+  ],
+};
+
+export default content;

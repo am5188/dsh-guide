@@ -344,6 +344,34 @@ body {
   color: var(--fg);
 }
 
+/* 两栏交替高亮：用来说明“同一件事，两种说法/两种结果” */
+@keyframes ring-a {
+  0%,
+  42% {
+    box-shadow: 0 0 0 1.5px var(--accent);
+  }
+  58%,
+  100% {
+    box-shadow: 0 0 0 1.5px transparent;
+  }
+}
+@keyframes ring-b {
+  0%,
+  42% {
+    box-shadow: 0 0 0 1.5px transparent;
+  }
+  58%,
+  100% {
+    box-shadow: 0 0 0 1.5px var(--accent);
+  }
+}
+.ring-a {
+  animation: ring-a 6s var(--ease-dsh) infinite;
+}
+.ring-b {
+  animation: ring-b 6s var(--ease-dsh) infinite;
+}
+
 /* 顺序点亮：用来说明“能力一个个长出来”“任务一步步推进” */
 @keyframes light-up {
   0%,
@@ -470,10 +498,13 @@ body {
   .flow-dot,
   .flow-dot-2,
   .light-up,
+  .ring-a,
+  .ring-b,
   .rise {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
+    box-shadow: none !important;
   }
   *,
   *::before,
