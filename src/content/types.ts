@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import type { PlaygroundDemo } from "@/components/Playground";
 import type { PythonDemo } from "@/components/PythonPlayground";
+import type { AgentDemo } from "@/components/AgentLoop";
 
 /** 一条可以直接复制去本地跑的 DSH 命令 */
 export type CommandSpec = {
@@ -37,6 +38,14 @@ export type UnitContent = {
   python?: {
     intro?: ReactNode;
     demos: PythonDemo[];
+  };
+  /**
+   * ⌨️ 完整工具调用回路：两次真实请求，中间本地模拟执行工具。
+   * 这是「智能体」这个词最直观的展示。
+   */
+  agent?: {
+    intro?: ReactNode;
+    demos: AgentDemo[];
   };
   /** ⌨️ 本地 DSH 命令 */
   commands?: CommandSpec[];

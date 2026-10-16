@@ -21,6 +21,7 @@ import u19 from "./units/19";
 import u20 from "./units/20";
 import u21 from "./units/21";
 import u22 from "./units/22";
+import u23 from "./units/23";
 
 export type { UnitContent, CommandSpec } from "./types";
 
@@ -51,4 +52,5 @@ export const unitContent: Record<number, UnitContent> = {
   20: u20,
   21: u21,
   22: u22,
+  23: u23,
 };

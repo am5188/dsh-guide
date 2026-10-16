@@ -1,5 +1,5 @@
 import { Composition } from "remotion";
-import { TheWall, THE_WALL_DURATION } from "./TheWall";
+import { TheWall, COMPOSITION } from "./TheWall";
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -7,10 +7,10 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="the-wall"
         component={TheWall}
-        durationInFrames={THE_WALL_DURATION}
-        fps={30}
-        width={1920}
-        height={1080}
+        durationInFrames={COMPOSITION.durationInFrames}
+        fps={COMPOSITION.fps}
+        width={COMPOSITION.width}
+        height={COMPOSITION.height}
       />
     </>
   );

@@ -4,7 +4,7 @@ import { ThemeToggle } from "./ThemeToggle";
 export function TopBar() {
   return (
     <header className="sticky top-0 z-40 border-b border-hair bg-canvas/85 backdrop-blur-md">
-      <div className="mx-auto flex h-14 max-w-[920px] items-center gap-5 px-5 sm:px-8">
+      <div className="mx-auto flex h-14 max-w-[1180px] items-center gap-5 px-5 sm:px-8">
         <Link
           href="/"
           className="flex items-center gap-2.5 text-body-sm font-semibold tracking-tight text-fg transition-colors hover:text-accent"

@@ -2,257 +2,234 @@ import type { UnitContent } from "../types";
 import { SequenceAnim } from "@/components/anim/SequenceAnim";
 import { Callout, Unverified } from "@/components/Note";
 
-const SPEND: [string, string, string][] = [
-  [
-    "问一句短问题（“把这句话改客气一点”）",
-    "很小",
-    "发过去的字少，它写出来的字也少，两头都省。",
-  ],
-  [
-    "让它通读一份五十页的 PDF 再给结论",
-    "大",
-    "整份内容都会变成输入，而且之后每一轮都要重新发一遍。",
-  ],
-  [
-    "同一个会话里来回聊五十轮",
-    "越聊越贵",
-    "每一轮都要把前面的全部内容重新发一次，第 50 轮发出去的量是第 1 轮的好多倍。",
-  ],
-  [
-    "让它跑一个二十步的活",
-    "大",
-    "每一步都是一次完整的请求，每次都带上前面所有内容和工具说明。",
-  ],
-  [
-    "开三个子智能体，各读一遍同一份资料",
-    "大上加大",
-    "同一批字被算了三遍。除非它们本来就该各看各的资料。",
-  ],
-  [
-    "让它先想清楚再回答（用推理模型）",
-    "比直觉回答贵",
-    "它先在“心里”打的草稿也按输出计费，只是这段字不一定显示给你看。",
-  ],
-  [
-    "新开一个会话重新问同一件事",
-    "不一定省",
-    "新会话不是省钱开关：省下的是前面的上下文，花掉的是你重新交代情况的字数。",
-  ],
-  [
-    "同一段没变过的内容再发一次",
-    "通常便宜一些",
-    "没变过的前缀有可能被缓存下来；DSH 的用量统计里把输入分成了“命中缓存”和“没命中缓存”两类。",
-  ],
+/* ── 花费刻度：等级 1–5，用条形一眼看懂谁贵 ───────────────── */
+const SPEND: { what: string; tag: string; level: number; why: string }[] = [
+  {
+    what: "问一句短问题",
+    tag: "很小",
+    level: 1,
+    why: "发过去的字少，它写出来的字也少，两头都省。",
+  },
+  {
+    what: "同一段没变过的内容再发一次",
+    tag: "通常便宜些",
+    level: 1,
+    why: "没变过的前缀有可能被缓存下来。DSH 的用量统计把输入分成“命中缓存”和“没命中”两类，你可以直接看那个数。",
+  },
+  {
+    what: "让它先想清楚再回答（推理模型）",
+    tag: "比直觉回答贵",
+    level: 2,
+    why: "它先在“心里”打的草稿也按输出计费，只是这段字不一定显示给你看。",
+  },
+  {
+    what: "新开一个会话重新问同一件事",
+    tag: "不一定省",
+    level: 2,
+    why: "新会话不是省钱开关：省下的是前面的上下文，花掉的是你重新交代情况的字数。",
+  },
+  {
+    what: "让它通读一份五十页的 PDF 再给结论",
+    tag: "大",
+    level: 4,
+    why: "整份内容都会变成输入，而且之后每一轮还要重新发一遍。",
+  },
+  {
+    what: "让它跑一个二十步的活",
+    tag: "大",
+    level: 4,
+    why: "每一步都是一次完整请求，每次都带上前面所有内容和工具说明。",
+  },
+  {
+    what: "同一个会话里来回聊五十轮",
+    tag: "越聊越贵",
+    level: 4,
+    why: "第 50 轮发出去的量，是第 1 轮的好多倍。",
+  },
+  {
+    what: "开三个子智能体，各读一遍同一份资料",
+    tag: "大上加大",
+    level: 5,
+    why: "同一批字被算了三遍。除非它们本来就该各看各的资料。",
+  },
 ];
 
-const RISKS: [string, string][] = [
-  [
-    "改了不该改的文件",
-    "它动手的范围比你想象的大。你说“整理一下”，它可能顺手把旁边几个文件也改了名字。",
-  ],
-  [
-    "删了东西",
-    "删除是最难收回的一步。回收站未必救得了你——有些删除动作不进回收站。",
-  ],
-  [
-    "把它的结论当成事实",
-    "它不知道的事，它会顺着话头编，语气还很自信。这个现象第 1 节就讲过，叫幻觉。",
-  ],
-  [
-    "把不该发的东西发出去",
-    "客户名单、身份证号、没公开的合同，一旦进了对话，就等于离开了你的电脑。",
-  ],
-  [
-    "钱悄悄花掉",
-    "单次看不出来，一个跑歪了的循环能安静地烧一晚上。",
-  ],
-  [
-    "事情做了一半，你不知道停在哪",
-    "它改了三个文件、第四个改到一半失败了，此时哪份是新的、哪份是旧的，你分不清。",
-  ],
+/* ── 风险与对应的防线 ─────────────────────────────────────── */
+const RISKS: { risk: string; level: number; detail: string; guard: string }[] = [
+  {
+    risk: "删了东西",
+    level: 3,
+    detail: "删除是最难收回的一步。回收站未必救得了你——有些删除不进回收站。",
+    guard: "动手前先复制一份，让它只动副本",
+  },
+  {
+    risk: "改了不该改的文件",
+    level: 2,
+    detail: "它动手的范围可能比你想象的大。你说“整理一下”，它可能顺手把旁边几个文件也改了名。",
+    guard: "先要一份改动清单，你核对完再放行",
+  },
+  {
+    risk: "把它的结论当成事实",
+    level: 2,
+    detail: "它不知道的事会顺着话头编，语气还很自信。这就是第 1 节讲的幻觉。",
+    guard: "要求它分开“材料里有的”和“它推断的”",
+  },
+  {
+    risk: "把不该发的东西发出去了",
+    level: 3,
+    detail: "它能读到的东西，也可能被它写进请求里。密钥、身份信息、客户资料都算。",
+    guard: "动手前先把敏感目录排除掉",
+  },
 ];
 
-const ROLLBACK: [string, string][] = [
-  [
-    "先复制一份",
-    "最土，也最稳。在资源管理器里复制粘贴出一个副本，让它去动副本。原件不动，出错就没有代价。",
-  ],
-  [
-    "先在小范围试",
-    "别拿三年的发票上手。挑一个文件夹、一个月的量，先让它做一遍，你验收完再放大。",
-  ],
-  [
-    "先把权限收紧",
-    "DSH 有沙箱档位：只读、只能改工作区、完全不限制。第一次干不熟的活，先放在偏紧的那一档。",
-  ],
-  [
-    "先接上能回退的存档",
-    "如果这批文件在版本控制里（比如 git），你可以回到任何一个存档点。没有版本控制也不要紧，第 1 条就够了。",
-  ],
-  [
-    "先让它只报告、不动手",
-    "第一次先只要一份清单：“你打算改哪些文件、改成什么”，看完整份清单再放它动手。",
-  ],
-  [
-    "备份留到你确认能用为止",
-    "很多人毁在“我觉得差不多了”就把副本删了。等你真的用过新结果，再删。",
-  ],
+/* ── 回滚清单：用编号呈现，比段落好读 ─────────────────────── */
+const ROLLBACK: { title: string; detail: string }[] = [
+  {
+    title: "先复制一份",
+    detail: "最土，也最稳。复制粘贴出一个副本，让它去动副本。原件不动，出错就没有代价。",
+  },
+  {
+    title: "先在小范围试",
+    detail: "别拿三年的发票上手。挑一个文件夹、一个月的量，做一遍验收完再放大。",
+  },
+  {
+    title: "先把权限收紧",
+    detail: "沙箱档位先放在偏紧的那一档（第 6 节讲过三档）。第一次干不熟的活，别给全开。",
+  },
+  {
+    title: "先让它只报告、不动手",
+    detail: "只要一份清单：“你打算改哪些文件、改成什么”。看完整份清单再放它动手。",
+  },
+  {
+    title: "备份留到你确认能用为止",
+    detail: "很多人毁在“我觉得差不多了”就把副本删了。等你真的用过新结果，再删。",
+  },
 ];
 
-const theory = (
-  <div className="prose-cn">
-    <p>
-      这一节讲三件不性感但保命的事：钱花在哪、可能错在哪、错了怎么退回去。
-      先说钱，因为钱是最容易算清楚、也最容易被忽略的一件。
-    </p>
-
-    <h3>钱从哪来：三个去处</h3>
-    <p>
-      它是按 token 计费的，而 token 大致就是它读进去和写出来的文字量。
-      一次对话里的用量分三块：
-    </p>
-
-    <div className="my-9 grid gap-4 sm:grid-cols-3">
-      {[
-        ["输入", "你这次发过去的一切"],
-        ["输出", "它写出来的字"],
-        ["思考", "它答题前先打的草稿"],
-      ].map(([name, desc]) => (
-        <div key={name} className="rounded-lg bg-surface p-5">
-          <div className="text-body-sm font-semibold">{name}</div>
-          <p className="mt-2 text-meta text-fg-2">{desc}</p>
-        </div>
+/** 花费刻度条 */
+function Meter({ level }: { level: number }) {
+  return (
+    <span className="inline-flex gap-0.5" aria-hidden="true">
+      {[1, 2, 3, 4, 5].map((i) => (
+        <span
+          key={i}
+          className="h-3.5 w-1.5 rounded-[2px]"
+          style={{
+            background:
+              i <= level
+                ? level >= 4
+                  ? "var(--color-warn-500)"
+                  : "var(--color-ds-500)"
+                : "var(--line)",
+          }}
+        />
       ))}
+    </span>
+  );
+}
+
+function Theory() {
+  return (
+    <div className="prose-cn">
+      <p>
+        这一节只回答两件事：<strong>钱花在哪</strong>，以及<strong>怎么保证不把东西搞坏</strong>。
+        两件事都有能直接照做的做法，所以下面尽量用图表说话。
+      </p>
+
+      <h2>钱的三个去处</h2>
+      <div className="my-7 grid gap-4 sm:grid-cols-3">
+        {[
+          ["进去的", "你发过去的全部内容", "包括你的话、历史对话、让它读的文件"],
+          ["出来的", "它写给你的字", "答案越长越贵"],
+          ["它想的", "推理模型先打的草稿", "也算钱，只是不显示给你看"],
+        ].map(([k, v, note]) => (
+          <div key={k} className="rounded-lg bg-surface p-5">
+            <div className="text-body-sm font-semibold">{k}</div>
+            <div className="mt-1.5 text-meta text-fg-2">{v}</div>
+            <div className="mt-2 text-caption text-fg-3">{note}</div>
+          </div>
+        ))}
+      </div>
+      <Callout>
+        关键在第二件事上：<strong>每多聊一轮，前面所有内容都要重发一次</strong>
+        。所以“长会话”和“长任务”贵起来的真正原因，不是它一次算了多少，而是同一批字被算了多少遍。
+      </Callout>
+
+      <h2>哪些操作贵，一眼看刻度</h2>
+      <div className="my-7 space-y-2">
+        {SPEND.map((s) => (
+          <div key={s.what} className="rounded-md bg-surface px-5 py-4">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+              <Meter level={s.level} />
+              <span className="text-body-sm font-medium">{s.what}</span>
+              <span className="rounded-xs bg-canvas px-1.5 py-0.5 text-caption text-fg-3">
+                {s.tag}
+              </span>
+            </div>
+            <p className="mt-2 text-meta text-fg-2">{s.why}</p>
+          </div>
+        ))}
+      </div>
+
+      <h2>四种风险，和各自的防线</h2>
+      <div className="my-7 space-y-3">
+        {RISKS.map((r) => (
+          <div key={r.risk} className="rounded-lg bg-surface p-5">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <span
+                className="size-2 rounded-full"
+                style={{
+                  background:
+                    r.level >= 3
+                      ? "var(--color-danger-500)"
+                      : "var(--color-warn-500)",
+                }}
+                aria-hidden="true"
+              />
+              <span className="text-body-sm font-semibold">{r.risk}</span>
+              <span className="rounded-xs bg-canvas px-1.5 py-0.5 text-caption text-fg-3">
+                {r.level >= 3 ? "后果不好收" : "容易发生"}
+              </span>
+            </div>
+            <p className="mt-2 text-meta text-fg-2">{r.detail}</p>
+            <p className="mt-3 text-meta">
+              <span className="text-fg-3">防线 · </span>
+              <span className="text-accent">{r.guard}</span>
+            </p>
+          </div>
+        ))}
+      </div>
+
+      <h2>回滚清单</h2>
+      <ol className="my-7 space-y-4">
+        {ROLLBACK.map((r, i) => (
+          <li key={r.title} className="flex gap-4">
+            <span className="mt-0.5 grid size-7 shrink-0 place-items-center rounded-sm bg-surface font-mono text-caption text-accent">
+              {i + 1}
+            </span>
+            <span>
+              <span className="text-body-sm font-semibold">{r.title}</span>
+              <span className="mt-1 block text-meta text-fg-2">{r.detail}</span>
+            </span>
+          </li>
+        ))}
+      </ol>
+
+      <Callout>
+        这五条里真正救命的只有第一条。其余四条都是它的补充。
+        <strong>如果你只记一件事，就记“先复制一份”。</strong>
+      </Callout>
+
+      <Unverified>
+        这一节<strong>故意不给任何价格数字</strong>。DeepSeek 的计费标准会变，
+        我没有核实过当前价目，也不想让你拿一个过期数字去估预算。
+        请以官网计费页和你自己的账单为准。
+        另外，「用量和额度在界面的哪个位置看」我也没有逐项核对过——
+        第一次用的时候，去设置里找一下「账号」或「用量」相关的页面。
+      </Unverified>
     </div>
-
-    <p>
-      第一块比多数人想的大得多。“你发过去的”不只是你手打的那句话，
-      还包括它的系统说明、它能用的每一个工具的说明、之前所有轮次的对话、
-      你让它读的每一份文件的全文。这些东西加起来，往往是你那句话的几十倍上百倍。
-    </p>
-    <p>
-      第三块是最容易被漏掉的。推理模型答题之前会先在心里走一遍草稿，
-      <strong>这段草稿也按输出计费</strong>，哪怕它压根不给你看。
-      这也是为什么有时候你会看到“回答是空的，但确实花了钱”——
-      草稿把额度用完了，正文还没轮到。
-    </p>
-
-    <Callout>
-      有个可以自己动手做的实验，就在下面那个演示框里：同一个问题跑两次，
-      第一次只写一句话，第二次在前面贴一大段材料。跑完看每次下面显示的那行 token 数。
-      你会发现用量跟输入的长短几乎是同步往上走的。
-      <strong>这就是“上下文越长越贵”最直接的证据</strong>
-      ，比任何人给你讲的道理都靠得住。
-    </Callout>
-
-    <h3>一页判断表：哪些做法贵，哪些便宜</h3>
-    <p>
-      下面是同一件事的两种做法，用量能差出好几倍。表格里说的都是
-      <strong>用量</strong>，不是价格——价格是另一回事，见本节末尾。
-    </p>
-
-    <div className="my-9 overflow-x-auto">
-      <table className="w-full border-collapse text-meta">
-        <thead>
-          <tr className="text-fg-3">
-            <th className="px-3 py-3 text-left font-medium">你做的事</th>
-            <th className="px-3 py-3 text-left font-medium whitespace-nowrap">
-              用量
-            </th>
-            <th className="px-3 py-3 text-left font-medium">为什么</th>
-          </tr>
-        </thead>
-        <tbody>
-          {SPEND.map(([what, level, why]) => (
-            <tr key={what} className="border-t border-hair align-top">
-              <td className="px-3 py-3 text-fg-2">{what}</td>
-              <td className="px-3 py-3 whitespace-nowrap font-medium text-fg">
-                {level}
-              </td>
-              <td className="px-3 py-3 text-fg-2">{why}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-
-    <p>
-      反过来，省钱的做法也就那么几条，而且都不需要你懂技术：
-      <strong>说清楚再让它动手</strong>（少走弯路就是少花钱）、
-      <strong>一次问明白</strong>（别用二十轮来回试探）、
-      <strong>材料按需给</strong>（先让它读目录，需要哪份再读哪份）、
-      <strong>一件事做完就收工</strong>（别在一个塞满历史的会话里聊一整天）。
-    </p>
-
-    <h3>风险清单：真正会让你难受的六件事</h3>
-    <dl className="my-9 grid gap-4 sm:grid-cols-2">
-      {RISKS.map(([name, desc]) => (
-        <div key={name} className="rounded-lg bg-surface p-5">
-          <dt className="text-body-sm font-semibold">{name}</dt>
-          <dd className="mt-1.5 text-meta leading-relaxed text-fg-2">{desc}</dd>
-        </div>
-      ))}
-    </dl>
-
-    <p>
-      这六件事里，前两件是“一次性的灾难”，后四件是“慢慢累积的灾难”。
-      一次性的那种你当天就会跳起来，累积的那种最危险：
-      它每天都在错，每天都没人发现，等你看出来的时候已经错了一个月。
-      所以上一节那条“失败必须有通知”，本质上不是技术安排，是给自己留一双眼睛。
-    </p>
-
-    <h3>退路：动手之前就把回去的路铺好</h3>
-    <p>
-      这里有个顺序问题，值得说清楚：
-      <strong>回滚是动手之前做的准备，不是出事之后的补救。</strong>
-      出事之后你能做的事很少；动手之前你能做的事很多，而且都不费劲。
-    </p>
-
-    <dl className="my-9 space-y-4">
-      {ROLLBACK.map(([step, desc]) => (
-        <div key={step} className="flex flex-col gap-1 sm:flex-row sm:gap-5">
-          <dt className="w-44 shrink-0 text-body-sm font-semibold">{step}</dt>
-          <dd className="text-meta leading-relaxed text-fg-2">{desc}</dd>
-        </div>
-      ))}
-    </dl>
-
-    <Callout>
-      这几条里，只选一条的话，选<strong>先复制一份</strong>。
-      它不需要你懂任何技术，不需要界面配合，也不需要它配合。
-      一份副本就是你的第二条路。
-    </Callout>
-
-    <p>
-      还有一件事值得养成习惯：让它交东西的时候，
-      <strong>顺手把“它动了哪些文件”写清楚</strong>。
-      第 4 节里说过，它动过的文件会出现在界面的右边，
-      但你自己手里有一份清单，心里会踏实得多。
-      验收的时候照着清单一个个看，比凭感觉回想“它刚才是不是改了什么”可靠。
-    </p>
-
-    <Unverified>
-      这一节里所有跟“多少钱”有关的数字，我都刻意没写。真实的单价、有没有阶梯价、
-      缓存命中怎么折、推理模型的思考部分怎么计费，请一律以 DeepSeek 官网的计费页
-      和你自己的账单为准——我没有核实过实时价格，编一个数字给你是最不负责任的做法。
-    </Unverified>
-
-    <Unverified>
-      另外两处我没能在界面上核对：一是用量和额度到底在哪儿看。我读到的是
-      桌面版的设置里有一个“账号”页，能看到登录状态和额度相关的引导；
-      网页版用的是 API Key，没有账号页，得去开放平台看用量。
-      二是“看它改了什么再接受”这件事在界面上的具体做法（能不能逐条对比、能不能一键撤销），
-      我没有逐步点过。所以上面那份回滚清单里，我一条都没写依赖界面按钮的办法——
-      备份、小范围试、版本控制，这三样在哪个版本里都管用。
-    </Unverified>
-
-    <p>
-      最后留一句判断标准，很简单：
-      <strong>钱花多了你会心疼，但文件退不回去你会心疼很久。</strong>
-      两者冲突的时候，先保住后者。
-    </p>
-  </div>
-);
+  );
+}
 
 const content: UnitContent = {
   animTitle: "一笔钱是怎么花掉的",
@@ -269,7 +246,7 @@ const content: UnitContent = {
       ]}
     />
   ),
-  theory,
+  theory: <Theory />,
   practiceIntro: (
     <p className="text-body-sm text-fg-2">
       成本这件事，光看别人写的判断表记不住。下面三次调用做的是三件事：
@@ -287,7 +264,7 @@ const content: UnitContent = {
         "我在用 AI 助手干活，按 token 计费。请用生活化的方式解释：一次对话里，钱的三个主要去处分别是什么；为什么“来回聊很多轮”比“一次问清楚”更贵；以及缓存命中会不会影响价钱——如果不确定就直接说不确定。不要给出任何具体价格数字。",
       maxTokens: 4000,
       expect:
-        "你会得到一份把人话讲明白的账：进去的、出来的、还有它自己想的。这次回答本身也计入用量，等它跑完看一眼下面那行 token 数。",
+        "你会得到一份把人话讲明白的账：进去的、出来的、还有它自己想的。这次回答本身也计入用量，等它跑完看一眼上面那排 token 数。",
     },
     {
       id: "expensive-habits",

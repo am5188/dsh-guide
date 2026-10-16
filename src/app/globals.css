@@ -299,6 +299,8 @@ body {
   font-size: 17px;
   line-height: 1.75;
   color: var(--fg);
+  /* 正文保持易读宽度；动画、表格、代码面板不受此限制，可以铺满整栏 */
+  max-width: 720px;
 }
 .prose-cn p {
   margin-block: 0.9em;

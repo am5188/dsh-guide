@@ -1,0 +1,84 @@
+{
+  "voice": "zh-CN-XiaoxiaoNeural",
+  "rate": "-6%",
+  "pitch": "-1Hz",
+  "lines": [
+    {
+      "id": "s01",
+      "text": "这是一台大模型。",
+      "file": "s01.mp3",
+      "seconds": 2.11,
+      "bytes": 12672
+    },
+    {
+      "id": "s02",
+      "text": "你给它文字，它接着往下写，写得又快又好。",
+      "file": "s02.mp3",
+      "seconds": 4.58,
+      "bytes": 27504
+    },
+    {
+      "id": "s03",
+      "text": "但你说：帮我把 D 盘里的发票重命名。",
+      "file": "s03.mp3",
+      "seconds": 3.96,
+      "bytes": 23760
+    },
+    {
+      "id": "s04",
+      "text": "它只能给你一段说明。",
+      "file": "s04.mp3",
+      "seconds": 2.38,
+      "bytes": 14256
+    },
+    {
+      "id": "s05",
+      "text": "因为它碰不到你的电脑。",
+      "file": "s05.mp3",
+      "seconds": 2.42,
+      "bytes": 14544
+    },
+    {
+      "id": "s06",
+      "text": "模型和你的电脑之间，隔着一道墙。",
+      "file": "s06.mp3",
+      "seconds": 3.79,
+      "bytes": 22752
+    },
+    {
+      "id": "s07",
+      "text": "这道墙，它自己过不去。",
+      "file": "s07.mp3",
+      "seconds": 2.74,
+      "bytes": 16416
+    },
+    {
+      "id": "s08",
+      "text": "墙外面，站着另一样东西。",
+      "file": "s08.mp3",
+      "seconds": 2.98,
+      "bytes": 17856
+    },
+    {
+      "id": "s09",
+      "text": "它替模型记住，替它动手，替它把关。",
+      "file": "s09.mp3",
+      "seconds": 4.2,
+      "bytes": 25200
+    },
+    {
+      "id": "s10",
+      "text": "它叫 DeepSeek Harness。",
+      "file": "s10.mp3",
+      "seconds": 2.38,
+      "bytes": 14256
+    },
+    {
+      "id": "s11",
+      "text": "模型负责想，它负责让想，真的发生。",
+      "file": "s11.mp3",
+      "seconds": 4.15,
+      "bytes": 24912
+    }
+  ]
+}

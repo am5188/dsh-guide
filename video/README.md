@@ -1,76 +1,112 @@
-# 关键节点短片
+# 短片制作说明
 
 站点的科普层以**网页内交互动画**为主体（`src/components/anim/`）；
-这里放的是少数关键节点的**带旁白短片**，用 Remotion 渲染成 mp4，
-方便转发到群里或贴进 PPT。
+这里放的是关键节点的**带旁白短片**，用 Remotion 渲染成 mp4。
 
-本目录与站点**分开管理**：它有自己的 `package.json`，
+本目录与站点**分开管理**：有自己的 `package.json`，
 不会增加站点 `npm install` 的体积。
 
-## 依赖
+---
 
-- Node.js ≥ 20
-- 首次需要下载两样东西（都需要联网）：
-  - `npm install` → Remotion 相关包（约 255 个）
-  - `npx remotion browser ensure` → Chrome Headless Shell（约 120 MB）
+## 一、这套管线解决什么问题
 
-渲染由 Remotion 自带的合成器完成，**不需要系统安装 ffmpeg**。
+| 问题 | 做法 |
+|---|---|
+| 旁白太机械 | 用 Edge 的**在线神经语音**（`msedge-tts`），不是 Windows 自带的拼接式语音 |
+| 镜头边界要手改 | 旁白时长自动生成 `src/narration.json`，合成读它算镜头，**改台词不用改代码** |
+| 音效要下载素材 | 一部分用 Remotion 官方音效（已下载到 `public/sfx/` 离线保存），一部分用 numpy 合成 |
+| 渲染要装 ffmpeg | 不需要。Remotion 自带合成器 |
+| 画面「像 PPT」 | 见下面第三节的运动与质感规则 |
 
-## 旁白
+## 二、目录
 
-旁白用 **Windows 自带的中文语音离线合成**（`Microsoft Huihui Desktop`，zh-CN），
-不联网、不装任何 Python 包。
-
-```powershell
-# 注意：PowerShell 默认禁止运行脚本，需要加 -ExecutionPolicy Bypass
-pwsh -ExecutionPolicy Bypass -File scripts/narration.ps1
+```
+video/
+├── scripts/
+│   ├── tts.mjs        生成旁白 mp3 + src/narration.json（在线神经语音）
+│   ├── sfx.py         用 numpy 合成 hit / riser / tick / pad（离线）
+│   └── narration.ps1  旧版：Windows 自带语音（音质差，保留作为无网兜底）
+├── public/
+│   ├── audio/         旁白（tts.mjs 产出，入库）
+│   └── sfx/           音效（Remotion 官方素材 + sfx.py 产出，入库）
+├── src/
+│   ├── narration.json 时长表（tts.mjs 产出）
+│   ├── timing.ts      由时长表算镜头边界
+│   ├── motion.tsx     （已并入 TheWall.tsx）
+│   ├── TheWall.tsx    主合成
+│   ├── Root.tsx       注册 Composition
+│   └── index.ts       Remotion 入口
+└── out/               渲染产物（gitignore）
 ```
 
-脚本会把四段旁白写到 `public/audio/*.wav`，并打印每段时长。
-**时长变了就要同步改 `src/TheWall.tsx` 里的场景边界常量**（`S1`–`S4`）。
+## 三、画面规则（照着这些改，才不像 PPT）
 
-如果这台机器没有这个语音，先查：
+这些规则来自对优秀解释视频的调研，**是本项目刻意遵守的**：
 
-```powershell
-Add-Type -AssemblyName System.Speech
-(New-Object System.Speech.Synthesis.SpeechSynthesizer).GetInstalledVoices() |
-  ForEach-Object { $_.VoiceInfo.Name + ' | ' + $_.VoiceInfo.Culture }
-```
+1. **镜头 2.5–5 秒一个**。11 个镜头 / 41 秒。静态画面不超过 1.5 秒。
+2. **缓动用 Material 3 的真实 token 值**，不用默认 ease：
+   - 入场 `cubic-bezier(.05,.7,.1,1)`
+   - 出场 `cubic-bezier(.3,0,.8,.15)`
+   - 通用移动 `cubic-bezier(.2,0,0,1)`
+   - **linear 只用于匀速过程**（粒子漂移、扫光），动作绝不用 linear
+3. **元素出场错开 30–80ms**（约 2 帧），不要全部同时动。
+4. **同一物体全程连续运动**：模型光点和那道墙渲染在所有 `Sequence` 之外，
+   用关键帧轨道插值 x/y/scale，**永不重新挂载**。消失再出现是最伤的一处。
+5. **每个镜头至少有一个匀速变化量**（背景粒子漂移、扫光）。
+6. **三层纵深**：背景（渐变 + 粒子）/ 中景（主体）/ 前景（暗角 + 颗粒 + 扫光）。
+7. **质感层参数**：暗角 0.28–0.5、颗粒不透明度 0.07、扫光 0.05、辉光两层（亮核 + 宽晕）。
+8. **配色只用 5 个**：石墨黑底 / 中性面 / DeepSeek 蓝（模型与 Harness）/ 琥珀（只给那道墙）/ 绿（只在“通了”那一刻）。
+9. **转场只两种**，各自绑定一个含义：镜头内的连续位移（默认）、撞击时的闪光扩张（强调）。
+10. **声音**：垫乐 0.16、旁白 1.0、音效 0.28–0.62。位移配 whoosh、撞击配 hit、文字配 tick、升级配 riser。
 
-## 渲染
+## 四、改旁白 / 加镜头
 
 ```bash
-npx remotion still the-wall out/frame-100.png --frame=100   # 先出一帧看效果
-npx remotion render the-wall out/the-wall.mp4               # 渲染全片
-npx remotion studio                                         # 打开可视化编辑器调画面
+# 1. 改 scripts/tts.mjs 里的 LINES（一「句」= 一「镜头」）
+node scripts/tts.mjs          # 重新生成 mp3 与 narration.json
+# 2. 合成会自动按新时长重排镜头，不需要改任何数字
+npx remotion still the-wall out/check.png --frame=300   # 先看一帧
+npx remotion render the-wall out/the-wall.mp4           # 渲染全片
+npx remotion studio                                     # 可视化调试
 ```
 
-## 现有片子
+## 五、环境准备
 
-### `the-wall`（约 48.5 秒）
+```bash
+npm install
+npx remotion browser ensure    # 下载 Chrome Headless Shell（约 120 MB，只需一次）
+```
+
+**注意**：`public/sfx/` 里的 Remotion 官方音效（whoosh / whip / switch /
+mouse-click / ding / shutter-modern）原本是远程 URL，这里已下载到本地，
+所以渲染**完全离线**。要新增官方音效时，从 `@remotion/sfx` 导出里取 URL 再下载。
+
+`numpy` 用于 `scripts/sfx.py`。DSH 自带的 Python 里有：
+`C:\Users\<你>\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python\python.exe`。
+
+## 六、现有片子
+
+### `the-wall`（约 41 秒，11 个镜头）
 
 第 1 节的核心隐喻：模型只会说，中间隔着一道它自己过不去的墙，
 墙外面站着 Harness。
 
-| 场景 | 帧区间（30fps） | 旁白 |
+| 镜头 | 旁白 | 画面在动什么 |
 |---|---|---|
-| 1 它只会说 | 0–319 | `model.wav` |
-| 2 它碰不到你的电脑 | 319–705 | `cannot.wav` |
-| 3 中间那道墙 | 705–939 | `wall.wav` |
-| 4 墙外有人 | 939–1455 | `harness.wav` |
+| 1 | 这是一台大模型。 | 光点出现，镜头缓推 |
+| 2 | 你给它文字，它接着往下写…… | 文字流进、文字流出，逐字错开 |
+| 3 | 但你说：帮我把 D 盘里的发票重命名。 | 对话气泡升起落位 |
+| 4 | 它只能给你一段说明。 | 说明卡片逐行落位 |
+| 5 | 因为它碰不到你的电脑。 | 右侧文件出现，镜头右移 |
+| 6 | 模型和你的电脑之间，隔着一道墙。 | 琥珀色的墙从中心生长 |
+| 7 | 这道墙，它自己过不去。 | 光点冲向墙、被弹回、撞击环扩散 |
+| 8 | 墙外面，站着另一样东西。 | 蓝带出现，墙淡到 20% |
+| 9 | 它替模型记住，替它动手，替它把关。 | 三块能力标签依次落位 |
+| 10 | 它叫 DeepSeek Harness。 | 名字牌放大落位 |
+| 11 | 模型负责想，它负责让想，真的发生。 | 墙裂开，光点穿过去，文件变绿 |
 
-画面尺寸 1920×1080、30fps。配色沿用站点的 DSH 深色令牌
-（`#151517` / `#232324` / 强调色 `#7aaaff`）。
+## 七、已知未做
 
-## 加新片子
-
-1. 在 `src/` 下新建合成组件
-2. 在 `src/Root.tsx` 里注册 `<Composition />`（要有唯一的 `id`）
-3. 用 `scripts/narration.ps1` 的同样方式生成旁白，把时长换算成帧数写进场景边界
-4. `npx remotion render <id> out/<name>.mp4`
-
-## 成品放哪
-
-渲染产物默认在 `out/`（已在 `.gitignore` 里，不入库）。
-要嵌进站点的话，把它复制到站点的 `public/videos/`，
-再用 `<video controls src="/dsh-guide/videos/xxx.mp4" />` 引用。
+- 没有用 three.js。调研结论是：这个题材里只有「上下文窗口溢出」那类
+  **海量粒子 + 真纵深**的画面才值得引入（约 150–200 KB gzip），其余 Canvas/CSS 更划算。
+- 没有做多语言版本。

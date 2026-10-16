@@ -90,6 +90,56 @@ const content: UnitContent = {
         "它会输出一段 JSON，然后承认自己并没有真的读文件。这段 JSON 就是“工具调用”的真身——一串文字而已，执行者是别人。",
     },
   ],
+  agent: {
+    intro: (
+      <p className="text-body-sm text-fg-2">
+        上面那次只是<strong className="font-semibold text-fg">一次</strong>调用。
+        真正的工具调用是<strong className="font-semibold text-fg">一来一回两次</strong>
+        ：模型先说要调什么，外面执行完，再把结果发回去，模型才给最终答案。
+        下面这个会把两次请求的完整 JSON 都摊开给你看。
+      </p>
+    ),
+    demos: [
+      {
+        id: "list-files",
+        label: "让它去查一个目录",
+        system:
+          "你是一个可以调用工具的助手。当你需要了解用户电脑上的情况时，必须先调用工具，不要凭空猜测。",
+        user: "帮我看看 D:\\发票 目录里有多少个 PDF 文件。",
+        tools: [
+          {
+            type: "function",
+            function: {
+              name: "list_files",
+              description: "列出一个目录下的所有文件名",
+              parameters: {
+                type: "object",
+                properties: {
+                  path: {
+                    type: "string",
+                    description: "目录的完整路径，例如 D:\\发票",
+                  },
+                },
+                required: ["path"],
+              },
+            },
+          },
+        ],
+        outputs: {
+          list_files: [
+            "D:\\发票 目录共 5 个文件：",
+            "- 2026-01_办公用品.pdf",
+            "- 2026-01_差旅.pdf",
+            "- 2026-02_办公用品.pdf",
+            "- 2026-03_差旅.pdf",
+            "- 说明.txt",
+          ].join("\n"),
+        },
+        explain:
+          "注意三件事：① 模型自己决定要调哪个工具、参数填什么；② 它输出的只是一段 JSON，真正读目录的是外面；③ 它拿到结果以后，还要再被调用一次才给出最终答案。这个「一来一回」，就是智能体循环的最小形态。",
+      },
+    ],
+  },
   python: {
     intro: (
       <p className="text-body-sm text-fg-2">
