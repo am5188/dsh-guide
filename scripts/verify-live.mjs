@@ -144,40 +144,47 @@ async function main() {
     );
     record("有无障碍描述", !!anim.label, anim.label ? anim.label.slice(0, 34) + "…" : "缺少 aria-label");
 
-    /* ── 第 1 节：短片播放器 ───────────────────────────── */
-    console.log("\n第 1 节 · 短片播放器");
-    const video = await evaluate(`(async () => {
-      const v = document.querySelector('video');
-      if (!v) return { video: false };
-      if (v.readyState < 1) {
-        await new Promise((res) => {
-          const done = () => res();
-          v.addEventListener('loadedmetadata', done, { once: true });
-          setTimeout(done, 8000);
-        });
+    /* ── 确认短片已下线 ───────────────────────────────── */
+    console.log("\n第 1 节 · 短片已移除");
+    const noVideo = await evaluate(
+      `({ videos: document.querySelectorAll('video').length })`,
+    );
+    record(
+      "页面上没有 video（短片已下线）",
+      noVideo.videos === 0,
+      noVideo.videos === 0 ? "已完全移除" : `仍有 ${noVideo.videos} 个 video 元素`,
+    );
+
+    /* ── 内联动画：必须滚进视口再取样 ─────────────────── */
+    console.log("\n第 12 节 · 内联动画");
+    const multi = await evaluate(`(async () => {
+      const cs = [...document.querySelectorAll('canvas')];
+      const figs = document.querySelectorAll('figure').length;
+      // 离屏的动画会主动暂停（省电），直接取样会误判成"没动"。
+      // 所以逐个滚进视口再取样。
+      let moving = 0;
+      for (const c of cs) {
+        c.scrollIntoView({ block: 'center' });
+        await new Promise(r => setTimeout(r, 450));
+        let a = '';
+        try { a = c.toDataURL(); } catch (e) { continue; }
+        await new Promise(r => setTimeout(r, 900));
+        let b = '';
+        try { b = c.toDataURL(); } catch (e) { continue; }
+        if (a !== b) moving += 1;
       }
-      let advanced = false;
-      let err = '';
-      try {
-        v.muted = true;
-        await v.play();
-        const t0 = v.currentTime;
-        await new Promise(r => setTimeout(r, 1500));
-        advanced = v.currentTime > t0;
-      } catch (e) { err = String(e && e.message || e); }
-      return {
-        video: true,
-        src: v.currentSrc.split('/').pop(),
-        duration: Math.round(v.duration * 10) / 10,
-        size: v.videoWidth + 'x' + v.videoHeight,
-        networkState: v.networkState,
-        advanced,
-        err,
-      };
+      return { count: cs.length, moving, figs };
     })()`);
-    record("video 元素存在", !!video.video, video.video ? video.src : "页面上没有 video");
-    record("元数据已加载（时长可读）", Number.isFinite(video.duration) && video.duration > 0, `${video.duration} 秒 / ${video.size}`);
-    record("能真的解码播放（播放头前进）", !!video.advanced, video.advanced ? "currentTime 在推进" : `播放失败 ${video.err}`);
+    record(
+      "第 12 节有内联动画",
+      multi.count >= 1 || multi.figs >= 1,
+      `canvas ${multi.count} 个、figure ${multi.figs} 个`,
+    );
+    record(
+      "滚进视口后每个 canvas 都在动",
+      multi.count > 0 && multi.moving === multi.count,
+      `${multi.moving}/${multi.count} 在动`,
+    );
 
     /* ── 第 1 节：实践面板 ─────────────────────────────── */
     console.log("\n第 1 节 · 实践面板");

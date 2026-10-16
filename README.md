@@ -62,7 +62,7 @@ npm run deploy         # 构建并推送 gh-pages（需要 Git Bash）
 - [x] 可试运行的两条路都经真实 API 验证：
   - JavaScript 版：浏览器直连 DeepSeek（CORS 预检实测放行，端到端 HTTP 200）
   - Python 版：Pyodide 在浏览器里跑真 Python，`requests` 直连
-- [x] 关键节点带旁白短片：`the-wall`（约 48 秒，Remotion + Windows 中文语音离线合成），已嵌进第 1 节
+- [x] 内联动画：Canvas 2D 逐帧渲染，无缝循环、可暂停，铺在所有章节里
 - [x] 内容拆成 `src/content/units/NN.tsx`，一节一文件
 - [x] 可复现的构建与发布说明：[docs/BUILD.md](docs/BUILD.md)
 
@@ -74,12 +74,20 @@ npm run deploy         # 构建并推送 gh-pages（需要 Git Bash）
 `max_tokens=3000` 才拿到正文。所以各演示的 `max_tokens` 都按实测放宽，
 而不是随手写个小值。
 
-### 短片
+### 关于短片：试过，放弃了
 
-短片工程在 [video/](video/)，与站点依赖完全分开。
-旁白用 Windows 自带的中文语音（`Microsoft Huihui Desktop`）离线合成，
-渲染由 Remotion 自带的合成器完成，**不需要系统安装 ffmpeg**。
-详见 [video/README.md](video/README.md)。
+`video/` 目录里有一套完整的 Remotion 短片工程（11 个镜头 + 2 个插入镜头、
+神经语音旁白、四层声音、分裂调色），也确实能渲染出成片。**但站点里不再使用它。**
+
+原因是投入产出比：解释性视频要做到"专业"的门槛极高 —— 画面构图、动态排版、
+节奏、调色、声音设计每一项都要专门下功夫，而做出来的效果**和网页动画差不多**。
+而网页动画有三个视频给不了的好处：随时暂停、可以重播、能在手机上看。
+
+所以路线改成：**把力气全押在内联动画上**。动画原件的写法见
+[src/components/anim/diagrams.tsx](src/components/anim/diagrams.tsx)，
+无缝循环的验证方法见 [docs/BUILD.md](docs/BUILD.md) 第 10 节。
+
+`video/` 保留在仓库里作为记录，不再维护。
 
 ## 许可
 
