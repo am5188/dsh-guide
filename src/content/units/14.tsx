@@ -9,26 +9,32 @@ const theory = (
       而这一步的跨法，比很多人想的要朴素得多。
     </p>
 
-    <h3>它自己什么都没执行</h3>
-    <p>
-      这是最容易误解的一点：开启“工具能力”之后，
-      <strong>模型依然不能读文件、不能跑命令、不能联网</strong>。
-      它做的事情只有一件——<strong>输出一段结构化的文字，说明“我想调用某个工具，参数是这些”</strong>
-      。
-    </p>
-    <p>
-      真正去执行的是外面那层系统。它读到这段文字，去把工具跑一遍，
-      再把结果<strong>当作一段新文字</strong>发回给模型。
-      模型看到结果，再决定下一步。
-    </p>
-
-    <div className="my-9 rounded-lg bg-surface p-6">
-      <div className="text-body-sm font-semibold">所以循环是这样的</div>
-      <p className="mt-3 text-meta leading-relaxed text-fg-2">
-        模型说「我要读 D:\发票\三月.pdf」→ 外面的系统去读 →
-        把文件内容发回给模型 → 模型说「我看到金额了，我要写一个新文件」→
-        外面的系统去写…… 一圈一圈，直到模型说「我做完了」。
-      </p>
+    <h2>先记住一句话：模型自己什么都没执行</h2>
+    <div className="my-7 grid gap-4 sm:grid-cols-2">
+      <div className="rounded-lg bg-surface p-5">
+        <div className="flex items-center gap-2 text-body-sm font-semibold">
+          <span className="size-1.5 rounded-full bg-accent" aria-hidden="true" />
+          模型做的（只有这一件）
+        </div>
+        <pre className="mt-3 overflow-x-auto rounded-md bg-canvas px-3 py-2.5 font-mono text-caption leading-relaxed text-fg-2">
+          {'{ "tool": "read_file",\n  "path": "D:\\\\发票\\\\三月.pdf" }'}
+        </pre>
+        <p className="mt-3 text-meta text-fg-2">
+          输出一段结构化的文字，说明“我想调用哪个工具、参数是什么”。
+          它依然<strong className="text-fg">不能读文件、不能跑命令、不能联网</strong>。
+        </p>
+      </div>
+      <div className="rounded-lg bg-surface p-5">
+        <div className="flex items-center gap-2 text-body-sm font-semibold">
+          <span className="size-1.5 rounded-full bg-ok-500" aria-hidden="true" />
+          外面那层系统做的
+        </div>
+        <ul className="mt-3 space-y-2 text-meta text-fg-2">
+          <li>读到这段文字，真的去把工具跑一遍</li>
+          <li>把结果当作一段新文字发回给模型</li>
+          <li>模型看到结果，再决定下一步</li>
+        </ul>
+      </div>
     </div>
 
     <Callout>
@@ -36,21 +42,53 @@ const theory = (
       说的就是它。理解了这一节，你就理解了整套系统是怎么转起来的。
     </Callout>
 
-    <h3>为什么这是个突破</h3>
+    <h2>一圈一圈，长这样</h2>
+    <div className="my-7 space-y-2">
+      {[
+        ["模型说", "我要读 D:\\发票\\三月.pdf"],
+        ["系统做", "真的去读，把文件内容发回给模型"],
+        ["模型说", "我看到金额了，我要写一个新文件"],
+        ["系统做", "真的去写"],
+        ["一直重复", "直到模型说「我做完了」"],
+      ].map(([who, what], i) => (
+        <div
+          key={i}
+          className="flex flex-col gap-2 rounded-md bg-surface px-5 py-3.5 sm:flex-row sm:items-start sm:gap-5"
+        >
+          <span
+            className={
+              "w-20 shrink-0 rounded-xs px-2 py-0.5 text-center text-caption " +
+              (who === "模型说"
+                ? "bg-accent-soft text-accent"
+                : "bg-sunken text-fg-3")
+            }
+          >
+            {who}
+          </span>
+          <span className="text-meta text-fg-2">{what}</span>
+        </div>
+      ))}
+    </div>
+
+    <h2>为什么这是个突破</h2>
     <p>
-      因为它把模型从“只会说”变成了“会指挥”。
-      模型负责判断该干什么，系统负责真的去干。
-      第 1 节那道过不去的墙，就是这样被绕过去的——
+      它把模型从“只会说”变成了“会指挥”。模型负责判断该干什么，系统负责真的去干。
+      第 1 节那道过不去的墙就是这样被绕过去的——
       <strong>不是模型越过了墙，是墙外有人替它递东西</strong>。
     </p>
 
-    <h3>一个重要的推论</h3>
-    <p>
-      既然是“外面负责执行”，那么<strong>能执行什么、允许执行什么，
-      完全由外面决定</strong>，而不是由模型决定。
-      这就是为什么权限和沙箱如此重要——
-      模型可以提出任何请求，但答不答应，是系统和你说了算。
-    </p>
+    <h2>一个重要的推论</h2>
+    <div className="my-7 rounded-lg bg-surface p-5">
+      <p className="text-body-sm text-fg">
+        既然是“外面负责执行”，那么
+        <strong>能执行什么、允许执行什么，完全由外面决定</strong>
+        ，而不是由模型决定。
+      </p>
+      <p className="mt-3 text-meta text-fg-2">
+        这就是为什么权限和沙箱如此重要——模型可以提出任何请求，
+        但答不答应，是系统和你说了算。
+      </p>
+    </div>
   </div>
 );
 

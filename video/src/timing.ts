@@ -44,7 +44,15 @@ export const shots: Shot[] = (() => {
   });
 })();
 
-export const TOTAL_FRAMES = shots.reduce((a, s) => a + s.durationInFrames, 0);
+/**
+ * 结尾的静默停留（帧）。
+ * 旁白说完之后不要让画面立刻结束 —— 给它 2.5 秒把最后一帧留在观众眼前，
+ * 而且画面全程仍在运动（不是淡到黑）。这也是打破"等间隔软切"节奏的一种手段。
+ */
+const END_HOLD_FRAMES = 75;
+
+export const TOTAL_FRAMES =
+  shots.reduce((a, s) => a + s.durationInFrames, 0) + END_HOLD_FRAMES;
 
 /** 第 i 个镜头内部的第 p 帧（绝对帧） */
 export const at = (index: number, progress = 0): number => {

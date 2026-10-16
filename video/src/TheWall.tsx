@@ -195,7 +195,7 @@ const Dot: React.FC<{ frame: number }> = ({ frame }) => {
     { at: at(6, 0.32), v: 968 },
     { at: at(6, 0.62), v: 812 },
     { at: at(9, 1), v: 600 },
-    { at: at(10, 0.42), v: 1520 },
+    { at: at(10, 0.42), v: 1240 },
   ]);
   const y = track(frame, [
     { at: at(0, 0), v: 560 },
@@ -233,10 +233,10 @@ const Dot: React.FC<{ frame: number }> = ({ frame }) => {
       <div
         style={{
           position: "absolute",
-          left: -120,
-          top: -120,
-          width: 240,
-          height: 240,
+          left: -160,
+          top: -160,
+          width: 320,
+          height: 320,
           borderRadius: "50%",
           background: `radial-gradient(circle, ${C.accent}44 0%, transparent 68%)`,
           transform: `scale(${scale})`,
@@ -245,10 +245,10 @@ const Dot: React.FC<{ frame: number }> = ({ frame }) => {
       <div
         style={{
           position: "absolute",
-          left: -30,
-          top: -30,
-          width: 60,
-          height: 60,
+          left: -45,
+          top: -45,
+          width: 90,
+          height: 90,
           borderRadius: "50%",
           background: `radial-gradient(circle, #ffffff 0%, ${C.accent} 55%, transparent 100%)`,
           transform: `scale(${scale})`,
@@ -259,14 +259,14 @@ const Dot: React.FC<{ frame: number }> = ({ frame }) => {
       <div
         style={{
           position: "absolute",
-          left: -60,
-          top: 62,
-          width: 120,
+          left: -90,
+          top: 82,
+          width: 180,
           textAlign: "center",
           fontFamily: FONT,
-          fontSize: 26,
+          fontSize: 34,
           color: C.accent,
-          letterSpacing: "0.08em",
+          letterSpacing: 0,
         }}
       >
         模型
@@ -316,9 +316,9 @@ const Wall: React.FC<{ frame: number }> = ({ frame }) => {
           key={part.sign}
           style={{
             position: "absolute",
-            left: -9,
+            left: -12,
             top: part.sign < 0 ? -half : 0,
-            width: 18,
+            width: 24,
             height: half,
             // 上段：顶端淡出 → 中缝最亮；下段：中缝最亮 → 底端淡出。
             // 两段在中间严格接上，不能各用一条对称渐变（那会在正中间留一道假裂缝）。
@@ -336,12 +336,12 @@ const Wall: React.FC<{ frame: number }> = ({ frame }) => {
         <div
           style={{
             position: "absolute",
-            left: -70,
-            top: -height / 2 - 62,
-            width: 140,
+            left: -80,
+            top: -height / 2 - 74,
+            width: 160,
             textAlign: "center",
             fontFamily: FONT,
-            fontSize: 24,
+            fontSize: 30,
             color: C.warn,
             opacity: 1 - gap * 2,
           }}
@@ -385,10 +385,10 @@ const Band: React.FC<{ frame: number }> = ({ frame }) => {
       <div
         style={{
           position: "absolute",
-          left: -7,
-          top: -330,
-          width: 14,
-          height: 660,
+          left: -9,
+          top: -390,
+          width: 18,
+          height: 780,
           borderRadius: 8,
           background: `linear-gradient(180deg, ${C.accent}00, ${C.accent}, ${C.accent}00)`,
           boxShadow: `0 0 70px ${C.accent}77`,
@@ -405,14 +405,14 @@ const Band: React.FC<{ frame: number }> = ({ frame }) => {
             key={c}
             style={{
               position: "absolute",
-              left: -318,
-              top: -230 + i * 96,
-              padding: "14px 22px",
-              borderRadius: 12,
-              background: `rgba(122,170,255,${0.10 * t})`,
+              left: -360,
+              top: -250 + i * 108,
+              padding: "18px 30px",
+              borderRadius: 14,
+              background: `rgba(122,170,255,${0.1 * t})`,
               border: `1px solid rgba(122,170,255,${0.42 * t})`,
               fontFamily: FONT,
-              fontSize: 24,
+              fontSize: 32,
               color: C.accent,
               opacity: t,
               transform: `translateX(${interpolate(t, [0, 1], [-16, 0])}px)`,
@@ -455,12 +455,12 @@ const Files: React.FC<{ frame: number }> = ({ frame }) => {
             position: "absolute",
             left: 0,
             top: -150 + i * 96,
-            padding: "18px 26px",
-            borderRadius: 14,
+            padding: "22px 34px",
+            borderRadius: 16,
             background: `color-mix(in srgb, ${C.ok} ${lit * 14}%, ${C.surface})`,
             border: `1px solid ${lit > 0.5 ? "rgba(78,209,126,0.5)" : C.line}`,
             fontFamily: FONT,
-            fontSize: 25,
+            fontSize: 32,
             color: lit > 0.5 ? C.ok : C.text3,
             whiteSpace: "nowrap",
           }}
@@ -492,9 +492,9 @@ const Caption: React.FC<{ text: string; accent?: string }> = ({ text, accent }) 
     <div
       style={{
         position: "absolute",
-        left: 0,
-        right: 0,
-        bottom: 86,
+        left: 96,
+        right: 96,
+        bottom: 132,
         textAlign: "center",
         opacity: inn * out,
         transform: `translateY(${interpolate(inn, [0, 1], [14, 0])}px)`,
@@ -503,8 +503,9 @@ const Caption: React.FC<{ text: string; accent?: string }> = ({ text, accent }) 
       <span
         style={{
           fontFamily: FONT,
-          fontSize: 38,
-          lineHeight: 1.5,
+          fontSize: 54,
+          lineHeight: 1.55,
+          letterSpacing: 0,
           color: accent ?? C.text2,
         }}
       >
@@ -527,7 +528,7 @@ const Shot2: React.FC = () => {
             key={`${t}${i}`}
             style={{
               fontFamily: FONT,
-              fontSize: 46,
+              fontSize: 64,
               color: C.text,
               // 错开 60ms（≈2 帧）—— 调研给的是 30–80ms
               opacity: interpolate(frame, [4 + i * 2, 16 + i * 2], [0, 1], {
@@ -554,7 +555,7 @@ const Shot2: React.FC = () => {
             key={`${t}${i}`}
             style={{
               fontFamily: FONT,
-              fontSize: 46,
+              fontSize: 64,
               color: C.accent,
               opacity: interpolate(frame, [52 + i * 2, 64 + i * 2], [0, 1], {
                 extrapolateLeft: "clamp",
@@ -585,8 +586,8 @@ const Shot3: React.FC = () => {
         position: "absolute",
         left: 210,
         top: 250,
-        padding: "24px 34px",
-        borderRadius: 18,
+        padding: "30px 42px",
+        borderRadius: 20,
         background: C.surface,
         border: `1px solid ${C.line}`,
         opacity: t,
@@ -597,10 +598,17 @@ const Shot3: React.FC = () => {
         )})`,
       }}
     >
-      <div style={{ fontFamily: FONT, fontSize: 19, color: C.text3, marginBottom: 10 }}>
+      <div
+        style={{
+          fontFamily: FONT,
+          fontSize: 24,
+          color: C.text3,
+          marginBottom: 12,
+        }}
+      >
         你
       </div>
-      <div style={{ fontFamily: FONT, fontSize: 32, color: C.text }}>
+      <div style={{ fontFamily: FONT, fontSize: 44, color: C.text }}>
         帮我把 D:\发票 里的 PDF 按月份重命名
       </div>
     </div>
@@ -620,18 +628,25 @@ const Shot4: React.FC = () => {
     <div
       style={{
         position: "absolute",
-        left: 780,
+        left: 760,
         top: 300,
-        width: 620,
-        padding: "24px 30px",
-        borderRadius: 16,
+        width: 840,
+        padding: "30px 38px",
+        borderRadius: 18,
         background: C.surface,
         border: `1px solid ${C.line}`,
         opacity: t,
         transform: `scale(${interpolate(t, [0, 1], [0.96, 1])})`,
       }}
     >
-      <div style={{ fontFamily: FONT, fontSize: 19, color: C.text3, marginBottom: 14 }}>
+      <div
+        style={{
+          fontFamily: FONT,
+          fontSize: 24,
+          color: C.text3,
+          marginBottom: 16,
+        }}
+      >
         它给你的，只是一段说明
       </div>
       {lines.map((l, i) => (
@@ -639,9 +654,9 @@ const Shot4: React.FC = () => {
           key={l}
           style={{
             fontFamily: FONT,
-            fontSize: 26,
+            fontSize: 34,
             color: C.text2,
-            lineHeight: 1.75,
+            lineHeight: 1.6,
             // 逐行落位，间隔 100ms ≈ 3 帧
             opacity: interpolate(frame, [14 + i * 3, 28 + i * 3], [0, 1], {
               extrapolateLeft: "clamp",
@@ -724,9 +739,9 @@ const Shot10: React.FC = () => {
       <div
         style={{
           display: "inline-block",
-          padding: "20px 40px",
-          borderRadius: 20,
-          background: `rgba(122,170,255,0.10)`,
+          padding: "30px 60px",
+          borderRadius: 24,
+          background: `rgba(122,170,255,0.1)`,
           border: `1px solid rgba(122,170,255,0.42)`,
           transform: `scale(${interpolate(t, [0, 1], [0.9, 1])})`,
         }}
@@ -734,10 +749,10 @@ const Shot10: React.FC = () => {
         <span
           style={{
             fontFamily: FONT,
-            fontSize: 52,
+            fontSize: 92,
             fontWeight: 600,
             color: C.accent,
-            letterSpacing: "0.01em",
+            letterSpacing: 0,
           }}
         >
           DeepSeek Harness

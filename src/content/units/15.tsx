@@ -10,49 +10,70 @@ const theory = (
       几十个工具摆在面前，怎么用？
     </p>
 
-    <h3>工具多了会带来三个新麻烦</h3>
-    <dl className="my-9 space-y-4">
+    <h2>工具多了，会带来三个新麻烦</h2>
+    <div className="my-7 grid gap-4 sm:grid-cols-3">
       {[
-        [
-          "选错工具",
-          "工具一多，名字又像，模型会挑错。挑错一次就白跑一圈。",
-        ],
+        ["选错工具", "工具一多、名字又像，模型会挑错。挑错一次就白跑一圈。"],
         [
           "说不清用法",
-          "每个工具都需要说明“什么时候用、参数怎么填”。说明写得差，模型就用得差。",
+          "每个工具都要说明“什么时候用、参数怎么填”。说明写得差，它就用得差。",
         ],
-        [
-          "装进来不安全",
-          "每装一个新工具，就多一处它可能动到你东西的地方。",
-        ],
+        ["装进来不安全", "每装一个新工具，就多一处它可能动到你东西的地方。"],
       ].map(([k, v]) => (
-        <div key={k} className="flex flex-col gap-1 sm:flex-row sm:gap-5">
-          <dt className="w-32 shrink-0 text-body-sm font-semibold">{k}</dt>
-          <dd className="text-meta leading-relaxed text-fg-2">{v}</dd>
+        <div key={k} className="rounded-lg bg-surface p-5">
+          <div className="text-body-sm font-semibold">{k}</div>
+          <p className="mt-2 text-meta text-fg-2">{v}</p>
         </div>
       ))}
-    </dl>
+    </div>
 
-    <h3>于是有了「技能」</h3>
-    <p>
-      技能是<strong>把一套做法打包起来</strong>。它不只是“一个动作”，
-      而是“遇到这类任务，应该按这几步做、注意这几点”。
-    </p>
-    <p>
-      举个例子：一个“生成 Excel 报表”的技能，里面写的可能包括——
-      先确认表头、再核对合计数、生成后自己打开检查一遍。
-      <strong>技能把老手的经验固化了下来</strong>，所以它比单个工具更好用。
-    </p>
-
-    <h3>「插件」则是给整个系统加新本事</h3>
-    <p>
-      插件比技能更靠底层：它能给 DSH 加上全新的能力，
-      比如接一个新的模型来源、加一个全新的面板、甚至改变它的工作方式。
-    </p>
+    <h2>三个词，一层管一层</h2>
+    <div className="my-7 space-y-3">
+      {[
+        {
+          name: "工具",
+          what: "一个具体的动作",
+          eg: "读一个文件、跑一条命令、搜一次网页",
+          risk: "低",
+          tone: "var(--color-ok-500)",
+        },
+        {
+          name: "技能",
+          what: "把一套做法打包",
+          eg: "「生成 Excel 报表」：先确认表头 → 再核对合计数 → 生成后自己打开检查一遍",
+          risk: "低",
+          tone: "var(--color-ok-500)",
+        },
+        {
+          name: "插件",
+          what: "给整个系统换零件",
+          eg: "接一个新的模型来源、加一个全新的面板、改变它的工作方式",
+          risk: "高",
+          tone: "var(--color-warn-500)",
+        },
+      ].map((r) => (
+        <div key={r.name} className="rounded-lg bg-surface p-5">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+            <span
+              className="size-2 rounded-full"
+              style={{ background: r.tone }}
+              aria-hidden="true"
+            />
+            <span className="text-title font-bold">{r.name}</span>
+            <span className="text-meta text-fg-2">{r.what}</span>
+            <span className="ml-auto rounded-xs bg-canvas px-2 py-0.5 text-caption text-fg-3">
+              风险 {r.risk}
+            </span>
+          </div>
+          <p className="mt-2.5 text-meta text-fg-2">{r.eg}</p>
+        </div>
+      ))}
+    </div>
 
     <Callout>
-      从使用者的角度，记住一句就够：<strong>技能是“教它怎么干这件事”，
-      插件是“给它换零件”</strong>。前者风险低，后者风险高。
+      从使用者的角度，记住一句就够：
+      <strong>技能是“教它怎么干这件事”，插件是“给它换零件”</strong>。
+      前者风险低，后者风险高。技能把老手的经验固化了下来，所以它比单个工具更好用。
     </Callout>
 
     <Unverified>
