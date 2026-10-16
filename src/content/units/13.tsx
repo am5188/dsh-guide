@@ -2,65 +2,151 @@ import type { UnitContent } from "../types";
 import { CompareAnim } from "@/components/anim/CompareAnim";
 import { Callout } from "@/components/Note";
 
-const theory = (
-  <div className="prose-cn">
-    <p>
-      到这一节，记忆的问题解决了一半：它能在一次会话里记住你说过的话。
-      但还剩一个更大的问题——<strong>它完全不知道你的资料</strong>。
-    </p>
-    <p>
-      你公司的规定、你手上的合同、你刚做完的那份表，
-      这些东西从来没进过它的训练数据，它自然一无所知。
-      而第 1 节我们已经见过它在这种情况下会干什么：<strong>编</strong>。
-    </p>
+/** 两条路的对照 */
+const ROADS: {
+  name: string;
+  how: string;
+  cost: string;
+  update: string;
+  good: boolean;
+}[] = [
+  {
+    name: "把资料训进模型",
+    how: "让模型“学会”你的资料",
+    cost: "极高",
+    update: "资料一改就得重来",
+    good: false,
+  },
+  {
+    name: "需要时把资料递过去",
+    how: "用时把原文一起发过去",
+    cost: "几乎为零",
+    update: "换一份新资料即可",
+    good: true,
+  },
+];
 
-    <h3>两条路，选更实用的那条</h3>
-    <p>
-      一条是把资料“训进”模型里，成本极高、更新极慢，
-      而且你的资料一改就得重来。
-      另一条简单得多：<strong>需要的时候，把资料原文递过去</strong>。
-    </p>
-    <p>
-      后者的正式名字叫<strong>检索增强生成</strong>（RAG）。名字很拗口，
-      做法用一句话就说完了：
-      <strong>先去找到相关内容，再把找到的内容连同问题一起交给模型</strong>
-      。
-    </p>
+/** RAG 的三步 */
+const STEPS: [string, string][] = [
+  ["找到", "从你的资料里挑出和这个问题相关的那几段"],
+  ["一起发", "把挑出来的原文，连同你的问题一起交给模型"],
+  ["核得动", "答案的依据就在对话里，你能一条条对回去"],
+];
 
-    <div className="my-9 rounded-lg bg-surface p-6">
-      <div className="text-body-sm font-semibold">
-        对你来说，这件事的真正意义
+/** 拿到答案后必须回原文核对的信息 */
+const MUST_CHECK = ["数字", "日期", "金额", "条款编号"];
+
+function Theory() {
+  return (
+    <div className="prose-cn">
+      <p>
+        上一节解决了“记住你说过的话”。但还有个更大的问题：
+        <strong>它完全不知道你的资料</strong>——你公司的规定、手上的合同、刚做完的表，
+        从来没进过它的训练数据。而第 1 节我们已经见过，这种情况下它会干什么：<strong>编</strong>。
+      </p>
+
+      <h2>两条路，选更实用的那条</h2>
+      <div className="my-7 grid gap-4 sm:grid-cols-2">
+        {ROADS.map((r) => (
+          <div
+            key={r.name}
+            className="rounded-lg bg-surface p-5"
+            style={{
+              borderLeft: `3px solid ${
+                r.good ? "var(--color-ok-500)" : "var(--line)"
+              }`,
+            }}
+          >
+            <div className="flex items-center gap-2">
+              <span
+                className="size-1.5 rounded-full"
+                style={{
+                  background: r.good
+                    ? "var(--color-ok-500)"
+                    : "var(--color-fg-3, #81858c)",
+                }}
+                aria-hidden="true"
+              />
+              <span className="text-body-sm font-semibold">{r.name}</span>
+            </div>
+            <p className="mt-2 text-meta text-fg-2">{r.how}</p>
+            <dl className="mt-4 space-y-1.5 text-caption">
+              <div className="flex justify-between gap-3">
+                <dt className="text-fg-3">成本</dt>
+                <dd className="text-fg-2">{r.cost}</dd>
+              </div>
+              <div className="flex justify-between gap-3">
+                <dt className="text-fg-3">资料更新时</dt>
+                <dd className="text-fg-2">{r.update}</dd>
+              </div>
+            </dl>
+          </div>
+        ))}
       </div>
-      <p className="mt-3 text-meta leading-relaxed text-fg-2">
+      <p>
+        右边这条路的正式名字叫<strong>检索增强生成</strong>（RAG）。
+        名字拗口，做法一句话说完。
+      </p>
+
+      <h2>三步，就这么简单</h2>
+      <div className="my-7 grid gap-4 sm:grid-cols-3">
+        {STEPS.map(([k, v], i) => (
+          <div key={k} className="rounded-lg bg-surface p-5">
+            <div className="font-mono text-caption text-accent">0{i + 1}</div>
+            <div className="mt-2 text-body-sm font-semibold">{k}</div>
+            <p className="mt-1.5 text-meta text-fg-2">{v}</p>
+          </div>
+        ))}
+      </div>
+
+      <Callout>
         它把“问一个什么都懂但会编的模型”，变成了
-        <strong>“问一个只看过你给的材料的助手”</strong>。
-        后者的答案有据可查——因为材料就在对话里，你能一条条对。
+        <strong>“问一个只看过你给的材料的助手”</strong>。后者你能核对——这就是全部意义。
+      </Callout>
+
+      <h2>拿到答案之后，这四类信息必须自己回原文核</h2>
+      <p>
+        递资料只解决“它有没有看到”，不解决“它有没有看懂”。材料里写了三行，它可能只用了其中一行。
+      </p>
+      <div className="my-6 flex flex-wrap gap-2">
+        {MUST_CHECK.map((k) => (
+          <span
+            key={k}
+            className="rounded-sm bg-warn-100 px-3 py-1.5 text-meta text-warn-600 dark:bg-warn-900 dark:text-warn-400"
+          >
+            {k}
+          </span>
+        ))}
+      </div>
+
+      <h2>资料不多的时候，别搞复杂</h2>
+      <div className="my-7 space-y-3">
+        {[
+          ["几页纸，贴得下", "直接复制粘贴进对话。这就是最朴素、也最常用的用法。"],
+          [
+            "几百页，贴不下",
+            "才需要真正的“检索”——让它去你的文件夹里找相关片段，再交给你。",
+          ],
+        ].map(([k, v]) => (
+          <div
+            key={k}
+            className="flex flex-col gap-1 rounded-md bg-surface px-5 py-4 sm:flex-row sm:gap-6"
+          >
+            <span className="w-40 shrink-0 text-body-sm font-semibold">
+              {k}
+            </span>
+            <span className="text-meta text-fg-2">{v}</span>
+          </div>
+        ))}
+      </div>
+
+      <p>
+        最后配一句最好用的话，和第 7 节那条一起记：
+        <strong>“只依据我给你的材料回答，材料里没有的就说没有。”</strong>
       </p>
     </div>
-
-    <Callout>
-      配合第 7 节那句话一起用，效果最好：
-      <strong>“只依据我给你的材料回答，材料里没有的就说没有。”</strong>
-      这一句是你能给它的最有效的约束之一。
-    </Callout>
-
-    <h3>它也不是万能的</h3>
-    <p>
-      递资料只解决“它有没有看到”，不解决“它有没有看懂”。
-      材料里写了三行，它可能只用了其中一行；
-      材料里有两个数字，它可能把两个混在一起。
-      所以凡是<strong>数字、日期、金额、法条编号</strong>这类信息，
-      拿到答案后必须自己回原文核一遍。
-    </p>
-
-    <h3>资料不多的时候，直接贴就行</h3>
-    <p>
-      你不需要任何复杂设置。几页纸的内容，直接复制粘贴进对话里，
-      就是最朴素的用法。真正的“检索”是资料多到你贴不下的时候才需要的
-      ——那时候 DSH 会去你的文件夹里找。
-    </p>
-  </div>
-);
+  );
+}
 
 const content: UnitContent = {
   animTitle: "指望它记住，还是当场递给它",
@@ -78,7 +164,7 @@ const content: UnitContent = {
       caption="左边这条路通向“听起来很像”的幻觉，右边这条路通向“你自己能验证”的答案。区别只在于你有没有把材料一起发过去。"
     />
   ),
-  theory,
+  theory: <Theory />,
   practiceIntro: (
     <p className="text-body-sm text-fg-2">
       下面这次调用是 RAG 的最小形态：把一段材料连同问题一起给它，
