@@ -59,7 +59,6 @@ const theory = (
         title: "正确反应",
         items: ["先停下来", "读它到底说了什么", "归到七类里的哪一类", "再决定怎么办"],
       }}
-      caption="重问是最常见的错误反应——问题没解决，还多花一次钱。下面这张表是七种常见现象和对应的处理办法。"
     />
 
     <div className="my-9 overflow-x-auto">
@@ -132,7 +131,7 @@ const content: UnitContent = {
   anim: (
     <SequenceAnim
       title="遇到问题时的正确顺序"
-      caption="关键在于第三步和第四步：先读懂它说了什么，再决定怎么办。跳过这两步直接重问，是所有人都会犯、也最浪费钱的错。"
+      caption="先读懂它说了什么再决定怎么办；跳过这两步是最浪费钱的错。"
       items={[
         { tag: "1", label: "停下来" },
         { tag: "2", label: "别重问" },

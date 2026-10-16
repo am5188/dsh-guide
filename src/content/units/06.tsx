@@ -87,7 +87,6 @@ const theory = (
     <h2>怎么判断该不该点同意</h2>
     <FlowAnim
       nodes={["它要动什么", "范围清不清楚", "搞坏了能不能重来", "再决定同不同意"]}
-      caption="点同意之前先过这三问。最常见的情况是范围含糊（“清理一下”）——那就不该同意，先让它说清到底要动哪些文件。"
     />
     <div className="my-7 space-y-3">
       {JUDGE.map((j) => (
@@ -127,7 +126,7 @@ const content: UnitContent = {
   anim: (
     <SequenceAnim
       title="它准备动手时会发生什么"
-      caption="你交代的活儿一旦需要碰文件，它不能直接做，必须先走到这道门上。门开不开，由你决定——这是整套系统里唯一一个真正由你掌控的环节。"
+      caption="门开不开由你决定——这是全系统唯一真正由你掌控的环节。"
       items={[
         { tag: "1", label: "它想去改文件" },
         { tag: "2", label: "停在这道门" },

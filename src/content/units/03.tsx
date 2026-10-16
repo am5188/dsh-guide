@@ -25,7 +25,6 @@ const theory = (
 
     <FlowAnim
       nodes={["模型想", "Harness 安排", "工具执行", "结果回到模型"]}
-      caption="模型自己一步都走不了。它每说一句，都要由外面这套系统真的去做，再把结果递回来——这就是「装上手和脚」的意思。"
     />
 
     <Callout>
@@ -70,7 +69,7 @@ const content: UnitContent = {
   anim: (
     <SequenceAnim
       title="一句话是怎么变成一堆动作的"
-      caption="你说完那句话之后，真正发生的是这一串：先拆成步骤，再一步步动手，每步都看一眼结果，最后才交付。这个循环，就是 Harness 最核心的东西。"
+      caption="这个循环，就是 Harness 在替你做的事。"
       items={[
         { tag: "1", label: "听懂要求" },
         { tag: "2", label: "拆成步骤" },

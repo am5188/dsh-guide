@@ -5,70 +5,30 @@ import { Callout } from "@/components/Note";
 
 const theory = (
   <div className="prose-cn">
-    <p>
-      前三节解决的是“它知道什么”。从这一节开始，我们处理“它能做什么”。
-      而这一步的跨法，比很多人想的要朴素得多。
-    </p>
+    <p>前三节解决的是「它知道什么」。这一节开始处理「它能做什么」。</p>
 
-    <h2>先记住一句话：模型自己什么都没执行</h2>
-    <div className="my-7 grid gap-4 sm:grid-cols-2">
-      <div className="rounded-lg bg-surface p-5">
-        <div className="flex items-center gap-2 text-body-sm font-semibold">
-          <span className="size-1.5 rounded-full bg-accent" aria-hidden="true" />
-          模型做的（只有这一件）
-        </div>
-        <pre className="mt-3 overflow-x-auto rounded-md bg-canvas px-3 py-2.5 font-mono text-caption leading-relaxed text-fg-2">
-          {'{ "tool": "read_file",\n  "path": "D:\\\\发票\\\\三月.pdf" }'}
-        </pre>
-        <p className="mt-3 text-meta text-fg-2">
-          输出一段结构化的文字，说明“我想调用哪个工具、参数是什么”。
-          它依然<strong className="text-fg">不能读文件、不能跑命令、不能联网</strong>。
-        </p>
-      </div>
-      <div className="rounded-lg bg-surface p-5">
-        <div className="flex items-center gap-2 text-body-sm font-semibold">
-          <span className="size-1.5 rounded-full bg-ok-500" aria-hidden="true" />
-          外面那层系统做的
-        </div>
-        <ul className="mt-3 space-y-2 text-meta text-fg-2">
-          <li>读到这段文字，真的去把工具跑一遍</li>
-          <li>把结果当作一段新文字发回给模型</li>
-          <li>模型看到结果，再决定下一步</li>
-        </ul>
-      </div>
-    </div>
-
-    <Callout>
-      这个循环有名字，叫<strong>工具调用</strong>。第 3 节那张“一句话变成一堆动作”的图，
-      说的就是它。理解了这一节，你就理解了整套系统是怎么转起来的。
-    </Callout>
-
-    <h2>一圈一圈，长这样</h2>
+    <h2>模型自己什么都没执行</h2>
     <CycleAnim
       steps={["模型说：要读文件", "系统真的去读", "结果发回模型", "模型说：要写文件", "系统真的去写"]}
       center="直到它说「我做完了」"
-      caption="注意每一圈里，真正“动手”的都是外面那层。模型在整圈里只做一件事：看着结果，决定下一步说什么。"
     />
+
+    <Callout>
+      这个循环叫<strong>工具调用</strong>。第 3 节那张「一句话变成一堆动作」的图，说的就是它。
+    </Callout>
 
     <h2>为什么这是个突破</h2>
     <p>
-      它把模型从“只会说”变成了“会指挥”。模型负责判断该干什么，系统负责真的去干。
-      第 1 节那道过不去的墙就是这样被绕过去的——
+      它把模型从「只会说」变成了「会指挥」。
+      第 1 节那道过不去的墙就是这样绕过去的——
       <strong>不是模型越过了墙，是墙外有人替它递东西</strong>。
     </p>
 
     <h2>一个重要的推论</h2>
-    <div className="my-7 rounded-lg bg-surface p-5">
-      <p className="text-body-sm text-fg">
-        既然是“外面负责执行”，那么
-        <strong>能执行什么、允许执行什么，完全由外面决定</strong>
-        ，而不是由模型决定。
-      </p>
-      <p className="mt-3 text-meta text-fg-2">
-        这就是为什么权限和沙箱如此重要——模型可以提出任何请求，
-        但答不答应，是系统和你说了算。
-      </p>
-    </div>
+    <p>
+      能执行什么、允许执行什么，<strong>完全由外面决定</strong>，不由模型决定。
+      这就是权限和沙箱为什么重要：模型可以提任何请求，答不答应是系统和你说了算。
+    </p>
   </div>
 );
 
@@ -85,7 +45,7 @@ const content: UnitContent = {
         label: "有工具时",
         lines: ["你：把那个文件读一下", "它：请调用读文件工具", "外面的系统真的去读", "结果发回来，它继续"],
       }}
-      caption="右边这一栏里，模型自己依然什么都没碰。它只是提出了一个请求，然后读到了别人递给它的结果。所谓“动手能力”，是分工的产物。"
+      caption="模型自己什么都没碰，它只是提出了一个请求。"
     />
   ),
   theory,

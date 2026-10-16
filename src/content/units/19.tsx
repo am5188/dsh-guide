@@ -24,7 +24,6 @@ const theory = (
 
     <FlowAnim
       nodes={["九块零件", "互相配合", "拼成一个运行时", "Harness"]}
-      caption="单独看每一块，都只是一个补丁。拼在一起、并且能稳定运转，才叫 Harness——最后一格是这本书真正的主角。"
     />
 
     <div className="my-7 grid gap-3 sm:grid-cols-2">
@@ -103,7 +102,7 @@ const content: UnitContent = {
   anim: (
     <SequenceAnim
       title="九块零件，拼成一个运行时"
-      caption="单独看每一块，都只是一个补丁。拼在一起、并且能稳定运转，才叫 Harness。最后一格是这本书真正的主角。"
+      caption="单独看都是补丁；拼起来还能稳定运转，才叫 Harness。"
       items={[
         { tag: "会话", label: "记忆" },
         { tag: "压缩", label: "减负" },

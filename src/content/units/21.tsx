@@ -162,7 +162,6 @@ function Theory() {
         hint="前九轮 9 份 + 本轮 1 份 = 10 份"
         threshold={0.5}
         thresholdLabel="直觉上以为重复只占一半"
-        caption="这是算术，不是估算：每一轮都要把前面所有内容重发一遍。所以长会话贵起来的真正原因，不是它一次算了多少，而是同一批字被算了多少遍。"
       />
 
       <h2>哪些操作贵，一眼看刻度</h2>
@@ -246,7 +245,7 @@ const content: UnitContent = {
   anim: (
     <SequenceAnim
       title="一笔钱是怎么花掉的"
-      caption="注意第 4 步：它是循环的。聊得越久、任务越长，前面那几步被重复的次数就越多，这就是长会话和长任务贵起来的真正原因。"
+      caption="聊得越久，前面那几步被重复的次数就越多。"
       items={[
         { tag: "1", label: "把资料发过去" },
         { tag: "2", label: "它先想一遍" },

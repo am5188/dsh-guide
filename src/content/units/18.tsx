@@ -6,13 +6,8 @@ import { Callout } from "@/components/Note";
 const theory = (
   <div className="prose-cn">
     <p>
-      前面七节，我们一路在给它加能力：记忆、资料、工具、技能、长时运行、分工。
-      这一节要说的是<strong>代价</strong>。
-    </p>
-    <p>
-      回忆第 1 节：它只会说，所以最坏的结果是<strong>说错话</strong>。
-      现在它能动手了，最坏的结果变成了<strong>做错事</strong>。
-      这两者的性质完全不同——说错话你可以不理，做错事可能要花几天去收拾。
+      前面七节一路在加能力：记忆、资料、工具、技能、长时运行、分工。
+      这一节说的是<strong>代价</strong>。
     </p>
 
     <SplitAnim
@@ -24,16 +19,13 @@ const theory = (
         title: "它能动手之后",
         items: ["最坏是做错事", "可能要收拾几天", "代价可能不可逆", "必须有人守门"],
       }}
-      caption="这就是为什么权限和沙箱和前面那些能力同等重要。能力越大，越需要一道闸。"
     />
 
     <div className="my-9 rounded-lg bg-surface p-6">
       <div className="text-body-sm font-semibold">一个必须接受的现实</div>
       <p className="mt-3 text-meta leading-relaxed text-fg-2">
-        它会犯错。不是偶尔，是必然会。它会理解错你的意思、会把文件改错、
-        会在你没想到的地方动手。
-        <strong>所有的安全设计，都建立在“承认它会犯错”这个前提上。</strong>
-        如果它从不出错，就不需要权限门了。
+        它会犯错。不是偶尔，是必然会。
+        <strong>所有安全设计，都建立在「承认它会犯错」这个前提上。</strong>
       </p>
     </div>
 
@@ -69,10 +61,8 @@ const theory = (
 
     <h3>给普通人的三条设置建议</h3>
     <p>
-      第一，<strong>日常保持“每次都问”</strong>，别嫌烦。烦的次数远比出事的代价便宜。
-      第二，<strong>把沙箱放在“限定工作区”</strong>，让它只能碰你专门给它准备的那个文件夹。
-      第三，<strong>每次大动作之前先备份</strong>——这一条不属于设置，属于习惯，
-      但它比任何设置都管用。
+      ① 日常保持<strong>每次都问</strong>；② 沙箱放在<strong>限定工作区</strong>；
+      ③ 大动作之前<strong>先备份</strong>。
     </p>
   </div>
 );
@@ -90,7 +80,7 @@ const content: UnitContent = {
         label: "能力和边界同步",
         lines: ["同样能读写", "但动手前问你", "活动范围有限制", "做了什么都留痕"],
       }}
-      caption="右边并没有牺牲任何能力，它只是给每项能力配了一道闸。这也是为什么第 6 节那个弹窗不是麻烦，而是这套系统真正可用的原因。"
+      caption="它没有牺牲能力，只是给每项能力配了一道闸。"
     />
   ),
   theory,

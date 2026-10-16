@@ -77,7 +77,6 @@ const theory = (
     <h3>最容易误会的一件事：定时任务本身不干活</h3>
     <FlowAnim
       nodes={["时间到了", "往会话里发一条消息", "会话里的它接着干", "结果留给你"]}
-      caption="定时任务只负责第一步——到点发消息。真正干活的是接到消息的那个会话，和你平时派活时是同一个它：能力一样，毛病也一样。"
     />
 
     <Callout>
@@ -117,10 +116,7 @@ const theory = (
     </div>
 
     <h3>动手之前，必须满足的三个条件</h3>
-    <p>
-      这三条不是我的规矩，是从失败里反推出来的：一条不满足，
-      自动化只是把你的错误从“一次”变成“每天一次”。
-    </p>
+    <p>一条不满足，自动化只是把你的错误从「一次」变成「每天一次」。</p>
 
     <div className="my-9 overflow-x-auto">
       <table className="w-full border-collapse text-meta">
@@ -150,11 +146,6 @@ const theory = (
     </div>
 
     <h3>“先手动跑顺十次再自动化”</h3>
-    <p>
-      手动做的时候，你会随手处理各种例外：文件名是乱的、那天没有记录、上个月缺了一天。
-      处理完就忘了，因为对你不费力。
-      <strong>但交给定时任务之后，没人站在旁边随手处理例外了。</strong>
-    </p>
     <div className="my-7 grid gap-4 sm:grid-cols-2">
       <div className="rounded-lg bg-surface p-5">
         <div className="flex items-center gap-2 text-body-sm font-semibold">
@@ -246,10 +237,7 @@ const theory = (
     </Callout>
 
     <h3>自定义配置：把“我这边的情况”提前交出去</h3>
-    <p>
-      同一件事每次新开会话都要重新交代一遍（我叫什么、文件放哪、日期一律写成
-      2026-03-05 这种格式）——自定义配置就是解决这个的。从「随手」到「正式」有四层：
-    </p>
+    <p>从「随手」到「正式」有四层：</p>
     <div className="my-7 space-y-2">
       {[
         ["会话自己的记忆", "最随手，也最不牢靠（第 11、12 节讲过它会忘）"],
@@ -272,12 +260,9 @@ const theory = (
       ))}
     </div>
     <p>
-      其中普通人最该知道的是那份<strong>规矩文件</strong>：DSH 会在开始干活前，
-      读取放在 DSH 数据目录里的一份 <span className="font-mono">AGENTS.md</span>
-      （全局的，管你所有的活），再读项目目录里的同名文件，
-      越靠近当前工作目录的越具体、越优先。写在里面的内容，每次都会被带上，
-      不用你复述。它不会自己长出来——文件不存在就自己新建一个，
-      用记事本写就行，几条短句足够：
+      最该知道的是那份<strong>规矩文件</strong>：干活前 DSH 会读 DSH 数据目录里的
+      <span className="font-mono">AGENTS.md</span>，再读项目目录里的同名文件，越靠近当前目录越优先。
+      没有就自己新建一个，几条短句足够：
     </p>
 
     <div className="my-9 rounded-lg bg-surface p-6">
@@ -320,7 +305,7 @@ const content: UnitContent = {
   anim: (
     <SequenceAnim
       title="一件事是怎么变成自动化的"
-      caption="顺序别跳过。中间那几步看着啰嗦，正是它们把“偶尔出错”挡在了门外。跳过第 3、4 步直接定时间，等于每天定时给自己制造一次意外。"
+      caption="跳过中间几步直接定时间，等于每天定时给自己找麻烦。"
       items={[
         { tag: "1", label: "手动做一遍" },
         { tag: "2", label: "记下判断" },

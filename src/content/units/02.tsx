@@ -30,7 +30,6 @@ const theory = (
 
     <FlowAnim
       nodes={["撞上一个具体的失败", "为它加一块能力", "继续用，继续撞", "再加下一块"]}
-      caption="没有一步是「顺便做做」的。每一个新能力，都是被一个具体的失败逼出来的——所以第 10 节往后，我会按这条线一节一节走，每节先给你看那个失败长什么样。"
     />
 
     <div className="my-9 overflow-x-auto">
@@ -82,7 +81,7 @@ const content: UnitContent = {
   anim: (
     <SequenceAnim
       title="能力是怎么一块块长出来的"
-      caption="从 2022 到 2026，每一步都不是规划出来的，是被一个具体的失败逼出来的。第 10 节开始，我们一节看一个失败。"
+      caption="每一步都不是规划出来的，是被失败逼出来的。"
       items={[
         { tag: "2022", label: "会说" },
         { tag: "2023", label: "记得住" },
