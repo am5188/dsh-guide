@@ -1,0 +1,463 @@
+@import "tailwindcss";
+
+/* ════════════════════════════════════════════════════════════════
+   设计令牌全部来自 DeepSeek Harness 自身的实现：
+   .dsh-src/deepseek-ai/dsh-client-ui-theme/lib/client.js
+   ——静态色板 --dsw-static-*，语义令牌 --dsw-alias-*
+   ——字体栈 --dsw-font-family / --ds-font-family-code
+   ——圆角 --dsw-radius-*，动效 --ds-transition-duration* / --ds-ease-in-out
+   ——浮层 --dsw-elevation-stroke / --dsw-shadow-lv*
+   不做自创，改值请回源头核对。
+   ════════════════════════════════════════════════════════════════ */
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+@theme {
+  /* ── 中性偏蓝灰阶（DSH 主灰阶）────────────────────────────── */
+  --color-bluish-00: #ffffff;
+  --color-bluish-50: #f9fafb;
+  --color-bluish-60: #f5f6f7;
+  --color-bluish-75: #f1f3f5;
+  --color-bluish-100: #ebeef2;
+  --color-bluish-150: #e9ecf2;
+  --color-bluish-200: #e1e5ee;
+  --color-bluish-300: #cfd3d6;
+  --color-bluish-400: #adb2b8;
+  --color-bluish-500: #979da6;
+  --color-bluish-600: #81858c;
+  --color-bluish-700: #61666b;
+  --color-bluish-750: #43454a;
+  --color-bluish-800: #353638;
+  --color-bluish-850: #2c2c2e;
+  --color-bluish-875: #232324;
+  --color-bluish-900: #1b1b1c;
+  --color-bluish-950: #151517;
+  --color-bluish-1000: #0f1115;
+
+  /* ── DeepSeek 品牌蓝 ──────────────────────────────────────── */
+  --color-ds-50: #edf3fe;
+  --color-ds-100: #e4edfd;
+  --color-ds-200: #d3e2ff;
+  --color-ds-300: #b7c8fe;
+  --color-ds-400: #7aaaff;
+  --color-ds-450: #5686fe;
+  --color-ds-500: #4176e6;
+  --color-ds-600: #4868b2;
+  --color-ds-800: #34415b;
+  --color-ds-900: #283142;
+
+  /* ── 状态色 ───────────────────────────────────────────────── */
+  --color-ok-400: #4ed17e;
+  --color-ok-500: #22c55e;
+  --color-ok-900: #233c2c;
+  --color-warn-400: #f7ad31;
+  --color-warn-500: #f59e0b;
+  --color-warn-600: #dd8629;
+  --color-warn-100: #fef5e7;
+  --color-warn-900: #27241f;
+  --color-danger-400: #f25a5a;
+  --color-danger-500: #ef4444;
+  --color-danger-600: #ec1313;
+  --color-danger-100: #fee2e2;
+  --color-danger-900: #570c0c;
+
+  /* ── 字体（DSH 原样）──────────────────────────────────────── */
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial,
+    sans-serif;
+  --font-mono:
+    "SF Mono", "JetBrains Mono", "Fira Code", Consolas, "Liberation Mono",
+    Menlo, Courier, "PingFang SC", "Microsoft YaHei";
+
+  /* ── 字号阶梯（DSH 令牌 + 中文长文阅读的实测参数）──────────
+     正文 17px / 行高 1.75：MDN 生产站 --font-line-content:1.75
+     列宽上限 704px（≈44rem，28–38 汉字/行）
+     ──────────────────────────────────────────────────────── */
+  --text-micro: 11px;
+  --text-micro--line-height: 16px;
+  --text-caption: 12px;
+  --text-caption--line-height: 18px;
+  --text-meta: 13px;
+  --text-meta--line-height: 20px;
+  --text-body-sm: 14px;
+  --text-body-sm--line-height: 22px;
+  --text-body: 17px;
+  --text-body--line-height: 30px;
+  --text-lead: 18px;
+  --text-lead--line-height: 32px;
+  --text-title: 21px;
+  --text-title--line-height: 32px;
+  --text-head: 26px;
+  --text-head--line-height: 36px;
+  --text-display: 40px;
+  --text-display--line-height: 50px;
+
+  /* ── 圆角（DSH）─────────────────────────────────────────── */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-panel: 28px;
+
+  /* ── 动效 ──────────────────────────────────────────────────
+     标准曲线取 DSH 的 --ds-ease-in-out；入场/出场按 web.dev 生产值。
+     时长：hover 120–150ms、入场 180–200ms、抽屉 240–300ms。
+     ──────────────────────────────────────────────────────── */
+  --ease-dsh: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out-quint: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-in-quint: cubic-bezier(0.4, 0, 1, 1);
+}
+
+/* ── 语义层：浅色为默认（与 DSH 一致）──────────────────────── */
+:root {
+  color-scheme: light;
+
+  --canvas: #ffffff;
+  --surface: #f9fafb; /* 卡片/模块底 */
+  --sunken: #f5f6f7; /* 代码块/内嵌区 */
+  --raised: #ffffff; /* 浮起面板 */
+  --overlay: #e9ecf2;
+
+  --fg: #0f1115;
+  --fg-2: #61666b;
+  --fg-3: #81858c;
+  --fg-dim: #e1e5ee;
+
+  --hair: rgba(0, 0, 0, 0.04); /* l1 */
+  --line: rgba(0, 0, 0, 0.1); /* l2 */
+  --line-2: rgba(0, 0, 0, 0.12); /* l3 */
+  --line-3: rgba(0, 0, 0, 0.16); /* l4 */
+
+  --hover: rgba(38, 49, 72, 0.06);
+  --active: rgba(38, 49, 72, 0.1);
+
+  --accent: #4176e6;
+  --accent-soft: #edf3fe;
+  --accent-line: rgba(65, 118, 230, 0.24);
+
+  --brand-fill: #0f1115;
+  --brand-fg: #ffffff;
+
+  --code-bg: #f9fafb;
+  --code-banner: #f9fafb;
+
+  --elev-stroke: 0 0 0 0.5px rgba(0, 0, 0, 0.12);
+  --elev-panel: var(--elev-stroke), 0 3px 8px 0 rgba(0, 0, 0, 0.03),
+    0 0 16px 0 rgba(0, 0, 0, 0.02);
+  --elev-soft: var(--elev-stroke), 0 4px 16px 0 rgba(0, 0, 0, 0.03),
+    0 0 24px 0 rgba(0, 0, 0, 0.03);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --canvas: #151517;
+  --surface: #232324;
+  --sunken: #1b1b1c;
+  --raised: #2c2c2e;
+  --overlay: #353638;
+
+  --fg: #f9fafb;
+  --fg-2: #cfd3d6;
+  --fg-3: #adb2b8;
+  --fg-dim: #43454a;
+
+  --hair: rgba(255, 255, 255, 0.06);
+  --line: rgba(255, 255, 255, 0.12);
+  --line-2: rgba(255, 255, 255, 0.16);
+  --line-3: rgba(255, 255, 255, 0.2);
+
+  --hover: rgba(255, 255, 255, 0.08);
+  --active: rgba(255, 255, 255, 0.14);
+
+  --accent: #7aaaff;
+  --accent-soft: rgba(122, 170, 255, 0.12);
+  --accent-line: rgba(122, 170, 255, 0.28);
+
+  --brand-fill: #f9fafb;
+  --brand-fg: #0f1115;
+
+  --code-bg: #1b1b1c;
+  --code-banner: #2c2c2e;
+
+  --elev-stroke: 0 0 0 0.5px rgba(255, 255, 255, 0.16);
+  --elev-panel: var(--elev-stroke), 0 3px 8px 0 rgba(0, 0, 0, 0.13),
+    0 0 16px 0 rgba(0, 0, 0, 0.08);
+  --elev-soft: var(--elev-stroke), 0 4px 16px 0 rgba(0, 0, 0, 0.13),
+    0 0 24px 0 rgba(0, 0, 0, 0.13);
+}
+
+/* 把语义变量接进 Tailwind，于是 bg-canvas / text-fg / border-line 都能用，
+   并且切主题时自动跟着变，不需要写 dark: 变体。 */
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-sunken: var(--sunken);
+  --color-raised: var(--raised);
+  --color-overlay: var(--overlay);
+
+  --color-fg: var(--fg);
+  --color-fg-2: var(--fg-2);
+  --color-fg-3: var(--fg-3);
+  --color-fg-dim: var(--fg-dim);
+
+  --color-hair: var(--hair);
+  --color-line: var(--line);
+  --color-line-2: var(--line-2);
+  --color-line-3: var(--line-3);
+
+  --color-hover: var(--hover);
+  --color-active: var(--active);
+
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-line: var(--accent-line);
+
+  --color-brand: var(--brand-fill);
+  --color-on-brand: var(--brand-fg);
+
+  --color-code: var(--code-bg);
+  --color-code-banner: var(--code-banner);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   基础
+   ════════════════════════════════════════════════════════════════ */
+
+* {
+  border-color: var(--line);
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  /* 不开平滑滚动：MDN 生产站即为 auto，且会触发前庭不适 */
+}
+
+body {
+  background-color: var(--canvas);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 30px;
+  /* 中文缺字重时浏览器会合成伪粗体，笔画发糊；这里禁掉 */
+  font-synthesis-weight: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--accent) 28%, transparent);
+}
+
+/* 焦点环：DSH 风格的发丝外扩 */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* 滚动条（DSH alias-scrollbar） */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
+}
+[data-theme="dark"] * {
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   超椭圆圆角：DSH 的签名细节（corner-shape: superellipse(1.5)）
+   支持的浏览器得到更“润”的角，不支持就退化成普通圆角。
+   ════════════════════════════════════════════════════════════════ */
+@supports (corner-shape: superellipse(1.5)) {
+  .squircle,
+  .rounded-sm,
+  .rounded-md,
+  .rounded-lg,
+  .rounded-xl,
+  .rounded-2xl,
+  .rounded-panel {
+    corner-shape: superellipse(1.5);
+  }
+}
+
+/* ── 浮层：发丝描边 + 极淡阴影，不用 1px 实线 ──────────────── */
+.elev-panel {
+  box-shadow: var(--elev-panel);
+}
+.elev-soft {
+  box-shadow: var(--elev-soft);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   正文排版（面向中文长文阅读）
+   ════════════════════════════════════════════════════════════════ */
+.prose-cn {
+  font-size: 17px;
+  line-height: 1.75;
+  color: var(--fg);
+}
+.prose-cn p {
+  margin-block: 0.9em;
+}
+.prose-cn > :first-child {
+  margin-top: 0;
+}
+.prose-cn > :last-child {
+  margin-bottom: 0;
+}
+.prose-cn strong {
+  font-weight: 600;
+}
+/* 标题上下留白 3:1（ciechanow.ski 的做法：padding .75em 0 .25em） */
+.prose-cn h2 {
+  margin-top: 2.2em;
+  margin-bottom: 0.55em;
+  font-size: 21px;
+  line-height: 1.4;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.prose-cn h3 {
+  margin-top: 2em;
+  margin-bottom: 0.5em;
+  font-size: 18px;
+  line-height: 1.5;
+  font-weight: 700;
+}
+.prose-cn a {
+  color: var(--accent);
+  text-underline-offset: 3px;
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--accent-line);
+}
+.prose-cn code {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  padding: 2px 5px;
+  border-radius: 4px;
+  background: var(--sunken);
+  color: var(--fg);
+}
+
+/* 首屏结构图：能力顺着这条线流下去 */
+@keyframes flow-down {
+  0% {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+}
+.flow-dot {
+  animation: flow-down 2.4s var(--ease-dsh) infinite;
+}
+.flow-dot-2 {
+  animation-delay: 1.2s;
+}
+
+/* 教学动画（第 1 节） */
+@keyframes nudge {
+  0%,
+  100% {
+    transform: translateX(0);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translateX(9px);
+    opacity: 1;
+  }
+}
+.nudge {
+  animation: nudge 3.6s var(--ease-dsh) infinite;
+}
+.nudge-2 {
+  animation-delay: 1.2s;
+}
+.nudge-3 {
+  animation-delay: 2.4s;
+}
+
+@keyframes bounce-back {
+  0%,
+  44% {
+    transform: translateX(0);
+    opacity: 0.55;
+  }
+  56% {
+    transform: translateX(16px);
+    opacity: 1;
+  }
+  68% {
+    transform: translateX(0);
+    opacity: 0.75;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 0.55;
+  }
+}
+.bounce-back {
+  animation: bounce-back 3.6s var(--ease-dsh) infinite;
+}
+
+@keyframes wall-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+.wall-pulse {
+  animation: wall-pulse 3.6s var(--ease-dsh) infinite;
+}
+
+/* 入场：DSH 的 0.3s 慢速曲线 */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.rise {
+  animation: rise 0.3s var(--ease-dsh) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* 装饰性动画：直接停掉，而不是压缩时长（压缩会留下闪烁） */
+  .nudge,
+  .nudge-2,
+  .nudge-3,
+  .bounce-back,
+  .wall-pulse,
+  .flow-dot,
+  .flow-dot-2,
+  .rise {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.001ms !important;
+  }
+}
