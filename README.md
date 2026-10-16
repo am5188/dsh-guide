@@ -1,6 +1,6 @@
 # DeepSeek Harness 使用指南
 
-面向**零基础普通人**的中文教学站点：22 节，讲清楚怎么用 DeepSeek Harness（DSH）把活真的干完。
+面向**零基础普通人**的中文教学站点：23 节，讲清楚怎么用 DeepSeek Harness（DSH）把活真的干完。
 
 > 这份指南只讲「怎么用」，不讲「怎么实现」。想做工程原理，看 [harness-guide](https://github.com/am5188/harness-guide)；想看 LLM 发展史，看 [llm-harness](https://github.com/am5188/llm-harness)。
 
@@ -15,7 +15,7 @@
 第三段不需要任何后端：DeepSeek API 的 CORS 已实测放行，请求从读者浏览器直接发往
 `api.deepseek.com`。开发与构建**零 API 成本**。
 
-## 结构（四部 22 节）
+## 结构（五部 23 节）
 
 | 部 | 节数 | 内容 |
 |---|---|---|
@@ -58,7 +58,7 @@ npm run deploy         # 构建并推送 gh-pages（需要 Git Bash）
 **已完成。** 线上地址：**https://am5188.github.io/dsh-guide/**
 
 - [x] 站点骨架、设计系统、浅色/深色主题
-- [x] **四部 22 节内容全部完成**，每节都是「动画 + 图文 + 可现场运行」三段式
+- [x] **五部 23 节内容全部完成**，每节都是「动画 + 图文 + 可现场运行」三段式
 - [x] 可试运行的两条路都经真实 API 验证：
   - JavaScript 版：浏览器直连 DeepSeek（CORS 预检实测放行，端到端 HTTP 200）
   - Python 版：Pyodide 在浏览器里跑真 Python，`requests` 直连

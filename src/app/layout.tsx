@@ -4,7 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "DeepSeek Harness 使用指南 · 从零开始",
   description:
-    "面向零基础普通人的 DeepSeek Harness 中文指南：22 节，把「让 AI 真的把活干完」这件事讲清楚。每一节都有动画、图文和可以当场跑通的代码。",
+    "面向零基础普通人的 DeepSeek Harness 中文指南：23 节，把「让 AI 真的把活干完」这件事讲清楚。每一节都有动画、图文和可以当场跑通的代码。",
   applicationName: "DeepSeek Harness 使用指南",
   keywords: ["DeepSeek Harness", "DSH", "AI 智能体", "新手教程", "使用指南"],
 };

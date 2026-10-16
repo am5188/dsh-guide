@@ -26,7 +26,7 @@ export function TopBar() {
             href="/#roadmap"
             className="hidden rounded-sm px-2.5 py-1.5 text-meta text-fg-2 transition-colors hover:bg-hover hover:text-fg sm:block"
           >
-            22 节
+            23 节
           </Link>
           <ThemeToggle />
         </nav>

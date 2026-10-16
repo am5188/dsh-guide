@@ -16,17 +16,30 @@ const theory = (
     </p>
 
     <h3>这个上限有多大</h3>
+    <div className="my-7 grid gap-4 sm:grid-cols-2">
+      <div className="rounded-lg bg-surface p-5">
+        <div className="text-caption text-fg-3">一次能接收多少</div>
+        <div className="mt-2 font-mono text-[26px] leading-none text-fg">
+          1,048,576
+        </div>
+        <div className="mt-2 text-meta text-fg-2">
+          个 token。相当于好几本厚书——非常大。
+        </div>
+      </div>
+      <div className="rounded-lg bg-surface p-5">
+        <div className="text-caption text-fg-3">一次最多写出多少</div>
+        <div className="mt-2 font-mono text-[26px] leading-none text-fg">
+          393,216
+        </div>
+        <div className="mt-2 text-meta text-fg-2">
+          个 token。两头都有上限，不只是“装进去”这一头。
+        </div>
+      </div>
+    </div>
     <p>
-      我们实测了 DSH 默认使用的模型，它的上下文窗口是
-      <strong> 1,048,576 </strong>
-      个 token，单次最多能输出
-      <strong> 393,216 </strong>
-      个 token。这已经是相当大的数字——相当于好几本厚书。
-    </p>
-    <p>
-      token 不是“字”，粗略理解成<strong>词的碎片</strong>就行：一个汉字可能是一个 token，
-      也可能和旁边的字合起来才算一个。你不用记精确换算，
-      只需要记住一件事：<strong>它很大，但它是有限的</strong>。
+      这两个数字都是我们实测来的。另外记住：token 不是“字”，
+      粗略理解成<strong>词的碎片</strong>就行，不用背精确换算——
+      只要记住一件事：<strong>它很大，但它是有限的</strong>。
     </p>
 
     <Callout>

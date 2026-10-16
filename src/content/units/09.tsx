@@ -44,11 +44,9 @@ const theory = (
   <div className="prose-cn">
     <p>
       出问题不用慌，绝大多数情况落在下面这七种里。真正有用的动作只有一个：
-      <strong>别急着重问一遍，先看它到底说了什么</strong>。
-    </p>
-    <p>
-      重问一遍是最常见的错误反应——问题没解决，还多花一次钱，而且它很可能
-      换个方式再错一遍。
+      <strong>别急着重问一遍，先看它到底说了什么</strong>
+      ——重问是最常见的错误反应，问题没解决，还多花一次钱，
+      而且它很可能换个方式再错一遍。
     </p>
 
     <div className="my-9 overflow-x-auto">
@@ -83,20 +81,36 @@ const theory = (
 
     <h3>一个万能动作：把报错原文交给它</h3>
     <p>
-      遇到看不懂的报错，不用自己查。把<strong>报错原文一字不改地</strong>贴给它，
-      再加一句要求：<strong>“先解释这行字在说什么，再给三个可能的原因，不要直接改东西。”</strong>
+      遇到看不懂的报错，不用自己查。<strong>把报错原文一字不改地贴给它</strong>，加上下面这句：
     </p>
-    <p>
-      最后半句很重要。否则它可能一边解释一边就把东西改了，
-      而你还没搞清发生了什么。
-    </p>
+    <div className="my-7 rounded-lg bg-surface p-5">
+      <div className="text-caption text-fg-3">照着抄</div>
+      <p className="mt-2 border-l-2 border-accent pl-4 text-body-sm text-fg">
+        先解释这行字在说什么，再给三个可能的原因，
+        <strong>不要直接改东西</strong>。
+      </p>
+      <p className="mt-3 text-meta text-fg-2">
+        最后半句很重要。否则它可能一边解释一边就把东西改了，而你还没搞清发生了什么。
+      </p>
+    </div>
 
     <h3>什么时候该放弃这一轮</h3>
-    <p>
-      同一个问题<strong>连续两次</strong>没解决，就不要再试第三次了。
-      这时候正确的做法是：开一个新会话，把已知信息整理成一段话重新说清楚。
-      带着一长串失败记录往下聊，它只会被那些失败带偏。
-    </p>
+    <div className="my-7 rounded-lg bg-surface p-5">
+      <div className="flex items-center gap-2">
+        <span
+          className="size-2 rounded-full"
+          style={{ background: "var(--color-danger-500)" }}
+          aria-hidden="true"
+        />
+        <span className="text-body-sm font-semibold">
+          同一个问题连续两次没解决，就停
+        </span>
+      </div>
+      <p className="mt-2 text-meta text-fg-2">
+        正确做法是开一个新会话，把已知信息整理成一段话重新说清楚。
+        带着一长串失败记录往下聊，它只会被那些失败带偏。
+      </p>
+    </div>
   </div>
 );
 

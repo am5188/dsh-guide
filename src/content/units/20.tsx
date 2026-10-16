@@ -73,23 +73,25 @@ const theory = (
       </table>
     </div>
 
-    <h3>先说最诱人的那一件：让它每天早上自己干</h3>
-    <p>
-      普通人听到“自动化”，第一反应都是这句：
-      <strong>能不能让它每天早上自动把这件事做了？</strong>
-      能。但你得先知道它到底是怎么“自动”的，因为这里有个特别常见的误会。
-    </p>
-    <p>
-      定时任务本身并不会干活。它做的只有一件事：
-      <strong>到了那个点，往一个会话里发一条消息</strong>
-      ，那条消息大概等于有人在早上八点替你说了一句“该整理昨天的记录了”。
-      发完，定时任务这一部分的工作就结束了。
-      后面会发生什么，取决于接到这条消息的那个会话里的它——
-      和你平时在对话框里派活时，那个它是同一个它，能力一样，毛病也一样。
-    </p>
+    <h3>最容易误会的一件事：定时任务本身不干活</h3>
+    <div className="my-7 grid gap-4 sm:grid-cols-2">
+      <div className="rounded-lg bg-surface p-5">
+        <div className="text-caption text-fg-3">它实际做的事</div>
+        <p className="mt-2 text-meta text-fg-2">
+          到点，往<strong className="text-fg">当初创建它的那个会话</strong>
+          里发一条消息。仅此而已。
+        </p>
+      </div>
+      <div className="rounded-lg bg-surface p-5">
+        <div className="text-caption text-fg-3">谁真的干活</div>
+        <p className="mt-2 text-meta text-fg-2">
+          接到那条消息的会话里的它——和你平时派活时是同一个它，
+          能力一样，毛病也一样。
+        </p>
+      </div>
+    </div>
 
     <Callout>
-      记住这个分工，能省掉很多误会：
       <strong>定时任务是闹钟，不是工人。</strong>
       闹钟响得再准，也不能替你起床。所以“它自己按时做”这件事真正的难点，
       从来不是定时间，而是你有没有把该交代的交代清楚。
@@ -160,39 +162,67 @@ const theory = (
 
     <h3>“先手动跑顺十次再自动化”</h3>
     <p>
-      这条经验听起来很土，但它防的是最难防的一种错。手动做的时候，
-      你会随手处理各种例外：这份文件名字是乱的、那天没有记录、上个月的数据缺了一天。
-      这些例外，你处理完就忘了，因为对你不费力。
+      手动做的时候，你会随手处理各种例外：文件名是乱的、那天没有记录、上个月缺了一天。
+      处理完就忘了，因为对你不费力。
+      <strong>但交给定时任务之后，没人站在旁边随手处理例外了。</strong>
     </p>
-    <p>
-      可一旦交给定时任务，<strong>没人站在旁边随手处理例外了</strong>
-      。它遇到那个乱名字的文件会怎么办？不知道。
-      所以手动跑十次的作用不是让你熟练，而是
-      <strong>把例外抖出来</strong>：第十次还出现的例外，才是你真正需要写进规则里的东西；
-      只出现过一次的，多半是那次你自己手滑了。
-    </p>
-    <p>
-      手动跑的时候顺手做一件事：每做一次，记一句
-      <strong>“我刚才凭什么这么判断”</strong>
-      。这些判断，就是自动化时必须提前写进交代里的部分。
-      比如“同一个月的发票放在同一个文件夹里”——你觉得这是常识，
-      它不知道你的常识。
-    </p>
+    <div className="my-7 grid gap-4 sm:grid-cols-2">
+      <div className="rounded-lg bg-surface p-5">
+        <div className="flex items-center gap-2 text-body-sm font-semibold">
+          <span className="size-1.5 rounded-full bg-accent" aria-hidden="true" />
+          第十次还出现的例外
+        </div>
+        <p className="mt-2 text-meta text-fg-2">
+          这才是真正需要写进规则里的东西。
+        </p>
+      </div>
+      <div className="rounded-lg bg-surface p-5">
+        <div className="flex items-center gap-2 text-body-sm font-semibold">
+          <span className="size-1.5 rounded-full bg-line-3" aria-hidden="true" />
+          只出现过一次的
+        </div>
+        <p className="mt-2 text-meta text-fg-2">
+          多半是那次你自己手滑了，不必写成规则。
+        </p>
+      </div>
+    </div>
+    <Callout>
+      每做一次，顺手记一句<strong>“我刚才凭什么这么判断”</strong>。
+      这些判断就是自动化时必须提前写进交代里的部分。
+      比如“同一个月的发票放同一个文件夹”——你觉得这是常识，它不知道你的常识。
+    </Callout>
 
     <h3>DSH 里这些东西长什么样</h3>
     <p>
-      定时任务在 DSH 里叫<strong>自动化任务</strong>
-      ：界面里有一个跨会话的“自动化任务”页面，每个会话的右侧栏里也有一个任务页签。
-      到点之后，提醒会作为一条消息回到<strong>当初创建它的那个会话</strong>
-      里，由那个会话接着干——所以它天然是“绑定会话”的，不是凭空变出一个新助手。
-      页面上可以改名字、改指令、改运行时间，也能看这条任务过去几次的运行记录。
+      定时任务在 DSH 里叫<strong>自动化任务</strong>。下面这些是从 DSH 自己的实现文档里读到的：
     </p>
-    <p>
-      时间规则是选的，不用你背语法：每周、周一至周五、每天、每 N 小时、每 N 分钟、
-      每 N 秒、仅一次，还有一条“自定义”可以填 cron 表达式。时区可以单独指定。
-      最短的重复间隔是 60 秒。创建动作本身是在会话里完成的——
-      在自动化任务页上点“新建”会打开一个新会话，然后由你在那个会话里让它建任务。
-    </p>
+    <dl className="my-7 space-y-2">
+      {[
+        ["在哪找", "有一个跨会话的「自动化任务」页面；每个会话的右侧栏里也有一个任务页签。"],
+        [
+          "到点之后",
+          "提醒作为一条消息回到当初创建它的那个会话，由那个会话接着干。所以它是“绑定会话”的，不是凭空变出一个新助手。",
+        ],
+        ["能改什么", "名字、指令、运行时间；也能看这条任务过去几次的运行记录。"],
+        [
+          "时间怎么定",
+          "不用背语法，是选的：每周 / 周一至周五 / 每天 / 每 N 小时 / 每 N 分钟 / 每 N 秒 / 仅一次，另有一条自定义可以填 cron 表达式。",
+        ],
+        ["两个限制", "最短的重复间隔是 60 秒；时区可以单独指定。"],
+        [
+          "怎么创建",
+          "创建动作是在会话里完成的——在自动化任务页点「新建」会打开一个新会话，由你在那个会话里让它建任务。",
+        ],
+      ].map(([k, v]) => (
+        <div
+          key={k}
+          className="flex flex-col gap-1 rounded-md bg-surface px-5 py-3.5 sm:flex-row sm:gap-6"
+        >
+          <dt className="w-24 shrink-0 text-meta font-semibold">{k}</dt>
+          <dd className="text-meta text-fg-2">{v}</dd>
+        </div>
+      ))}
+    </dl>
 
     <Unverified>
       上面这段我是从 DSH 自己的实现文档里读来的，没有在你的界面上一一核对过，
@@ -205,31 +235,53 @@ const theory = (
       别以为自己的版本坏了。
     </Unverified>
 
-    <p>
-      再说<strong>工作流</strong>。它是给“一堆互不相干的小活”用的：
-      你的任务拆开之后有十几块，谁都不等谁，这时候可以让它写一小段调度脚本，
-      把这些小活同时派给好几个自己，跑完汇总成一份结果。
-      一两件小活不需要工作流，普通的子智能体就够了——
-      为两件事开一场会，纯属浪费。
-    </p>
-    <p>
-      好消息是：<strong>你不需要自己写这段脚本</strong>。
-      你只要在派活的时候说清楚“这些文件互不相关，可以同时处理”，
-      剩下的它自己决定。工作流是它的工具，不是你要学的新语言。
-    </p>
+    <h3>工作流：只给「十几块互不相干的小活」用</h3>
+    <div className="my-7 grid gap-4 sm:grid-cols-2">
+      <div className="rounded-lg bg-surface p-5">
+        <div className="text-body-sm font-semibold">十几块，谁都不等谁</div>
+        <p className="mt-2 text-meta text-fg-2">
+          值得动用工作流：让它写一小段调度脚本，把这些小活同时派给好几个自己，跑完汇总成一份结果。
+        </p>
+      </div>
+      <div className="rounded-lg bg-surface p-5">
+        <div className="text-body-sm font-semibold">只有一两件</div>
+        <p className="mt-2 text-meta text-fg-2">
+          普通的子智能体就够了。为两件事开一场会，纯属浪费。
+        </p>
+      </div>
+    </div>
+    <Callout>
+      <strong>你不需要自己写那段脚本。</strong>
+      派活的时候说清楚“这些文件互不相关，可以同时处理”，剩下的它自己决定。
+      工作流是它的工具，不是你要学的新语言。
+    </Callout>
 
     <h3>自定义配置：把“我这边的情况”提前交出去</h3>
     <p>
-      你可能已经烦了同一件事：每次新开会话，都要重新交代一遍
-      “我叫什么、我文件放哪、别用那种腔调写、日期一律写成 2026-03-05 这种格式”。
-      这就是自定义配置要解决的。
+      同一件事每次新开会话都要重新交代一遍（我叫什么、文件放哪、日期一律写成
+      2026-03-05 这种格式）——自定义配置就是解决这个的。从「随手」到「正式」有四层：
     </p>
-    <p>
-      DSH 有几种把话提前说好的地方，从“随手”到“正式”排下来是：
-      会话自己带的那点记忆（第 11、12 节讲过它有多不牢靠）、
-      一份每次都自动带上的规矩文件、
-      一个管着模型和联网这些开关的设置页、再往上一层是 profile 和插件。
-    </p>
+    <div className="my-7 space-y-2">
+      {[
+        ["会话自己的记忆", "最随手，也最不牢靠（第 11、12 节讲过它会忘）"],
+        ["规矩文件", "每次自动带上；普通人最该知道的一层，下面细说"],
+        ["设置页", "管着模型、联网这些开关"],
+        ["profile 与插件", "最正式，属于进阶"],
+      ].map(([k, v], i) => (
+        <div
+          key={k}
+          className="flex items-start gap-4 rounded-md bg-surface px-5 py-3.5"
+        >
+          <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-sm bg-canvas font-mono text-caption text-accent">
+            {i + 1}
+          </span>
+          <span>
+            <span className="text-body-sm font-semibold">{k}</span>
+            <span className="mt-0.5 block text-meta text-fg-2">{v}</span>
+          </span>
+        </div>
+      ))}
+    </div>
     <p>
       其中普通人最该知道的是那份<strong>规矩文件</strong>：DSH 会在开始干活前，
       读取放在 DSH 数据目录里的一份 <span className="font-mono">AGENTS.md</span>
