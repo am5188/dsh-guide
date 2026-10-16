@@ -1,10 +1,11 @@
-{
+﻿{
   "name": "dsh-guide",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "verify": "node scripts/verify-live.mjs",
     "start": "next start",
     "lint": "eslint",
     "deploy": "bash scripts/deploy.sh"
