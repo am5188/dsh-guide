@@ -114,7 +114,7 @@ def ask(messages):
     resp = requests.post(
         "https://api.deepseek.com/chat/completions",
         headers={"Authorization": "Bearer " + DSH_API_KEY},
-        json={"model": "deepseek-flash", "max_tokens": 800, "messages": messages},
+        json={"model": "deepseek-flash", "max_tokens": 4000, "messages": messages},
     )
     return resp.json()["choices"][0]["message"]["content"]
 

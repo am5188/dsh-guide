@@ -95,7 +95,7 @@ export function AgentLoop({ demos }: { demos: AgentDemo[] }) {
       model: MODEL,
       messages,
       tools: active.tools,
-      max_tokens: 3000,
+      max_tokens: 16000,
     };
     const acc: Step[] = [];
 
@@ -202,7 +202,7 @@ export function AgentLoop({ demos }: { demos: AgentDemo[] }) {
           model: MODEL,
           messages,
           tools: active.tools,
-          max_tokens: 3000,
+          max_tokens: 16000,
         };
         Object.assign(body, nextBody);
 

@@ -209,23 +209,41 @@ done
 
 也就是说，**最重的提示词需要 1 万以上**，4000 根本不够。
 
-### 两个检查脚本
+### 三个检查脚本
 
 ```bash
 $env:DSH_KEY = (Get-Content D:\Work\.secrets\dsh-guide-test-key.txt -Raw).Trim()
 
-node scripts/check-demos.mjs                 # 全书 37 条演示真跑一遍
+node scripts/check-demos.mjs                 # 37 条 JS 演示真跑一遍
 node scripts/check-demos.mjs --dry           # 只抽取不发请求，确认提示词抠对了
 node scripts/check-demos.mjs 1 23 --override=16000 --only=4,6,21   # 指定额度/章节压测
-node scripts/check-maxtokens.mjs             # 单条提示词在 1500/2500/4000 下的表现
+
+node scripts/check-python-demos.mjs          # 3 条 Python 演示（从代码里抠请求体）
+node scripts/check-python-demos.mjs --dry
+
+node scripts/check-agent-demo.mjs 16000      # 工具调用回路：两轮都要跑通
 ```
 
-`check-demos.mjs` 会打印 `finish_reason`、思考 token、正文长度——
-**正文 0 字就是踩雷了**。
+- `check-demos.mjs` / `check-python-demos.mjs` 打印 `finish_reason`、思考 token、
+  正文长度——**正文 0 字就是踩雷了**
+- `check-agent-demo.mjs` 更严：它要求**第一轮真的返回 `tool_calls`**、
+  第二轮给出最终答案，而且答案里的数量要对得上（否则演示本身就是错的）
 
-**抽取提示词时的坑**：TSX 里 `prompt` 有双引号和单引号两种写法，
-正则只认双引号会「张冠李戴」——把上一条的 id 和下一条的 prompt 配成一对，
-检查脚本用错提示词去测，等于白测。两种都要认。
+**抽取提示词时的坑（踩过两次）**：
+1. TSX 里 `prompt` 有双引号和单引号两种写法，正则只认双引号会「张冠李戴」——
+   把上一条的 id 和下一条的 prompt 配成一对，用错提示词去测，等于白测
+2. Python 里 `"content"` 可能是字符串，也可能是**括号里若干相邻字面量拼接**，
+   两种都要认
+
+### 演示额度的最终取值
+
+| 位置 | 值 | 为什么 |
+|---|---|---|
+| JS 演示（37 条） | 16000 | 实测思考量最高 11366，4000 会返回空正文 |
+| Python 演示（3 条） | 4000 | 实测思考量 ≤298，但代码对读者可见，取一个读起来合理的值 |
+| AgentLoop（工具调用） | 16000 | 实测思考量只有 24–88，但组件内不可见，给足余量 |
+
+**实测思考量跨度：最少 38，最多 11366。** 所以「按感觉给个 2000」一定会出问题。
 
 
 ## 10. 量「读者要读多少字」

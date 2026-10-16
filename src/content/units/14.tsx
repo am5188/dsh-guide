@@ -137,7 +137,7 @@ resp = requests.post(
     headers={"Authorization": "Bearer " + DSH_API_KEY},
     json={
         "model": "deepseek-flash",
-        "max_tokens": 900,
+        "max_tokens": 4000,
         "messages": [{
             "role": "user",
             "content": (
