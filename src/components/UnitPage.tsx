@@ -4,6 +4,7 @@ import { CommandBlock } from "@/components/CommandBlock";
 import { AgentLoop } from "@/components/AgentLoop";
 import { Playground } from "@/components/Playground";
 import { PythonPlayground } from "@/components/PythonPlayground";
+import { UnitRail } from "@/components/UnitRail";
 import {
   IconDiagram,
   IconFilm,
@@ -40,69 +41,22 @@ function Slot({
   );
 }
 
-/** 侧栏：本页三段 + 能力进度 */
-function Rail({ unit, unlocked }: { unit: Unit; unlocked: Unit["unlocks"] }) {
-  const on = unlocked ?? [];
-  return (
-    <aside className="hidden lg:block">
-      <div className="sticky top-20 space-y-4">
-        <div className="rounded-lg bg-surface p-4">
-          <div className="text-caption font-medium text-fg-3">本页三段</div>
-          <ul className="mt-2.5 space-y-0.5">
-            {[
-              ["#anim", "先看一眼"],
-              ["#theory", "到底怎么回事"],
-              ["#practice", "你自己跑一遍"],
-            ].map(([href, label]) => (
-              <li key={href}>
-                <a
-                  href={href}
-                  className="block rounded-sm px-2.5 py-1.5 text-meta text-fg-2 transition-colors duration-150 hover:bg-hover hover:text-fg"
-                >
-                  {label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="rounded-lg bg-surface p-4">
-          <div className="text-caption font-medium text-fg-3">能力进度</div>
-          <ul className="mt-2.5 space-y-1.5">
-            {abilities.map((a) => {
-              const active = on.includes(a.id);
-              return (
-                <li key={a.id} className="flex items-center gap-2 text-meta">
-                  <span
-                    className={
-                      active
-                        ? "size-1.5 shrink-0 rounded-full bg-accent"
-                        : "size-1.5 shrink-0 rounded-full bg-line-3"
-                    }
-                    aria-hidden="true"
-                  />
-                  <span className={active ? "text-accent" : "text-fg-3"}>
-                    {a.label}
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-
-        <div className="px-2.5 text-caption text-fg-3">
-          第 {unit.no} / {units.length} 节
-        </div>
-      </div>
-    </aside>
-  );
-}
-
 export function UnitPage({ unit }: { unit: Unit }) {
   const content = unitContent[unit.no];
   const prev = units.find((u) => u.no === unit.no - 1);
   const next = units.find((u) => u.no === unit.no + 1);
   const unlocked = unit.unlocks ?? [];
+
+  /** 这一节实际渲染了哪几段 —— 侧栏只列真实存在的 */
+  const available = [
+    content?.anim && "anim",
+    content?.theory && "theory",
+    (content?.demos?.length ||
+      content?.python?.demos.length ||
+      content?.agent?.demos.length ||
+      content?.commands?.length) &&
+      "practice",
+  ].filter((x): x is string => Boolean(x));
 
   return (
     <>
@@ -256,7 +210,11 @@ export function UnitPage({ unit }: { unit: Unit }) {
             </nav>
           </article>
 
-          <Rail unit={unit} unlocked={unlocked} />
+          <UnitRail
+            unit={unit}
+            unlocked={unlocked}
+            available={available}
+          />
         </div>
       </main>
     </>

@@ -1,7 +1,7 @@
 import type { UnitContent } from "../types";
 import { CompareAnim } from "@/components/anim/CompareAnim";
 import { StackAnim, GaugeAnim } from "@/components/anim/diagrams";
-import { Callout, Unverified } from "@/components/Note";
+import { Callout } from "@/components/Note";
 
 const KEEP: [string, string][] = [
   ["必须留", "你定下的规则、要遵守的格式、已经确认过的事实、当前任务的目标。"],
@@ -17,37 +17,48 @@ const theory = (
     </p>
 
     <h3>这个上限有多大</h3>
+    <p>
+      这里有个容易踩的坑：<strong>服务端公布的数字，和 DSH 自己用的数字不一样。</strong>
+    </p>
     <div className="my-7 grid gap-4 sm:grid-cols-2">
       <div className="rounded-lg bg-surface p-5">
-        <div className="text-caption text-fg-3">一次能接收多少</div>
+        <div className="text-caption text-fg-3">上下文窗口 · DSH 实际使用</div>
         <div className="mt-2 font-mono text-[26px] leading-none text-fg">
-          1,048,576
+          1,000,000
         </div>
         <div className="mt-2 text-meta text-fg-2">
-          个 token。相当于好几本厚书——非常大。
+          个 token。读自 DSH 内置的模型目录。
+          <br />
+          <span className="text-fg-3">
+            服务端 <span className="font-mono">/models</span> 公布的是 1,048,576。
+          </span>
         </div>
       </div>
       <div className="rounded-lg bg-surface p-5">
-        <div className="text-caption text-fg-3">一次最多写出多少</div>
+        <div className="text-caption text-fg-3">单次输出上限 · DSH 默认值</div>
         <div className="mt-2 font-mono text-[26px] leading-none text-fg">
-          393,216
+          256,000
         </div>
         <div className="mt-2 text-meta text-fg-2">
-          个 token。两头都有上限，不只是“装进去”这一头。
+          个 token。这是 DSH 发出请求时的默认值。
+          <br />
+          <span className="text-fg-3">
+            服务端上限更高：393,216。
+          </span>
         </div>
       </div>
     </div>
     <GaugeAnim
-      value={0.375}
-      label="单次输出上限 ÷ 上下文窗口"
-      hint="393,216 ÷ 1,048,576"
+      value={0.256}
+      label="输出默认上限 ÷ 上下文窗口"
+      hint="256,000 ÷ 1,000,000"
       threshold={0.6}
       thresholdLabel="直觉上以为输出能占一半"
+      caption="两个数字都不是猜的：一个读自 DSH 的模型目录，一个读自服务端接口。它们对不上，是因为 DSH 用的是自己内置的目录，不会去拉服务端那份。"
     />
 
     <p>
-      这两个数字都是我们实测来的。另外记住：token 不是“字”，
-      粗略理解成<strong>词的碎片</strong>就行，不用背精确换算——
+      另外记住：token 不是“字”，粗略理解成<strong>词的碎片</strong>就行，不用背精确换算——
       只要记住一件事：<strong>它很大，但它是有限的</strong>。
     </p>
 
@@ -90,12 +101,33 @@ const theory = (
       不用重新开一轮。
     </p>
 
-    <Unverified>
-      不同版本、不同设置下，压缩具体在什么时候触发、保留哪些内容，
-      我没有在真实环境里逐步验证过。
-      可靠的做法是：<strong>把你的硬性要求写在一份文件里</strong>，
-      每次需要时让它重新读一遍，而不是指望它一直记着。
-    </Unverified>
+    <h3>它到底什么时候压、留下什么</h3>
+    <p>
+      这几条读自 DSH 的实现文档，是它的默认值，不是我的猜测：
+    </p>
+    <div className="my-7 space-y-2">
+      {[
+        ["什么时候触发", "上下文用到约 80% 时自动压缩；也可以随时手动 /compact"],
+        ["保留多少原文", "最近约 16% 的历史逐字保留，其余交给摘要"],
+        ["给输出留多少余量", "预留 65,536 token 的头部空间，避免它没地方写答案"],
+        ["摘要是什么", "压缩会额外发一次模型请求，只留那次返回的摘要文本"],
+        ["压缩不了什么", "系统提示词、工具说明、会话前缀不在压缩范围内"],
+      ].map(([k, v]) => (
+        <div
+          key={k}
+          className="flex flex-col gap-1 rounded-md bg-surface px-5 py-3.5 sm:flex-row sm:gap-6"
+        >
+          <span className="w-32 shrink-0 text-meta font-semibold">{k}</span>
+          <span className="text-meta text-fg-2">{v}</span>
+        </div>
+      ))}
+    </div>
+
+    <Callout>
+      把两条合起来看，就是最实用的一条建议：
+      <strong>把你的硬性要求写在一份文件里</strong>，需要时让它重新读一遍，
+      而不是指望它一直记着。
+    </Callout>
   </div>
 );
 

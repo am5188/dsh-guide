@@ -331,6 +331,17 @@ export function Playground({ demos }: { demos: PlaygroundDemo[] }) {
               ) : (
                 <RequestPreview demo={active} />
               )}
+
+              <p className="mt-3 text-caption leading-relaxed text-fg-3">
+                这一页的演示走的是服务商公开的{" "}
+                <span className="font-mono">chat/completions</span>{" "}
+                接口，这样你的浏览器才能直接发出去。
+                <strong className="text-fg-2">
+                  DSH 自己内部用的是 Anthropic Messages 格式
+                </strong>
+                （<span className="font-mono">/anthropic/v1/messages</span>
+                ），两者字段不完全一样——这里看到的是「同一个模型、另一种调用姿势」。
+              </p>
             </div>
           </>
         )}

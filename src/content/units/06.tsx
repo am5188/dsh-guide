@@ -2,7 +2,7 @@ import type { UnitContent } from "../types";
 import { SequenceAnim } from "@/components/anim/SequenceAnim";
 import { FlowAnim } from "@/components/anim/diagrams";
 import { SandboxPicker } from "@/components/SandboxPicker";
-import { Callout, Unverified } from "@/components/Note";
+import { Callout } from "@/components/Note";
 
 /** 判断清单：按「风险等级」上色，比纯文字好扫 */
 const JUDGE: { tag: string; tone: "ok" | "warn" | "stop" | "rule"; detail: string }[] = [
@@ -39,15 +39,22 @@ const TONE_DOT: Record<string, string> = {
 /** 审批开关的两档 */
 const APPROVAL: { name: string; what: string; feel: string }[] = [
   {
-    name: "每次都问",
+    name: "问",
     what: "它每次要动手，都先停下来等你点头。",
-    feel: "最安全，也最烦。刚开始用就选这个。",
+    feel: "出厂默认。刚开始用就保持这个。",
   },
   {
     name: "不问",
-    what: "它一路做下去，做完再告诉你。",
-    feel: "省事，但出问题你只能在事后发现。",
+    what: "需要审批的动作会被直接拒绝，不是放行。",
+    feel: "这是给无人值守和 CI 用的严格模式：那种场合没人能点「同意」，所以干脆全拒。",
   },
+];
+
+/** 出厂的三档：一个选择器同时定下沙箱与审批 */
+const PRESETS: [string, string, string][] = [
+  ["仅可查看", "read-only", "每次都问"],
+  ["工作区内修改（出厂默认）", "workspace-write", "每次都问"],
+  ["完全权限", "danger-full-access", "不问（自动拒绝）"],
 ];
 
 const theory = (
@@ -58,28 +65,43 @@ const theory = (
       第 1 节那道墙，现在要被越过去了，所以拦一下、问一句，是这套系统最该有的设计。
     </p>
 
-    <h2>两个开关，各管一件事</h2>
-    <div className="my-7 grid gap-4 sm:grid-cols-2">
-      <div className="rounded-lg bg-surface p-5">
-        <div className="text-caption text-fg-3">开关一 · 审批</div>
-        <div className="mt-3 space-y-3">
-          {APPROVAL.map((a) => (
-            <div key={a.name}>
-              <div className="text-body-sm font-semibold">{a.name}</div>
-              <div className="mt-0.5 text-meta text-fg-2">{a.what}</div>
-              <div className="mt-1 text-caption text-fg-3">{a.feel}</div>
-            </div>
+    <h2>出厂是一个档位选择器，同时定下两件事</h2>
+    <p>
+      DSH 出厂界面上不是两个独立开关，而是<strong>一个权限档位</strong>：
+      选一档，沙箱范围和审批方式就一起定了。
+    </p>
+    <div className="my-7 overflow-x-auto">
+      <table className="w-full border-collapse text-meta">
+        <thead>
+          <tr className="text-fg-3">
+            <th className="px-3 py-3 text-left font-medium">档位</th>
+            <th className="px-3 py-3 text-left font-medium">沙箱</th>
+            <th className="px-3 py-3 text-left font-medium">审批</th>
+          </tr>
+        </thead>
+        <tbody>
+          {PRESETS.map(([name, sb, ap]) => (
+            <tr key={name} className="border-t border-hair align-top">
+              <td className="px-3 py-3 text-fg">{name}</td>
+              <td className="px-3 py-3 font-mono text-caption text-fg-2">
+                {sb}
+              </td>
+              <td className="px-3 py-3 text-fg-2">{ap}</td>
+            </tr>
           ))}
+        </tbody>
+      </table>
+    </div>
+
+    <h3>「不问」不是放行，是全都拒掉</h3>
+    <div className="my-7 grid gap-4 sm:grid-cols-2">
+      {APPROVAL.map((a) => (
+        <div key={a.name} className="rounded-lg bg-surface p-5">
+          <div className="text-body-sm font-semibold">{a.name}</div>
+          <div className="mt-1.5 text-meta text-fg-2">{a.what}</div>
+          <div className="mt-2 text-caption text-fg-3">{a.feel}</div>
         </div>
-      </div>
-      <div className="rounded-lg bg-surface p-5">
-        <div className="text-caption text-fg-3">开关二 · 沙箱</div>
-        <p className="mt-3 text-meta text-fg-2">
-          它决定“允许动到多大范围”。右边这个是可以点的——
-          <strong className="text-fg">点一下换一档</strong>
-          ，看每一档分别允许什么。
-        </p>
-      </div>
+      ))}
     </div>
 
     <SandboxPicker />
@@ -110,14 +132,16 @@ const theory = (
       ，再改原件。这条习惯能救你无数次。
     </Callout>
 
-    <Unverified>
-      有一条我读到的风险值得你记住，但它来自第三方实测报道、我没有亲自复现：
-      <strong>插件可能不受沙箱约束</strong>
-      ——有探针实验称，即使在「只读」档下，某些插件仍能读取 SSH 密钥目录、
-      环境变量里的 API Key、并向外联网。
+    <Callout>
+      这一条重要到值得单独说：<strong>插件不受沙箱约束。</strong>
+      这不是第三方传闻——DSH 自己的实现文档写得很直白：
+      「已安装的宿主代码在宿主进程内运行，<strong>不受工作区沙箱限制</strong>」，
+      并且明说插件机制「不是防范恶意包代码的沙箱」。
+      <br />
+      <br />
       所以：<strong>装插件要当成装软件来对待，只装你信得过来源的。</strong>
-      这一条请在装任何插件前自行复核。
-    </Unverified>
+      沙箱管得住模型去改文件，管不住你装进来的代码。
+    </Callout>
   </div>
 );
 

@@ -4,37 +4,51 @@ import { useState } from "react";
 
 type Tier = {
   id: string;
+  /** 界面上的中文名（读自 DSH 的权限档位界面） */
   name: string;
+  /** 实现里的档位标识 */
   key: string;
   summary: string;
   can: string[];
   cannot: string[];
 };
 
+/**
+ * 三档权限。
+ *
+ * 名称用的是 DSH 界面上的原词（仅可查看 / 工作区内修改 / 完全权限），
+ * 不是我自己起的「只读 / 限定工作区 / 全开」。
+ *
+ * 另有一条很容易搞错、也最容易误导人的边界：
+ * **这几档管的是「文件写」，不管网络、进程、系统调用或凭据。**
+ * 所以下面「挡不住」一栏不再写「执行命令」「改系统配置」这类断言
+ * ——那不属于这个开关的职责范围。
+ */
 const TIERS: Tier[] = [
   {
     id: "read-only",
-    name: "只读",
+    name: "仅可查看",
     key: "read-only",
-    summary: "什么都不能改。适合「只想让它读一读、告诉我结论」的场合。",
+    summary: "不会写入任何文件。适合「只想让它读一读、告诉我结论」的场合。",
     can: ["读文件、列目录", "搜索内容", "给你结论和建议"],
-    cannot: ["写、改、删、重命名任何文件", "执行会改动系统的命令"],
+    cannot: ["写、改、删、重命名任何文件"],
   },
   {
     id: "workspace-write",
-    name: "限定工作区",
+    name: "工作区内修改",
     key: "workspace-write",
-    summary: "只能改你当前这个文件夹里的东西，出了这个范围就动不了。日常最常用。",
-    can: ["读文件、列目录", "在指定文件夹里新建、修改、删除", "生成文档并保存"],
-    cannot: ["碰到工作区之外的任何路径", "改动系统目录"],
+    summary:
+      "只能写当前工作区内的文件，另外还允许写后端指定的临时区域。出厂默认就是这一档。",
+    can: ["读文件、列目录", "在工作区内新建、修改、删除", "生成文档并保存"],
+    cannot: ["写入工作区之外的路径"],
   },
   {
     id: "danger-full-access",
-    name: "全开",
+    name: "完全权限",
     key: "danger-full-access",
-    summary: "没有围栏。它想动哪里就动哪里。除非你非常清楚在做什么，否则别开。",
-    can: ["访问整台电脑上的任何路径", "执行任何命令", "读写系统配置"],
-    cannot: ["（没有任何技术限制拦着它）"],
+    summary: "文件写入没有围栏。除非你非常清楚在做什么，否则别开。",
+    can: ["写入这台电脑上的任何路径"],
+    cannot: ["（文件层面没有任何限制拦着它）"],
   },
 ];
 
@@ -72,6 +86,11 @@ export function SandboxPicker() {
         <span className="ml-2 font-mono text-caption text-fg-3">
           {active.key}
         </span>
+      </p>
+
+      <p className="mt-3 text-caption leading-relaxed text-fg-3">
+        注意这几档管的是<strong className="text-fg-2">文件写入</strong>，
+        不涉及网络、进程或凭据——那些不在这个开关的职责范围内。
       </p>
 
       <div className="mt-5 grid gap-4 sm:grid-cols-2">

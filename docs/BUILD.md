@@ -220,6 +220,28 @@ node scripts/prose-stats.mjs 8406ffa^ # 量某个 git 版本，用于前后对�
 
 ## 11. 循环动画怎么验证无缝
 
+**踩过的坑**：用 `msedge --headless --window-size=390,1500` 截移动端，
+截出来的图看起来「内容横向溢出、文字被截断」，我一度以为移动端坏了。
+
+实际上**站点没问题**。`--window-size` 只是改窗口大小，
+**不会应用 `width=device-width`**——页面仍按桌面宽度排版，截图只截到左侧一条。
+
+正确做法：用 CDP 先设设备度量，再截图。`scripts/find-overflow.mjs` 已经做了这件事：
+
+```bash
+node scripts/find-overflow.mjs <url> 390 1600 out.png
+```
+
+它会：
+1. `Emulation.setDeviceMetricsOverride({ mobile: true })` 正确模拟移动端
+2. 列出所有**右边缘超出视口**的元素（横向溢出的真正判据）
+3. `Page.captureScreenshot` 存一张可信的移动端截图
+
+**判据用 `document.documentElement.scrollWidth` 有没有超出视口，
+不要用截图肉眼看。** 截图会骗你，scrollWidth 不会。
+
+
+
 循环动画最容易出的问题是**循环点跳变**——尤其是粒子取模、扫光周期、拖尾相位
 这几处不显眼的地方。要用可复现的方式验，而不是"看着像无缝"。
 

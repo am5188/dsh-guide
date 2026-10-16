@@ -281,14 +281,25 @@ const theory = (
     </div>
 
     <Unverified>
-      规矩文件这件事，我读到的是：全局那份放在 DSH 的数据目录里
-      （这台机器上是 <span className="font-mono text-caption">
-        C:\Users\你的用户名\.dsh\AGENTS.md
-      </span>），项目级的那份放在项目目录里，文件名还兼容{" "}
-      <span className="font-mono text-caption">CLAUDE.md</span>，
-      同名目录下的 <span className="font-mono text-caption">*.local.md</span>{" "}
-      当作本地覆盖；整份内容有字节上限，太长会从最宽泛的那份开始省略。
-      这些我没在自己的界面上逐条验证过，也没有验证桌面版和命令行版的行为完全一样。
+      <strong>先纠正一处常见误解</strong>：本地覆盖不是「同名目录下任意{" "}
+      <span className="font-mono text-caption">*.local.md</span>」，
+      而是只有两个固定文件名——{" "}
+      <span className="font-mono text-caption">AGENTS.local.md</span> 和{" "}
+      <span className="font-mono text-caption">CLAUDE.local.md</span>；
+      而且<strong>只有项目那一层有本地覆盖，全局那份没有</strong>。
+      <br />
+      <br />
+      其余几条读自 DSH 的实现文档：全局那份在 DSH 数据目录
+      （默认 <span className="font-mono text-caption">~/.dsh</span>，
+      可用 <span className="font-mono text-caption">$DSH_HOME</span> 改），
+      项目根靠 <span className="font-mono text-caption">.git</span> 定位；
+      加载顺序是「项目根 → 当前工作目录」，越具体越优先；
+      内容按**内容**去重（把 AGENTS.md 复制成 CLAUDE.md 不会重复加载）；
+      整份渲染后的上限是 <strong>65,536 字节</strong>，超了会先整份丢掉较宽泛的那份、
+      再截断最具体的那份，并给你一条通知说明省略了哪个路径。
+      <br />
+      <br />
+      我没在界面上逐条点过，也没验证桌面版与命令行版行为完全一致。
       你先写三行试一次，看它是否照做——这比信我要快。
     </Unverified>
 
