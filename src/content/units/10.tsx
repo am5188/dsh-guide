@@ -1,5 +1,6 @@
 import type { UnitContent } from "../types";
 import { CompareAnim } from "@/components/anim/CompareAnim";
+import { FlowAnim } from "@/components/anim/diagrams";
 import { Callout } from "@/components/Note";
 
 const theory = (
@@ -10,18 +11,12 @@ const theory = (
     </p>
 
     <h3>真相：每一次调用都是一次性的</h3>
-    <p>
-      你按下发送，程序做的事情其实很朴素：
-      <strong>把这段文字打包，发出去，拿回一段文字，这次调用就结束了</strong>
-      。服务器那边不会为你保留任何东西。
-    </p>
-    <p>
-      所以下一次你再发一句话，对模型来说是一个<strong>全新的开始</strong>。
-      它不知道你是谁，不知道你刚才说了什么，甚至不知道这是第几次对话——
-      除非你把这些信息<strong>再发一遍</strong>。
-    </p>
+    <FlowAnim
+      nodes={["打包这段文字", "发出去", "拿回一段文字", "结束，什么都不留"]}
+      caption="服务器那边不会为你保留任何东西。下一次你再发一句话，对模型来说是一个全新的开始——它不知道你是谁、不知道你刚才说了什么、甚至不知道这是第几次对话。除非你把这些信息再发一遍。"
+    />
 
-    <div className="my-9 rounded-lg bg-surface p-6">
+    <div className="my-7 rounded-lg bg-surface p-6">
       <div className="text-body-sm font-semibold">一个好用的类比</div>
       <p className="mt-3 text-meta leading-relaxed text-fg-2">
         把它想成一家公司的<strong>轮班咨询台</strong>：每一通电话都换一个刚上班的顾问。

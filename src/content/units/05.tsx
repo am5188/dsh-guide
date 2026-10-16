@@ -1,5 +1,6 @@
 import type { UnitContent } from "../types";
 import { CompareAnim } from "@/components/anim/CompareAnim";
+import { SplitAnim } from "@/components/anim/diagrams";
 import { Callout } from "@/components/Note";
 
 const PAIRS: [string, string, string][] = [
@@ -32,6 +33,19 @@ const theory = (
       记住三件事就够了——<strong>说清目标、给足材料、定验收标准</strong>。
     </p>
 
+    <SplitAnim
+      left={{
+        title: "含糊地说",
+        items: ["它只能猜", "猜错了你得重来", "来回好几轮", "最后还是你自己动手"],
+      }}
+      right={{
+        title: "按套路说",
+        items: ["目标说清", "材料给足", "格式定死", "验收标准写明"],
+      }}
+      caption="左边这条路不是它笨，是它真的没有别的依据。右边四件事你每次都说，成功率会高一个量级。"
+    />
+
+    <p>下面这张表是逐项对照，可以直接当模板抄。</p>
     <div className="my-9 overflow-x-auto">
       <table className="w-full border-collapse text-meta">
         <thead>

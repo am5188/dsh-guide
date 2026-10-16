@@ -1,5 +1,6 @@
 import type { UnitContent } from "../types";
 import { SequenceAnim } from "@/components/anim/SequenceAnim";
+import { StackAnim } from "@/components/anim/diagrams";
 import { Callout } from "@/components/Note";
 
 const theory = (
@@ -34,10 +35,18 @@ const theory = (
     </Callout>
 
     <h3>这个做法带来了两个新麻烦</h3>
-    <p>
-      第一，<strong>越来越贵、越来越慢</strong>。第十轮对话要把前九轮全带上。
-      第二，<strong>总有装不下的时候</strong>——这正是下面两节要解决的问题。
-    </p>
+    <StackAnim
+      items={[
+        { label: "第 1 轮", weight: 0.1 },
+        { label: "第 2 轮", weight: 0.16 },
+        { label: "第 3 轮", weight: 0.22 },
+        { label: "第 4 轮", weight: 0.26 },
+        { label: "第 5 轮", weight: 0.34 },
+      ]}
+      capLabel="↑ 每一轮都要把全部历史重新发一遍"
+      overLabel="越聊越长，迟早装不下"
+      caption="第十轮对话要把前九轮全带上。你看到的「它还记着」，代价是每一轮都重新发一遍全部历史——越来越贵、越来越慢，而且总有装不下的时候。"
+    />
 
     <h3>对你有什么用</h3>
     <p>

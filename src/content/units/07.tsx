@@ -1,5 +1,6 @@
 import type { UnitContent } from "../types";
 import { SequenceAnim } from "@/components/anim/SequenceAnim";
+import { FlowAnim } from "@/components/anim/diagrams";
 import { Callout } from "@/components/Note";
 
 const SCENES: [string, string, string][] = [
@@ -36,6 +37,11 @@ const theory = (
       下面这五类活儿，占了普通人用 DSH 的绝大多数场景。每一类我都给了一句
       <strong>可以直接照着改的说法</strong>，以及这句说法里那个不能省的关键要求。
     </p>
+
+    <FlowAnim
+      nodes={["改文字", "整理", "汇总", "查资料", "改名 / 改文件"]}
+      caption="从左到右，风险一级级升高。前四类它主要是在“说”，只有最右边那一类会真的动你的文件——所以那一类必须先让它交方案、你确认了再动手。"
+    />
 
     <div className="my-9 space-y-5">
       {SCENES.map(([scene, how, why]) => (

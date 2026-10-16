@@ -1,5 +1,6 @@
 import type { UnitContent } from "../types";
 import { CompareAnim } from "@/components/anim/CompareAnim";
+import { FlowAnim } from "@/components/anim/diagrams";
 import { Callout } from "@/components/Note";
 
 /** 两条路的对照 */
@@ -89,15 +90,10 @@ function Theory() {
       </p>
 
       <h2>三步，就这么简单</h2>
-      <div className="my-7 grid gap-4 sm:grid-cols-3">
-        {STEPS.map(([k, v], i) => (
-          <div key={k} className="rounded-lg bg-surface p-5">
-            <div className="font-mono text-caption text-accent">0{i + 1}</div>
-            <div className="mt-2 text-body-sm font-semibold">{k}</div>
-            <p className="mt-1.5 text-meta text-fg-2">{v}</p>
-          </div>
-        ))}
-      </div>
+      <FlowAnim
+        nodes={["找到相关资料", "连同问题一起发", "答案有据可查"]}
+        caption="RAG 的全部内容就是这三步：先去你的资料里挑出相关的那几段，再把原文连同问题一起交给模型。答案的依据就摆在对话里，你能一条条对回去。"
+      />
 
       <Callout>
         它把“问一个什么都懂但会编的模型”，变成了

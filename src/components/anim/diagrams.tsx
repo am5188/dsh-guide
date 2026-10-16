@@ -127,31 +127,42 @@ export function FlowAnim({
     ctx.font = BODY;
     const wid = nodes.map((s) => Math.max(58, measure(ctx, s, BODY) + 26));
 
+    // 按各节点的**实际宽度**分配间距。
+    // 如果按等中心距排（step = span/(n-1)），最后一个节点会伸出右边缘被裁掉。
+    const totalW = wid.reduce((a, b) => a + b, 0);
+    const gap = n > 1 ? Math.max(10, (span - totalW) / (n - 1)) : 0;
+    const centers: number[] = [];
+    let cursorX = padX;
+    for (let i = 0; i < n; i += 1) {
+      centers.push(cursorX + wid[i] / 2);
+      cursorX += wid[i] + gap;
+    }
+
     // 轨道
     ctx.strokeStyle = alpha(c.fg3, 0.22);
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(padX + wid[0] / 2, cy);
-    ctx.lineTo(w - padX - wid[n - 1] / 2, cy);
+    ctx.moveTo(centers[0], cy);
+    ctx.lineTo(centers[n - 1], cy);
     ctx.stroke();
 
+    // 脉冲点位置（在相邻两节点之间插值）
+    const hop = easeOutCubic(clamp01(local * 1.6));
+    const from = centers[Math.min(idx, n - 1)];
+    const to = centers[Math.min(idx + 1, n - 1)];
+    const px = from + (to - from) * hop;
+
     // 已点亮部分的进度线
-    const prog = clamp01((idx + easeOutCubic(clamp01(local * 1.6))) / (n - 1 || 1));
     ctx.strokeStyle = alpha(c.accent, 0.75);
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(padX + wid[0] / 2, cy);
-    ctx.lineTo(
-      padX + wid[0] / 2 + (w - padX - wid[n - 1] / 2 - padX - wid[0] / 2) * prog,
-      cy,
-    );
+    ctx.moveTo(centers[0], cy);
+    ctx.lineTo(px, cy);
     ctx.stroke();
 
     // 节点
-    const wid0 = wid[0];
-    const step = n > 1 ? span / (n - 1) : 0;
     for (let i = 0; i < n; i += 1) {
-      const x = padX + wid0 / 2 + step * i;
+      const x = centers[i];
       const on = i < idx || (i === idx && local > 0.5);
       const isNow = i === idx;
       const blobW = wid[i];
@@ -181,7 +192,6 @@ export function FlowAnim({
     }
 
     // 脉冲点
-    const px = padX + wid0 / 2 + step * (idx + easeOutCubic(clamp01(local * 1.6)));
     ctx.beginPath();
     ctx.arc(px, cy, 4.5, 0, Math.PI * 2);
     ctx.fillStyle = c.accent;

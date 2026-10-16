@@ -1,5 +1,6 @@
 import type { UnitContent } from "../types";
 import { SequenceAnim } from "@/components/anim/SequenceAnim";
+import { CycleAnim } from "@/components/anim/diagrams";
 import { Callout, Unverified } from "@/components/Note";
 
 const theory = (
@@ -31,6 +32,13 @@ const theory = (
         </div>
       ))}
     </dl>
+
+    <h3>对策：把长活儿拆成一圈一圈的短活</h3>
+    <CycleAnim
+      steps={["对着目标做一段", "停下来核对", "偏了就修回来", "继续下一段"]}
+      center="直到验收标准满足"
+      caption="这三个坑对应同一套解法：目标钉在前面防止跑偏，检查点保证进度不丢，让你不用一直盯着也能知道它做到哪了。"
+    />
 
     <h3>对策一：把目标钉死</h3>
     <p>
