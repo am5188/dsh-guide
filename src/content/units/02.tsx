@@ -106,7 +106,7 @@ const content: UnitContent = {
       label: "① 不带历史",
       ask: "（上一轮你说过“我叫小明”）现在问：我叫什么？",
       prompt: "我叫什么？",
-      maxTokens: 2500,
+      maxTokens: 16000,
       expect:
         "它不知道。因为它这次只收到了“我叫什么？”这一句——你上一轮说的话，它根本没看到。",
     },
@@ -120,7 +120,7 @@ const content: UnitContent = {
         { role: "user", content: "我叫什么？" },
       ],
       prompt: "我叫什么？",
-      maxTokens: 2500,
+      maxTokens: 16000,
       expect:
         "它答得出“小明”。注意：不是它记住了，是你这次把前面的话又抄了一遍给它——真正做这件事的是外面那层系统。",
     },

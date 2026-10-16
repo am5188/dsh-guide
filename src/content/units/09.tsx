@@ -154,7 +154,7 @@ const content: UnitContent = {
       ask: "把一段看不懂的报错贴给它，要求它只解释、先别改。",
       prompt:
         "我遇到一个报错，原文如下：\n\n[sandbox: file access denied under workspace-write mode]\n\n要求：\n1. 先解释这行字到底在说什么（用大白话）\n2. 再列出 3 个最可能的原因，按可能性排序\n3. 每个原因各给一个验证办法\n4. 现在不要改动任何东西，也不要给我需要执行的命令\n\n请严格按这四点回答。",
-      maxTokens: 4000,
+      maxTokens: 16000,
       expect:
         "它会告诉你这是安全围栏在拦写入操作，并解释原因。注意第 4 条的作用——先把问题搞懂，再决定动不动手。",
     },

@@ -61,7 +61,7 @@ const content: UnitContent = {
       ask: "模拟一次工具调用：读 D:\\发票\\三月.pdf 并提取金额。",
       prompt:
         "假设你有一个名为 read_file 的工具，它接受一个参数 path。\n\n现在请以 JSON 格式输出你这样一次工具调用的请求，格式为：\n{\"tool\": \"工具名\", \"arguments\": {参数}}\n\n任务：读取 D:\\发票\\三月.pdf 并提取其中的金额。\n\n输出 JSON 之后，用一句话说明：为什么你输出这段 JSON 之后，自己并不能真的读到那个文件。",
-      maxTokens: 4000,
+      maxTokens: 16000,
       expect:
         "它会输出一段 JSON，然后承认自己并没有真的读文件。这段 JSON 就是“工具调用”的真身——一串文字而已，执行者是别人。",
     },

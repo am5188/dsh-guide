@@ -60,7 +60,7 @@ const RISKS: { risk: string; level: number; detail: string; guard: string }[] = 
   {
     risk: "删了东西",
     level: 3,
-    detail: "删除是最难收回的一步。回收站未必救得了你——有些删除不进回收站。",
+    detail: "删除是最难收回的一步。DSH 没有内置回收站——删掉的文件不进系统回收站的情况也存在。",
     guard: "动手前先复制一份，让它只动副本",
   },
   {
@@ -79,7 +79,7 @@ const RISKS: { risk: string; level: number; detail: string; guard: string }[] = 
     risk: "把不该发的东西发出去了",
     level: 3,
     detail: "它能读到的东西，也可能被它写进请求里。密钥、身份信息、客户资料都算。",
-    guard: "动手前先把敏感目录排除掉",
+    guard: "别把密钥放进工作区——沙箱只管写入，不管读取，挡不住它读",
   },
 ];
 
@@ -137,23 +137,41 @@ function Theory() {
         两件事都有能直接照做的做法，所以下面尽量用图表说话。
       </p>
 
-      <h2>钱的三个去处</h2>
-      <div className="my-7 grid gap-4 sm:grid-cols-3">
+      <h2>钱花在哪几个桶里</h2>
+      <p>
+        DSH 的用量统计把它分成<strong>输入侧和输出侧</strong>，
+        输入侧再按“有没有命中缓存”细分。注意<strong>没有一个单独的「思考」桶</strong>——
+        推理模型打的草稿是并进输出里算的。
+      </p>
+      <div className="my-7 grid gap-4 sm:grid-cols-2">
         {[
-          ["进去的", "你发过去的全部内容", "包括你的话、历史对话、让它读的文件"],
-          ["出来的", "它写给你的字", "答案越长越贵"],
-          ["它想的", "推理模型先打的草稿", "也算钱，只是不显示给你看"],
-        ].map(([k, v, note]) => (
+          [
+            "输入 · 没命中缓存",
+            "这一轮新发过去、之前没算过的内容。最贵的那一类。",
+          ],
+          [
+            "输入 · 命中缓存",
+            "没变过的前缀有可能被复用，单价更低。长会话里省的就是这部分。",
+          ],
+          [
+            "输入 · 写缓存",
+            "把前缀存进缓存本身也有成本。",
+          ],
+          [
+            "输出",
+            "它写给你的字，外加推理模型先打的草稿——草稿不一定显示给你看，但算在这里。",
+          ],
+        ].map(([k, v]) => (
           <div key={k} className="rounded-lg bg-surface p-5">
             <div className="text-body-sm font-semibold">{k}</div>
             <div className="mt-1.5 text-meta text-fg-2">{v}</div>
-            <div className="mt-2 text-caption text-fg-3">{note}</div>
           </div>
         ))}
       </div>
       <Callout>
-        关键在第二件事上：<strong>每多聊一轮，前面所有内容都要重发一次</strong>
-        。所以“长会话”和“长任务”贵起来的真正原因，不是它一次算了多少，而是同一批字被算了多少遍。
+        最容易忽略的是输入侧：<strong>每多聊一轮，前面所有内容都要重发一次</strong>。
+        所以「长会话」和「长任务」贵起来的真正原因，不是它一次算了多少，
+        而是同一批字被算了多少遍。
       </Callout>
 
       <GaugeAnim
@@ -229,12 +247,33 @@ function Theory() {
         <strong>如果你只记一件事，就记“先复制一份”。</strong>
       </Callout>
 
+      <h2>用量去哪个界面看</h2>
+      <div className="my-7 space-y-2">
+        {[
+          [
+            "用量明细",
+            "设置 → 通用设置 → 性能与用量。默认是详细模式，可以切成简洁模式；简洁模式会显示缓存命中率。",
+          ],
+          [
+            "余额与额度",
+            "桌面版的设置 → 账号页。普通的网页客户端不显示账号设置。",
+          ],
+        ].map(([k, v]) => (
+          <div
+            key={k}
+            className="flex flex-col gap-1 rounded-md bg-surface px-5 py-3.5 sm:flex-row sm:gap-6"
+          >
+            <span className="w-28 shrink-0 text-meta font-semibold">{k}</span>
+            <span className="text-meta text-fg-2">{v}</span>
+          </div>
+        ))}
+      </div>
+
       <Unverified>
         这一节<strong>故意不给任何价格数字</strong>。DeepSeek 的计费标准会变，
         我没有核实过当前价目，也不想让你拿一个过期数字去估预算。
         请以官网计费页和你自己的账单为准。
-        另外，「用量和额度在界面的哪个位置看」我也没有逐项核对过——
-        第一次用的时候，去设置里找一下「账号」或「用量」相关的页面。
+        上面那两处界面位置读自实现文档，我没在你的界面上逐个点过。
       </Unverified>
     </div>
   );
@@ -268,7 +307,7 @@ const content: UnitContent = {
       ask: "用生活话讲讲：一次 AI 对话里，钱的三个主要去处是什么？",
       prompt:
         "我在用 AI 助手干活，按 token 计费。请用生活化的方式解释：一次对话里，钱的三个主要去处分别是什么；为什么“来回聊很多轮”比“一次问清楚”更贵；以及缓存命中会不会影响价钱——如果不确定就直接说不确定。不要给出任何具体价格数字。",
-      maxTokens: 4000,
+      maxTokens: 16000,
       expect:
         "你会得到一份把人话讲明白的账：进去的、出来的、还有它自己想的。这次回答本身也计入用量，等它跑完看一眼上面那排 token 数。",
     },
@@ -278,7 +317,7 @@ const content: UnitContent = {
       ask: "列出 6 个会让我的用量明显变大的习惯，每个都给个改法。",
       prompt:
         "我正在用 AI 助手处理电脑里的文件。请列出 6 个会让我的用量明显变大的习惯，每个都给出一个具体的改法。要求：不要提具体价格，只讲用量多少，改法要具体到我能照着做。",
-      maxTokens: 2500,
+      maxTokens: 16000,
       expect:
         "常见的几条：把整个文件夹的内容一次性塞进去、在同一个会话里连着聊一整天、反复让它读同一份大文件、不先说清楚就让它试。",
     },
@@ -288,7 +327,7 @@ const content: UnitContent = {
       ask: "我要让它批量整理三年的发票，动手前后我该做什么准备？",
       prompt:
         "我准备让一个能读写我电脑文件的 AI 助手，批量整理 D:\\发票 里三年的 PDF：重命名、按年份分文件夹、删掉重复的。请给我一份“动手前 / 动手时 / 动手后”三段的准备清单，目标是我在任何一步都能退回原样。要具体到我能照着做，不要讲道理。",
-      maxTokens: 4000,
+      maxTokens: 16000,
       expect:
         "重点看它有没有提“先复制一份”和“先小范围试一年”。凡是不提备份就让你直接开干的方案，都可以直接扔了。",
     },
