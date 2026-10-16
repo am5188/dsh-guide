@@ -144,10 +144,26 @@ def make_pad(total_seconds: float = 46.0) -> None:
     write_wav("pad.wav", out * 0.30)
 
 
+def make_roomtone(total_seconds: float = 46.0) -> None:
+    """极低电平的底噪（room tone）。
+
+    句与句之间原本是数字静音，听感很“干”、很合成；铺一层几乎听不见的底噪，
+    整条声轨会立刻自然很多。它不该被“听到”，只该被“感觉不到”。
+    """
+    n = int(SR * total_seconds)
+    rng = np.random.default_rng(7)
+    noise = rng.normal(0.0, 1.0, n)
+    low = one_pole_lp(noise, np.full(n, 320.0))
+    t = np.arange(n) / SR
+    swell = 0.8 + 0.2 * np.sin(2.0 * np.pi * t / 23.0)
+    write_wav("roomtone.wav", low * swell * 0.12)
+
+
 if __name__ == "__main__":
     print("合成音效与垫乐：")
     make_hit()
     make_riser()
     make_tick()
     make_pad()
+    make_roomtone()
     print("完成。")

@@ -8,7 +8,7 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
-import { at, shots, shotAt, TOTAL_FRAMES, FPS } from "./timing";
+import { at, segments, segmentAt, shots, TOTAL_FRAMES, FPS } from "./timing";
 
 /* ════════════════════════════════════════════════════════════════
    配色：只用 5 个色。避免「深蓝底 + 霓虹渐变」这个业余签名。
@@ -192,14 +192,14 @@ const Dot: React.FC<{ frame: number }> = ({ frame }) => {
     { at: at(1, 0.4), v: 760 },
     { at: at(3, 1), v: 700 },
     { at: at(5, 1), v: 600 },
-    { at: at(6, 0.32), v: 968 },
+    { at: EVENTS.impact, v: 968 },
     { at: at(6, 0.62), v: 812 },
     { at: at(9, 1), v: 600 },
     { at: at(10, 0.42), v: 1240 },
   ]);
   const y = track(frame, [
     { at: at(0, 0), v: 560 },
-    { at: at(6, 0.32), v: 540 },
+    { at: EVENTS.impact, v: 540 },
     { at: at(6, 0.5), v: 592 },
     { at: at(6, 0.75), v: 548 },
     { at: at(10, 0.5), v: 536 },
@@ -207,7 +207,7 @@ const Dot: React.FC<{ frame: number }> = ({ frame }) => {
   const scale = track(frame, [
     { at: at(0, 0), v: 0.6 },
     { at: at(0, 0.5), v: 1 },
-    { at: at(6, 0.32), v: 1.12 },
+    { at: EVENTS.impact, v: 1.12 },
     { at: at(6, 0.55), v: 0.88 },
     { at: at(6, 0.85), v: 1 },
     { at: at(10, 0.5), v: 1.06 },
@@ -803,9 +803,35 @@ const Camera: React.FC<{ frame: number; children: React.ReactNode }> = ({
 };
 
 /* ════════════════════════════════════════════════════════════════
+   事件表：画面关键帧与音效**共用同一组帧号**
+   以前画面写 at(6,0.32)、音效写 at(6,0.36)，是两套手写数字，改一个必漏另一个。
+   现在两边都读这里。
+   ════════════════════════════════════════════════════════════════ */
+const EVENTS = {
+  /** 光点第一次冲到墙前 */
+  travel: at(6, 0.3),
+  /** 撞击 —— 画面的挤压峰值与音效的 hit 必须同一帧 */
+  impact: at(6, 0.34),
+  /** 墙开始生长 */
+  wallRise: at(5, 0.02),
+  /** Harness 蓝带出现 */
+  bandIn: at(7, 0.62),
+  /** 名字牌出现 */
+  nameIn: at(9, 0.3),
+  /** 墙裂开、光点穿过去 */
+  doorOpen: at(10, 0.16),
+  /** 文件变绿 */
+  filesLit: at(10, 0.52),
+};
+
+/* ════════════════════════════════════════════════════════════════
    音效表：位移 → whoosh；撞击 → hit；文字 → tick；升级 → riser
    ════════════════════════════════════════════════════════════════ */
 type Sfx = { at: number; src: string; volume: number };
+
+/** 按 id 找插入镜头的起始帧 —— 不要按数组下标写死，加了段就会错位 */
+const insertAt = (id: string): number =>
+  segments.find((s) => s.kind === "insert" && s.id === id)?.from ?? 0;
 
 const SFX: Sfx[] = [
   { at: at(0, 0), src: "sfx/whoosh.wav", volume: 0.5 },
@@ -816,20 +842,23 @@ const SFX: Sfx[] = [
   { at: at(2, 0.02), src: "sfx/whoosh.wav", volume: 0.36 },
   { at: at(3, 0.04), src: "sfx/switch.wav", volume: 0.3 },
   { at: at(4, 0.04), src: "sfx/whoosh.wav", volume: 0.3 },
-  { at: at(5, 0.02), src: "sfx/hit.wav", volume: 0.5 },
+  { at: EVENTS.wallRise, src: "sfx/hit.wav", volume: 0.5 },
   { at: at(5, 0.5), src: "sfx/whoosh.wav", volume: 0.28 },
-  { at: at(6, 0.3), src: "sfx/whoosh.wav", volume: 0.5 },
-  { at: at(6, 0.36), src: "sfx/hit.wav", volume: 0.62 },
+  { at: EVENTS.travel, src: "sfx/whoosh.wav", volume: 0.5 },
+  { at: EVENTS.impact, src: "sfx/hit.wav", volume: 0.62 },
   { at: at(7, 0.0), src: "sfx/riser.wav", volume: 0.4 },
-  { at: at(7, 0.62), src: "sfx/ding.wav", volume: 0.34 },
+  { at: EVENTS.bandIn, src: "sfx/ding.wav", volume: 0.34 },
   { at: at(8, 0.06), src: "sfx/tick.wav", volume: 0.3 },
   { at: at(8, 0.28), src: "sfx/tick.wav", volume: 0.3 },
   { at: at(8, 0.5), src: "sfx/tick.wav", volume: 0.3 },
   { at: at(9, 0.02), src: "sfx/whoosh.wav", volume: 0.36 },
-  { at: at(9, 0.3), src: "sfx/ding.wav", volume: 0.3 },
-  { at: at(10, 0.16), src: "sfx/riser.wav", volume: 0.34 },
+  { at: EVENTS.nameIn, src: "sfx/ding.wav", volume: 0.3 },
+  { at: EVENTS.doorOpen, src: "sfx/riser.wav", volume: 0.34 },
   { at: at(10, 0.42), src: "sfx/whoosh.wav", volume: 0.44 },
-  { at: at(10, 0.52), src: "sfx/ding.wav", volume: 0.3 },
+  { at: EVENTS.filesLit, src: "sfx/ding.wav", volume: 0.3 },
+  // 插入镜头是硬切进来的，配一个短促的 whip 让切换“有重量”
+  { at: insertAt("wall-detail"), src: "sfx/whip.wav", volume: 0.34 },
+  { at: insertAt("files-detail"), src: "sfx/whip.wav", volume: 0.3 },
 ];
 
 /**
@@ -875,37 +904,179 @@ const CAPTIONS: (string | null)[] = [
   null,
 ];
 
+/* ════════════════════════════════════════════════════════════════
+   插入镜头：全屏特写，硬切进来、约 1 秒后切回
+   全片原本都是“元素缓入缓出”的软过渡，缺少硬切做节奏锚点。
+   插入镜头不改旁白时间，只是在两段解说之间插一刀。
+   ════════════════════════════════════════════════════════════════ */
+
+/** 墙的特写：表面在流动，镜头持续推进 */
+const WallDetail: React.FC = () => {
+  const frame = useCurrentFrame();
+  const { durationInFrames } = useVideoConfig();
+  const push = interpolate(frame, [0, durationInFrames], [1.06, 1.24], {
+    extrapolateRight: "clamp",
+  });
+  const title = interpolate(frame, [4, 14], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: EASE.decel,
+  });
+  return (
+    <AbsoluteFill style={{ background: "#0c0c0e", overflow: "hidden" }}>
+      <AbsoluteFill style={{ transform: `scale(${push})` }}>
+        {/* 墙的表面：横向流动的细纹 */}
+        {Array.from({ length: 24 }, (_, i) => {
+          const y = ((i * 58 + frame * 3.4) % 1280) - 100;
+          return (
+            <div
+              key={i}
+              style={{
+                position: "absolute",
+                left: 560,
+                top: y,
+                width: 800,
+                height: 3,
+                background: `linear-gradient(90deg, transparent, ${C.warn}55, transparent)`,
+              }}
+            />
+          );
+        })}
+        {/* 墙的本体 */}
+        <div
+          style={{
+            position: "absolute",
+            left: 940,
+            top: -120,
+            bottom: -120,
+            width: 68,
+            background: `linear-gradient(90deg, ${C.warn}00, ${C.warn}, ${C.warn}00)`,
+            boxShadow: `0 0 140px ${C.warn}aa`,
+          }}
+        />
+      </AbsoluteFill>
+      <div
+        style={{
+          position: "absolute",
+          left: 96,
+          right: 96,
+          top: 148,
+          textAlign: "center",
+          fontFamily: FONT,
+          fontSize: 68,
+          fontWeight: 600,
+          color: C.warn,
+          opacity: title,
+          transform: `translateY(${interpolate(title, [0, 1], [16, 0])}px)`,
+        }}
+      >
+        这道墙没有门
+      </div>
+    </AbsoluteFill>
+  );
+};
+
+/** 目标文件的特写：三个目标依次压进来 */
+const FilesDetail: React.FC = () => {
+  const frame = useCurrentFrame();
+  const items = ["D:\\发票", "你的 Excel", "你的邮箱"];
+  const tail = interpolate(frame, [20, 28], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: EASE.decel,
+  });
+  return (
+    <AbsoluteFill
+      style={{
+        background: "#0c0c0e",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      {items.map((t, i) => {
+        const k = interpolate(frame, [i * 7, i * 7 + 12], [0, 1], {
+          extrapolateLeft: "clamp",
+          extrapolateRight: "clamp",
+          easing: EASE.decel,
+        });
+        return (
+          <div
+            key={t}
+            style={{
+              opacity: k,
+              transform: `translateY(${interpolate(k, [0, 1], [28, 0])}px)`,
+              marginBottom: 28,
+              padding: "26px 64px",
+              borderRadius: 20,
+              background: C.surface,
+              border: `1px solid ${C.line}`,
+              fontFamily: FONT,
+              fontSize: 58,
+              color: C.text3,
+            }}
+          >
+            {t}
+          </div>
+        );
+      })}
+      <div
+        style={{
+          position: "absolute",
+          bottom: 148,
+          fontFamily: FONT,
+          fontSize: 36,
+          color: C.text3,
+          opacity: tail,
+        }}
+      >
+        它够不到这里
+      </div>
+    </AbsoluteFill>
+  );
+};
+
 export const TheWall: React.FC = () => {
   const frame = useCurrentFrame();
-  const { index } = shotAt(frame);
+  const seg = segmentAt(frame);
+  const index = seg.kind === "shot" ? seg.index : -1;
+  const isInsert = seg.kind === "insert";
+  const insertId = seg.kind === "insert" ? seg.id : null;
 
   return (
     <AbsoluteFill style={{ background: C.bg, fontFamily: FONT, overflow: "hidden" }}>
       {/* ── 背景层（视差 0.2）────────────────────────────── */}
       <Backdrop />
 
-      {/* ── 镜头运动包住中景与贯穿物体 ───────────────────── */}
-      <Camera frame={frame}>
-        <Dot frame={frame} />
-        <Wall frame={frame} />
-        <Band frame={frame} />
-        <Files frame={frame} />
+      {/* 插入镜头是硬切：整幅画面换掉，贯穿物体也不出场 */}
+      {insertId === "wall-detail" && <WallDetail />}
+      {insertId === "files-detail" && <FilesDetail />}
 
-        {index === 1 && <Shot2 />}
-        {index === 2 && <Shot3 />}
-        {index === 3 && <Shot4 />}
-        {index === 6 && <Shot7 />}
-        {index === 9 && <Shot10 />}
-      </Camera>
+      {!isInsert && (
+        <>
+          {/* ── 镜头运动包住中景与贯穿物体 ───────────────── */}
+          <Camera frame={frame}>
+            <Dot frame={frame} />
+            <Wall frame={frame} />
+            <Band frame={frame} />
+            <Files frame={frame} />
 
-      {/* ── 每镜头字幕（淡入淡出，不做硬切）─────────────── */}
-      <Sequence
-        key={index}
-        from={shots[index].from}
-        durationInFrames={shots[index].durationInFrames}
-      >
-        {CAPTIONS[index] ? <Caption text={CAPTIONS[index] as string} /> : <></>}
-      </Sequence>
+            {index === 1 && <Shot2 />}
+            {index === 2 && <Shot3 />}
+            {index === 3 && <Shot4 />}
+            {index === 6 && <Shot7 />}
+            {index === 9 && <Shot10 />}
+          </Camera>
+
+          {/* ── 每镜头字幕 ───────────────────────────────── */}
+          <Sequence
+            key={index}
+            from={shots[index].from}
+            durationInFrames={shots[index].durationInFrames}
+          >
+            {CAPTIONS[index] ? <Caption text={CAPTIONS[index] as string} /> : <></>}
+          </Sequence>
+        </>
+      )}
 
       {/* ── 前景质感层 ───────────────────────────────────── */}
       <LightSweep />
@@ -915,6 +1086,8 @@ export const TheWall: React.FC = () => {
 
       {/* ── 声音 ─────────────────────────────────────────── */}
       <Audio src={staticFile("sfx/pad.wav")} volume={duckPad} />
+      {/* 底噪：句与句之间不再是数字静音 */}
+      <Audio src={staticFile("sfx/roomtone.wav")} volume={0.05} />
       {shots.map((s) => (
         <Sequence key={s.id} from={s.from} durationInFrames={s.durationInFrames}>
           <Audio src={staticFile(s.audio)} />

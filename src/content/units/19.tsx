@@ -21,33 +21,56 @@ const theory = (
       <strong>彼此之间还要能配合</strong>。而“让它们配合起来”，本身就是一件很难的事。
     </p>
 
-    <dl className="my-9 space-y-4">
+    <div className="my-7 grid gap-3 sm:grid-cols-2">
       {RECAP.map(([k, v]) => (
-        <div key={k} className="flex flex-col gap-1 sm:flex-row sm:gap-5">
-          <dt className="w-28 shrink-0 text-body-sm font-semibold">{k}</dt>
-          <dd className="text-meta leading-relaxed text-fg-2">{v}</dd>
+        <div key={k} className="rounded-lg bg-surface px-5 py-4">
+          <div className="text-body-sm font-semibold">{k}</div>
+          <div className="mt-1 text-meta text-fg-2">{v}</div>
         </div>
       ))}
-    </dl>
+    </div>
 
-    <h3>难在哪里</h3>
-    <p>
-      举个例子：压缩（第 12 节）不能把权限记录压掉，否则你查不到它做过什么；
-      子智能体（第 17 节）各干各的，但每个都得受同一套沙箱（第 18 节）约束；
-      工具调用（第 14 节）要能中途被打断，否则你点不了那个“不同意”。
-    </p>
-    <p>
-      <strong>把这些能力拼成一个能稳定运行的整体的那层东西，就是 Harness。</strong>
-      DeepSeek Harness 就是它的一个具体实现。
-    </p>
+    <h2>难在哪里：每加一块，都会和已有的那块打架</h2>
+    <div className="my-7 space-y-3">
+      {[
+        ["压缩", "不能把权限记录压掉，否则你查不到它做过什么。"],
+        ["子智能体", "各干各的，但每一个都得受同一套沙箱约束。"],
+        ["工具调用", "要能中途被打断，否则你点不了那个“不同意”。"],
+      ].map(([k, v]) => (
+        <div
+          key={k}
+          className="flex flex-col gap-1 rounded-md bg-surface px-5 py-4 sm:flex-row sm:items-center sm:gap-6"
+        >
+          <span className="w-24 shrink-0 rounded-xs bg-canvas px-2 py-0.5 text-center text-caption text-fg-3">
+            {k}
+          </span>
+          <span className="text-meta text-fg-2">{v}</span>
+        </div>
+      ))}
+    </div>
 
-    <h3>DSH 的三个特点</h3>
-    <p>
-      第一，它<strong>装在你自己的电脑上</strong>，不是网页服务——所以它能碰到你的文件。
-      第二，它<strong>几乎什么都能换</strong>：模型、工具、技能、界面，
-      都能按需替换或增补（这就是“一切皆插件”的意思）。
-      第三，它<strong>把会话存在本地</strong>，关掉再打开还能接着聊。
-    </p>
+    <div className="my-8 rounded-lg bg-surface p-6">
+      <p className="text-body-sm text-fg">
+        <strong>
+          把这些能力拼成一个能稳定运行的整体的那层东西，就是 Harness。
+        </strong>
+        DeepSeek Harness 就是它的一个具体实现。
+      </p>
+    </div>
+
+    <h2>DSH 的三个特点</h2>
+    <div className="my-7 grid gap-4 sm:grid-cols-3">
+      {[
+        ["装在你自己的电脑上", "不是网页服务——所以它能碰到你的文件。"],
+        ["几乎什么都能换", "模型、工具、技能、界面都能替换或增补，这就是“一切皆插件”。"],
+        ["会话存在本地", "关掉再打开还能接着聊，不依赖远端账号。"],
+      ].map(([k, v]) => (
+        <div key={k} className="rounded-lg bg-surface p-5">
+          <div className="text-body-sm font-semibold">{k}</div>
+          <p className="mt-2 text-meta text-fg-2">{v}</p>
+        </div>
+      ))}
+    </div>
 
     <Callout>
       现在回头看第 1 节那道墙：模型依然碰不到你的硬盘，
