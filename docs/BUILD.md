@@ -152,12 +152,32 @@ node scripts/verify-live.mjs http://127.0.0.1:8980  # 验本地静态产物
 | 第 23 节可访问 | 读 `h1` 文本 |
 | 第 23 节有动画 | 检查 `figure`（动画有两种实现：Canvas 2D 与 DOM 编排） |
 | 目录列出 23 节 | 统计 `a[href*="/u/"]` 去重后的数量 |
+| **逐节扫描：每节动画都在动** | 逐节导航、把每个 canvas 滚进视口、多次重试取样 |
 
 **踩过的坑**：最初把检查写成"页面上有没有某个字符串"，结果三次误报——
 一次是文案记错了（实际是"这次真正发出去的请求体（原文）"），
 一次是把 DOM 编排动画误判成"没有动画"，一次是没滚动就取样、
 把"离屏暂停"误判成"动画坏了"。
 **结论：验收要检查行为，不要检查字符串；要模拟真实动作，不要假设元素一直在跑。**
+
+### 逐节扫描必须分批跑
+
+同一个 headless 浏览器**连续导航十几节之后会明显退化**：后面的小节会出现
+"canvas 在动 0" 的假阴性。实测边界大致在 6 节左右。
+
+所以逐节扫描要分区间跑，每批重启浏览器：
+
+```bash
+node scripts/verify-live.mjs https://am5188.github.io/dsh-guide 1-6
+node scripts/verify-live.mjs https://am5188.github.io/dsh-guide 7-12
+node scripts/verify-live.mjs https://am5188.github.io/dsh-guide 13-18
+node scripts/verify-live.mjs https://am5188.github.io/dsh-guide 19-23
+```
+
+第三个参数支持单节（`15`）或区间（`1-6`）。
+
+**怎么区分"站点真有问题"和"浏览器累了"**：把可疑的那一节单独跑一遍。
+本项目实测第 15、23 节在全量扫描里报失败、单独跑都通过——是假阴性，不是缺陷。
 
 ## 9. 写内容时的两条纪律
 

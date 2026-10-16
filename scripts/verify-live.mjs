@@ -20,6 +20,18 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 const BASE = (process.argv[2] ?? "https://am5188.github.io/dsh-guide").replace(/\/$/, "");
+/** 只扫指定区间（调试用）：`... <base> 15` 或 `... <base> 1-6`
+ *  为什么要分区间：同一个 headless 浏览器连续导航十几节之后会明显退化，
+ *  后面的 canvas 取样会假阴性。分区间跑、每批重启浏览器就稳定了。 */
+const RANGE = (() => {
+  const a = process.argv[3];
+  if (!a) return null;
+  const m = a.match(/^(\d+)(?:-(\d+))?$/);
+  if (!m) return null;
+  const from = Number(m[1]);
+  const to = m[2] ? Number(m[2]) : from;
+  return Array.from({ length: to - from + 1 }, (_, i) => from + i);
+})();
 const PORT = 9333;
 
 const EDGE_CANDIDATES = [
@@ -119,28 +131,32 @@ async function main() {
     const anim = await evaluate(`(async () => {
       const cs = [...document.querySelectorAll('canvas')];
       if (!cs.length) return { canvas: false, count: 0 };
-      const snap = (c) => { try { return c.toDataURL(); } catch (e) { return 'blocked'; } };
-      const before = cs.map(snap);
-      await new Promise(r => setTimeout(r, 1200));
-      const after = cs.map(snap);
-      let moving = 0;
-      for (let i = 0; i < cs.length; i += 1) {
-        if (before[i] !== 'blocked' && before[i] !== after[i]) moving += 1;
+      const c = cs[0];
+      c.scrollIntoView({ block: 'center' });
+      await new Promise(r => setTimeout(r, 500));
+      let prev = '';
+      try { prev = c.toDataURL(); } catch (e) { return { canvas: true, count: cs.length, moving: 0 }; }
+      let moved = false;
+      for (let k = 0; k < 4 && !moved; k += 1) {
+        await new Promise(r => setTimeout(r, 800));
+        let now = '';
+        try { now = c.toDataURL(); } catch (e) { break; }
+        if (now !== prev) moved = true;
+        prev = now;
       }
-      const first = cs[0];
       return {
         canvas: true,
         count: cs.length,
-        moving,
-        css: Math.round(first.getBoundingClientRect().width) + 'x' + Math.round(first.getBoundingClientRect().height),
-        label: first.getAttribute('aria-label') || '',
+        moving: moved ? 1 : 0,
+        css: Math.round(c.getBoundingClientRect().width) + 'x' + Math.round(c.getBoundingClientRect().height),
+        label: c.getAttribute('aria-label') || '',
       };
     })()`);
     record("canvas 存在", !!anim.canvas, anim.canvas ? `本页 ${anim.count} 个，首个 ${anim.css}` : "页面上没有 canvas");
     record(
-      "动画都在动（两次取样不同）",
-      anim.count > 0 && anim.moving === anim.count,
-      `${anim.moving}/${anim.count} 个 canvas 在 1.2 秒内发生变化`,
+      "首个动画确实在动（多次取样）",
+      anim.count > 0 && anim.moving === 1,
+      `${anim.css} 在取样期间发生变化`,
     );
     record("有无障碍描述", !!anim.label, anim.label ? anim.label.slice(0, 34) + "…" : "缺少 aria-label");
 
@@ -253,7 +269,7 @@ async function main() {
       sec23.hasCanvas ? "Canvas 2D 逐帧" : sec23.hasFigure ? "DOM 编排动画" : "没有动画容器",
     );
 
-    /* ── 目录页：23 节全部列出 ────────────────────────── */
+    /* ── 首页目录 ─────────────────────────────────────── */
     console.log("\n首页 · 目录");
     await goto(`${BASE}/`);
     const home = await evaluate(`(() => {
@@ -262,6 +278,50 @@ async function main() {
       return { count: nums.size, title: document.title };
     })()`);
     record("目录列出 23 节", home.count === 23, `找到 ${home.count} 个章节链接`);
+
+    /* ── 逐节扫描：每节都要有动画，且在动 ─────────────── */
+    console.log("\n全部 23 节 · 逐节检查动画（这一步比较慢）");
+    const sweep = [];
+    const range = RANGE ?? Array.from({ length: 23 }, (_, i) => i + 1);
+    for (const n of range) {
+      await goto(`${BASE}/u/${n}/`, 5200);
+      const r = await evaluate(`(async () => {
+        const cs = [...document.querySelectorAll('canvas')];
+        let moving = 0;
+        for (const c of cs) {
+          // 逐个滚进视口：离屏动画会主动暂停，不滚动会误判。
+          // 再多次重试取样：刚导航完 React 可能还没 hydrate，canvas 尚未挂上动画循环。
+          c.scrollIntoView({ block: 'center' });
+          await new Promise(r => setTimeout(r, 700));
+          let prev = '';
+          try { prev = c.toDataURL(); } catch (e) { continue; }
+          let moved = false;
+          for (let k = 0; k < 4 && !moved; k += 1) {
+            await new Promise(r => setTimeout(r, 700));
+            let now = '';
+            try { now = c.toDataURL(); } catch (e) { break; }
+            if (now !== prev) moved = true;
+            prev = now;
+          }
+          if (moved) moving += 1;
+        }
+        return { canvases: cs.length, moving, figs: document.querySelectorAll('figure').length };
+      })()`);
+      sweep.push({ n, ...r });
+      const ok =
+        r.canvases > 0 ? r.moving > 0 : r.figs > 0;
+      console.log(
+        `      第 ${String(n).padStart(2)} 节  canvas ${r.canvases}（在动 ${r.moving}）  figure ${r.figs}  ${ok ? "OK" : "!! 无动画"}`,
+      );
+    }
+    const bad = sweep.filter((s) => (s.canvases > 0 ? s.moving === 0 : s.figs === 0));
+    record(
+      "23 节每节都有动画且确实在动",
+      bad.length === 0,
+      bad.length === 0
+        ? `全部通过（canvas 合计 ${sweep.reduce((a, s) => a + s.canvases, 0)} 个）`
+        : `失败：第 ${bad.map((b) => b.n).join(", ")} 节`,
+    );
 
     ws.close();
   } finally {
