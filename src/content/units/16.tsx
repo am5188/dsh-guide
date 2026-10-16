@@ -62,11 +62,45 @@ const theory = (
       在“会用”和“敢用”之间，隔着就是这道保险。
     </Callout>
 
+    <h3>检查点到底存在什么时候</h3>
+    <p>
+      读 DSH 的实现文档可以确认，它<strong>不是按时间定时存</strong>，
+      而是在三个"危险动作"之前分别落一次盘：
+    </p>
+    <div className="my-7 space-y-2">
+      {[
+        "发模型请求之前",
+        "执行可能产生外部副作用的工具之前",
+        "开始下一步之前",
+      ].map((t, i) => (
+        <div
+          key={t}
+          className="flex items-start gap-4 rounded-md bg-surface px-5 py-3.5"
+        >
+          <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-sm bg-canvas font-mono text-caption text-accent">
+            {i + 1}
+          </span>
+          <span className="text-meta text-fg-2">{t}</span>
+        </div>
+      ))}
+    </div>
+    <p>
+      所以崩了之后，<strong>已经存下来的请求、工具调用、响应和结果都不会丢</strong>，
+      从最近一次检查点接着走。
+    </p>
+
+    <Callout>
+      有一条边界值得记住：<strong>被打断的工具调用会以「结果未知」的状态恢复，
+      不会被自动重试。</strong>
+      也就是说，它不会擅自把可能已经执行过的操作再做一遍——但这也意味着
+      你得自己去确认那一步到底做没做成。
+    </Callout>
+
     <Unverified>
-      检查点具体多久存一次、崩了之后从哪一步恢复，
-      我没有在真实的长任务里逐步验证过。
-      稳妥的用法是：<strong>把长任务切成几个短任务，
-      每到一步就让它把结果写成文件</strong>。
+      检查点由「持久化后端 + 检查点策略」两个独立插件配合完成：
+      后端存事件日志，策略决定何时刷盘。
+      这套机制我读的是实现文档，没有在真实的长任务里逐步验证过。
+      稳妥的用法依然是：<strong>把长任务切成几个短任务，每到一步就让它把结果写成文件</strong>，
       这样即使中途出问题，你已经拿到了前几步的成果。
     </Unverified>
   </div>

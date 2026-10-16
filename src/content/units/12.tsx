@@ -62,6 +62,24 @@ const theory = (
       只要记住一件事：<strong>它很大，但它是有限的</strong>。
     </p>
 
+    <div className="my-7 space-y-2">
+      {[
+        ["默认用哪个模型", "deepseek-flash。"],
+        [
+          "默认推理强度",
+          "high——也就是默认会先「想」再答，思考过程不一定显示给你看。",
+        ],
+      ].map(([k, v]) => (
+        <div
+          key={k}
+          className="flex flex-col gap-1 rounded-md bg-surface px-5 py-3.5 sm:flex-row sm:gap-6"
+        >
+          <span className="w-32 shrink-0 text-meta font-semibold">{k}</span>
+          <span className="text-meta text-fg-2">{v}</span>
+        </div>
+      ))}
+    </div>
+
     <Callout>
       窗口的另一头也有上限。我们实测过：同一道题，
       <strong>输出额度给到 1200 时正文完全是空的，给到 3000 才有内容</strong>
