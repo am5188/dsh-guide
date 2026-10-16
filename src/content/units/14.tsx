@@ -1,5 +1,6 @@
 import type { UnitContent } from "../types";
 import { CompareAnim } from "@/components/anim/CompareAnim";
+import { CycleAnim } from "@/components/anim/diagrams";
 import { Callout } from "@/components/Note";
 
 const theory = (
@@ -43,32 +44,11 @@ const theory = (
     </Callout>
 
     <h2>一圈一圈，长这样</h2>
-    <div className="my-7 space-y-2">
-      {[
-        ["模型说", "我要读 D:\\发票\\三月.pdf"],
-        ["系统做", "真的去读，把文件内容发回给模型"],
-        ["模型说", "我看到金额了，我要写一个新文件"],
-        ["系统做", "真的去写"],
-        ["一直重复", "直到模型说「我做完了」"],
-      ].map(([who, what], i) => (
-        <div
-          key={i}
-          className="flex flex-col gap-2 rounded-md bg-surface px-5 py-3.5 sm:flex-row sm:items-start sm:gap-5"
-        >
-          <span
-            className={
-              "w-20 shrink-0 rounded-xs px-2 py-0.5 text-center text-caption " +
-              (who === "模型说"
-                ? "bg-accent-soft text-accent"
-                : "bg-sunken text-fg-3")
-            }
-          >
-            {who}
-          </span>
-          <span className="text-meta text-fg-2">{what}</span>
-        </div>
-      ))}
-    </div>
+    <CycleAnim
+      steps={["模型说：要读文件", "系统真的去读", "结果发回模型", "模型说：要写文件", "系统真的去写"]}
+      center="直到它说「我做完了」"
+      caption="注意每一圈里，真正“动手”的都是外面那层。模型在整圈里只做一件事：看着结果，决定下一步说什么。"
+    />
 
     <h2>为什么这是个突破</h2>
     <p>

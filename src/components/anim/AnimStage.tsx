@@ -90,6 +90,14 @@ export function AnimStage({
   const [paused, setPaused] = useState(false);
   const [reduced, setReduced] = useState(false);
 
+  /**
+   * sketch 放进 ref，effect 只依赖 height。
+   * 否则调用方每次渲染新建一个函数，effect 就会重跑、动画被不断重置 ——
+   * 这是内联写 sketch 时最容易踩的坑。
+   */
+  const sketchRef = useRef(sketch);
+  sketchRef.current = sketch;
+
   useEffect(() => {
     const canvas = ref.current;
     if (!canvas) return;
@@ -127,7 +135,7 @@ export function AnimStage({
 
     const draw = () => {
       ctx.clearRect(0, 0, cssW, cssH);
-      sketch(ctx, frameCount / 60, cssW, cssH);
+      sketchRef.current(ctx, frameCount / 60, cssW, cssH);
     };
 
     const loop = () => {
@@ -180,7 +188,7 @@ export function AnimStage({
       io.disconnect();
       mo.disconnect();
     };
-  }, [sketch, height]);
+  }, [height]);
 
   return (
     <div style={{ position: "relative" }}>

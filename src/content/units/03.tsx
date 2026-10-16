@@ -1,5 +1,6 @@
 import type { UnitContent } from "../types";
 import { SequenceAnim } from "@/components/anim/SequenceAnim";
+import { FlowAnim } from "@/components/anim/diagrams";
 import { Callout } from "@/components/Note";
 
 const MODULES: [string, string][] = [
@@ -21,6 +22,11 @@ const theory = (
       <strong>Harness 就是模型外面那一整套替它记、替它动手、替它把关的系统。</strong>
       模型负责想，Harness 负责让「想」变成真的发生了什么。
     </p>
+
+    <FlowAnim
+      nodes={["模型想", "Harness 安排", "工具执行", "结果回到模型"]}
+      caption="模型自己一步都走不了。它每说一句，都要由外面这套系统真的去做，再把结果递回来——这就是「装上手和脚」的意思。"
+    />
 
     <Callout>
       这里有个最容易搞错的点：

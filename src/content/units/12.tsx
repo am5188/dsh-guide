@@ -1,5 +1,6 @@
 import type { UnitContent } from "../types";
 import { CompareAnim } from "@/components/anim/CompareAnim";
+import { StackAnim } from "@/components/anim/diagrams";
 import { Callout, Unverified } from "@/components/Note";
 
 const KEEP: [string, string][] = [
@@ -52,9 +53,20 @@ const theory = (
     <h3>装不下的时候怎么办</h3>
     <p>
       做法和人类开会很像：<strong>把旧的记录整理成摘要，用摘要替代原文</strong>
-      。这就是“压缩”。它不会把所有内容原样留着，
-      而是丢掉一部分、保留一部分。
+      。这就是“压缩”。它不会把所有内容原样留着，而是丢掉一部分、保留一部分。
     </p>
+
+    <StackAnim
+      items={[
+        { label: "系统提示与工具说明", weight: 0.16 },
+        { label: "你的资料原文", weight: 0.3 },
+        { label: "中间几十轮的来回", weight: 0.38 },
+        { label: "这一轮的新内容", weight: 0.24 },
+      ]}
+      capLabel="↑ 窗口上限"
+      overLabel="超了就装不下——所以要先压缩"
+      caption="窗口不是无限大的抽屉。塞满之后，只能把旧的整理成摘要再放回去，摘要自然比原文短，丢掉的那部分就真的没了。"
+    />
 
     <dl className="my-9 space-y-4">
       {KEEP.map(([k, v]) => (

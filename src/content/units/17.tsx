@@ -1,5 +1,6 @@
 import type { UnitContent } from "../types";
 import { CompareAnim } from "@/components/anim/CompareAnim";
+import { SplitAnim } from "@/components/anim/diagrams";
 import { Callout, Unverified } from "@/components/Note";
 
 const theory = (
@@ -27,27 +28,17 @@ const theory = (
     </div>
 
     <h3>但分工不是越多越好</h3>
-    <dl className="my-9 space-y-4">
-      {[
-        [
-          "适合分工",
-          "各份活儿互不依赖。比如“把 50 个文件分别总结成一段话”。",
-        ],
-        [
-          "不适合分工",
-          "后面的活儿依赖前面的结果。比如“先定方案，再照方案执行”——拆开反而更乱。",
-        ],
-        [
-          "合并时最容易出错",
-          "几份结果收上来，口径不一致、重复了、漏了。所以一定要指定统一的输出格式。",
-        ],
-      ].map(([k, v]) => (
-        <div key={k} className="flex flex-col gap-1 sm:flex-row sm:gap-5">
-          <dt className="w-32 shrink-0 text-body-sm font-semibold">{k}</dt>
-          <dd className="text-meta leading-relaxed text-fg-2">{v}</dd>
-        </div>
-      ))}
-    </dl>
+    <SplitAnim
+      left={{
+        title: "适合分工",
+        items: ["各份活儿互不依赖", "「把 50 个文件分别总结」", "可以同时开几路"],
+      }}
+      right={{
+        title: "不适合分工",
+        items: ["后面的依赖前面的", "「先定方案，再照方案执行」", "拆开反而更乱"],
+      }}
+      caption="判断标准只有一条：这些活儿之间有没有先后依赖。互不依赖才能并行。另外合并时最容易出错——口径不一致、重复、漏项，所以一定要指定统一的输出格式。"
+    />
 
     <Callout>
       实操建议：<strong>要求它“所有分身用完全一样的输出格式”</strong>。

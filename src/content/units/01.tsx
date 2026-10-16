@@ -1,6 +1,5 @@
 import type { UnitContent } from "../types";
 import { Unit01Anim } from "@/components/anim/Unit01Anim";
-import { NarratedClip } from "@/components/NarratedClip";
 
 const theory = (
   <div className="prose-cn">
@@ -91,17 +90,7 @@ const theory = (
 
 const content: UnitContent = {
   animTitle: "它在做什么，它做不到什么",
-  anim: (
-    <div className="space-y-5">
-      <Unit01Anim />
-      <NarratedClip
-        file="the-wall.mp4"
-        title="带旁白短片 · 那道墙"
-        duration="约 48 秒"
-        caption="上面是交互版，这里是同一件事的带旁白版本，适合直接转给别人看。片子由 video/ 目录里的 Remotion 工程渲染，旁白用 Windows 自带中文语音离线合成。"
-      />
-    </div>
-  ),
+  anim: <Unit01Anim />,
   theory,
   practiceIntro: (
     <p className="text-body-sm text-fg-2">

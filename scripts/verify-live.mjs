@@ -117,22 +117,31 @@ async function main() {
     console.log("第 1 节 · 循环动画");
     await goto(`${BASE}/u/1/`);
     const anim = await evaluate(`(async () => {
-      const c = document.querySelector('canvas');
-      if (!c) return { canvas: false };
-      const snap = () => { try { return c.toDataURL(); } catch (e) { return 'blocked'; } };
-      const a = snap();
-      await new Promise(r => setTimeout(r, 1000));
-      const b = snap();
+      const cs = [...document.querySelectorAll('canvas')];
+      if (!cs.length) return { canvas: false, count: 0 };
+      const snap = (c) => { try { return c.toDataURL(); } catch (e) { return 'blocked'; } };
+      const before = cs.map(snap);
+      await new Promise(r => setTimeout(r, 1200));
+      const after = cs.map(snap);
+      let moving = 0;
+      for (let i = 0; i < cs.length; i += 1) {
+        if (before[i] !== 'blocked' && before[i] !== after[i]) moving += 1;
+      }
+      const first = cs[0];
       return {
         canvas: true,
-        backing: c.width + 'x' + c.height,
-        css: Math.round(c.getBoundingClientRect().width) + 'x' + Math.round(c.getBoundingClientRect().height),
-        animating: a !== b && a !== 'blocked',
-        label: c.getAttribute('aria-label') || '',
+        count: cs.length,
+        moving,
+        css: Math.round(first.getBoundingClientRect().width) + 'x' + Math.round(first.getBoundingClientRect().height),
+        label: first.getAttribute('aria-label') || '',
       };
     })()`);
-    record("canvas 存在", !!anim.canvas, anim.canvas ? `${anim.css} 显示尺寸 / ${anim.backing} 位图` : "页面上没有 canvas");
-    record("动画在动（两次取样不同）", !!anim.animating, anim.animating ? "1000ms 内画面发生变化" : "画面没有变化，可能冻住了");
+    record("canvas 存在", !!anim.canvas, anim.canvas ? `本页 ${anim.count} 个，首个 ${anim.css}` : "页面上没有 canvas");
+    record(
+      "动画都在动（两次取样不同）",
+      anim.count > 0 && anim.moving === anim.count,
+      `${anim.moving}/${anim.count} 个 canvas 在 1.2 秒内发生变化`,
+    );
     record("有无障碍描述", !!anim.label, anim.label ? anim.label.slice(0, 34) + "…" : "缺少 aria-label");
 
     /* ── 第 1 节：短片播放器 ───────────────────────────── */
