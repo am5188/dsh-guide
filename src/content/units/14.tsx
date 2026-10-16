@@ -90,6 +90,49 @@ const content: UnitContent = {
         "它会输出一段 JSON，然后承认自己并没有真的读文件。这段 JSON 就是“工具调用”的真身——一串文字而已，执行者是别人。",
     },
   ],
+  python: {
+    intro: (
+      <p className="text-body-sm text-fg-2">
+        下面这段 Python 让模型把「请求调用工具」写出来，
+        然后你亲眼看一遍：<strong className="font-semibold text-fg">响应里只有文字，没有任何东西被执行</strong>
+        。这就是这一节最核心的一句话。
+      </p>
+    ),
+    demos: [
+      {
+        id: "only-text",
+        label: "① 响应里只有文字",
+        explain:
+          "这段代码把模型的输出打印出来。它看起来像一个“动作”，但本质只是一段字符串——浏览器里什么也没发生。",
+        code: `import requests
+
+resp = requests.post(
+    "https://api.deepseek.com/chat/completions",
+    headers={"Authorization": "Bearer " + DSH_API_KEY},
+    json={
+        "model": "deepseek-flash",
+        "max_tokens": 900,
+        "messages": [{
+            "role": "user",
+            "content": (
+                "我想读一个文件。请用 JSON 说明你会怎样请求调用一个叫 "
+                "read_file 的工具，只输出 JSON，不要其它文字。"
+            ),
+        }],
+    },
+)
+
+data = resp.json()
+print("HTTP 状态码：", resp.status_code)
+print()
+print("模型返回的全部内容：")
+print(data["choices"][0]["message"]["content"])
+print()
+print("这段代码跑完了。你的文件系统没有任何变化——")
+print("因为真正去读文件的，是模型外面那层系统，而不是模型自己。")`,
+      },
+    ],
+  },
 };
 
 export default content;

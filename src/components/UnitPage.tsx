@@ -2,6 +2,7 @@ import Link from "next/link";
 import { TopBar } from "@/components/TopBar";
 import { CommandBlock } from "@/components/CommandBlock";
 import { Playground } from "@/components/Playground";
+import { PythonPlayground } from "@/components/PythonPlayground";
 import {
   IconDiagram,
   IconFilm,
@@ -106,7 +107,9 @@ export function UnitPage({ unit }: { unit: Unit }) {
                     {content.theory}
                   </Slot>
                 )}
-                {(content.demos?.length || content.commands?.length) && (
+                {(content.demos?.length ||
+                  content.python?.demos.length ||
+                  content.commands?.length) && (
                   <Slot
                     id="practice"
                     Icon={IconTerminal}
@@ -117,6 +120,12 @@ export function UnitPage({ unit }: { unit: Unit }) {
                       {content.practiceIntro}
                       {content.demos && content.demos.length > 0 && (
                         <Playground demos={content.demos} />
+                      )}
+                      {content.python && content.python.demos.length > 0 && (
+                        <>
+                          {content.python.intro}
+                          <PythonPlayground demos={content.python.demos} />
+                        </>
                       )}
                       {content.commands && content.commands.length > 0 && (
                         <CommandBlock commands={content.commands} />

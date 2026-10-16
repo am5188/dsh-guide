@@ -90,6 +90,40 @@ const content: UnitContent = {
         "它会说“看不到”——因为这一次发过去的确实只有这一段话。它的回答本身就是这个机制的证明。",
     },
   ],
+  python: {
+    intro: (
+      <p className="text-body-sm text-fg-2">
+        下面这段是<strong className="font-semibold text-fg">真正的 Python</strong>
+        。它把「单次调用」的请求体原样写了出来——你可以清楚看到，
+        发过去的东西里<strong className="font-semibold text-fg">只有一句话</strong>
+        ，没有任何历史。
+      </p>
+    ),
+    demos: [
+      {
+        id: "raw-call",
+        label: "① 一次最纯粹的调用",
+        explain:
+          "这段代码只发一句话。注意 messages 里只有一个元素——这就是“单次调用”的字面意思。",
+        code: `import requests
+
+# 一次「单次调用」：只发一句话，其它什么都不带
+resp = requests.post(
+    "https://api.deepseek.com/chat/completions",
+    headers={"Authorization": "Bearer " + DSH_API_KEY},
+    json={
+        "model": "deepseek-flash",
+        "max_tokens": 800,
+        "messages": [{"role": "user", "content": "我叫什么？"}],
+    },
+)
+
+print("HTTP 状态码：", resp.status_code)
+print("发过去的内容：只有「我叫什么？」这一句")
+print("它的回答：", resp.json()["choices"][0]["message"]["content"])`,
+      },
+    ],
+  },
 };
 
 export default content;

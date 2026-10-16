@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type { PlaygroundDemo } from "@/components/Playground";
+import type { PythonDemo } from "@/components/PythonPlayground";
 
 /** 一条可以直接复制去本地跑的 DSH 命令 */
 export type CommandSpec = {
@@ -29,6 +30,14 @@ export type UnitContent = {
   practiceIntro?: ReactNode;
   /** ⌨️ 浏览器内真实调用 DeepSeek */
   demos?: PlaygroundDemo[];
+  /**
+   * ⌨️ 原理演示：真正的 Python 代码，浏览器里用 Pyodide 执行。
+   * 代码里可以直接用 DSH_API_KEY 变量。
+   */
+  python?: {
+    intro?: ReactNode;
+    demos: PythonDemo[];
+  };
   /** ⌨️ 本地 DSH 命令 */
   commands?: CommandSpec[];
 };

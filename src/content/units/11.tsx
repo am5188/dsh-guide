@@ -95,6 +95,50 @@ const content: UnitContent = {
         "它答得出“小明”。请特别注意：它并没有变得“有记性”了——只是你这次把前面的话又抄了一遍。",
     },
   ],
+  python: {
+    intro: (
+      <p className="text-body-sm text-fg-2">
+        下面这段 Python <strong className="font-semibold text-fg">一次跑出两种结果</strong>
+        ：先用单句问，再把历史一起发。差别在你自己眼前发生，
+        而不是听我说。
+      </p>
+    ),
+    demos: [
+      {
+        id: "memory-diff",
+        label: "① 一次跑出两种结果",
+        explain:
+          "同一个函数、同一个问题，唯一区别是第二次多带了前两轮。跑完对比两行输出。",
+        code: `import requests
+
+
+def ask(messages):
+    resp = requests.post(
+        "https://api.deepseek.com/chat/completions",
+        headers={"Authorization": "Bearer " + DSH_API_KEY},
+        json={"model": "deepseek-flash", "max_tokens": 800, "messages": messages},
+    )
+    return resp.json()["choices"][0]["message"]["content"]
+
+
+# ① 只发最后一句
+print("① 只发最后一句：")
+print("   ", ask([{"role": "user", "content": "我叫什么？"}]))
+
+# ② 把前面的对话一起发过去
+history = [
+    {"role": "user", "content": "我叫小明。"},
+    {"role": "assistant", "content": "好的，小明。"},
+    {"role": "user", "content": "我叫什么？"},
+]
+print("② 带上历史：")
+print("   ", ask(history))
+
+print()
+print("第二行多带了两条消息，它就从“不知道”变成了“知道”。")`,
+      },
+    ],
+  },
 };
 
 export default content;
