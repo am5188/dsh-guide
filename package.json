@@ -5,10 +5,18 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "verify": "node scripts/verify-live.mjs",
     "start": "next start",
     "lint": "eslint",
-    "deploy": "bash scripts/deploy.sh"
+    "deploy": "bash scripts/deploy.sh",
+    "verify": "node scripts/verify-live.mjs",
+    "check:prose": "node scripts/prose-stats.mjs",
+    "check:fat": "node scripts/find-fat.mjs",
+    "check:layout": "node scripts/check-layout.mjs",
+    "check:demos": "node scripts/check-demos.mjs",
+    "check:python": "node scripts/check-python-demos.mjs",
+    "check:agent": "node scripts/check-agent-demo.mjs",
+    "check:content": "node scripts/check-demos.mjs && node scripts/check-python-demos.mjs && node scripts/check-agent-demo.mjs",
+    "check:token-ratio": "node scripts/measure-tokens.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",

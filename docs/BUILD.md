@@ -277,7 +277,7 @@ node scripts/prose-stats.mjs 8406ffa^ # 量某个 git 版本，用于前后对�
 
 `practiceIntro` 是隐藏的大块头：23 节合计 1,998 字，压成一句话后只剩 518 字。
 
-## 11. 循环动画怎么验证无缝
+## 11. 布局检查：不要相信 `--window-size` 截出来的移动端
 
 **踩过的坑**：用 `msedge --headless --window-size=390,1500` 截移动端，
 截出来的图看起来「内容横向溢出、文字被截断」，我一度以为移动端坏了。
@@ -299,7 +299,22 @@ node scripts/find-overflow.mjs <url> 390 1600 out.png
 **判据用 `document.documentElement.scrollWidth` 有没有超出视口，
 不要用截图肉眼看。** 截图会骗你，scrollWidth 不会。
 
+### 全站布局体检
 
+`scripts/check-layout.mjs` 把这条判据铺到全站：
+
+```bash
+npm run check:layout                      # 默认验本地 9020 端口
+node scripts/check-layout.mjs <baseUrl>
+```
+
+它跑 **24 个页面（首页 + 23 节）× 4 个视口宽度（360 / 390 / 768 / 1280）= 96 次检查**，
+每次读 `scrollWidth` 并列出所有右边缘超出视口的元素。
+每 8 次导航换一个浏览器进程，避免长时间运行退化。
+
+**当前结果：96 次检查，横向溢出 0 次。**
+
+## 12. 循环动画怎么验证无缝
 
 循环动画最容易出的问题是**循环点跳变**——尤其是粒子取模、扫光周期、拖尾相位
 这几处不显眼的地方。要用可复现的方式验，而不是"看着像无缝"。
@@ -348,5 +363,49 @@ print(f"{diff} / {total} = {diff/total*100:.4f}%")   # 期望 0.0%
    扫光要在周期内走整数趟；呼吸频率要能整除周期。
 3. **相位取模要环绕**。例如拖尾取 `p - delta`，必须先 `((p - delta) % 1 + 1) % 1`，
    否则循环点处变负会被跳过，拖尾突然消失——那就是一道可见的缝。
+
+## 13. 发版前的检查清单
+
+改完内容之后，按这个顺序跑。**前两条不需要网络，后三条需要 `DSH_KEY`。**
+
+```bash
+npm run build                 # 1. 必须过
+npm run check:layout          # 2. 24 页 × 4 个宽度，横向溢出必须为 0
+                              #    （需要本地静态服务，见下）
+
+$env:DSH_KEY = (Get-Content D:\Work\.secrets\dsh-guide-test-key.txt -Raw).Trim()
+npm run check:content         # 3. 41 条演示（37 JS + 3 Python + 1 工具调用）真跑一遍
+                              #    任何一条正文为空就是踩雷
+npm run check:prose           # 4. 读者要读多少字（改内容后看一眼有没有反弹）
+npm run verify                # 5. 线上真实浏览器：动画在动、实践面板有反应
+
+# 布局体检要有一个本地静态服务：
+cd out && python -m http.server 9020    # 另开一个终端
+node scripts/check-layout.mjs http://127.0.0.1:9020/dsh-guide
+```
+
+**为什么第 3 条不能省**：这一条曾经一次抓出 **12 条返回空正文的演示**——
+`max_tokens` 给小了，思考 token 把额度吃光，读者点下去只能看到一片空白。
+**光看代码是发现不了的。**
+
+可用的脚本一览：
+
+| 命令 | 查什么 |
+|---|---|
+| `npm run check:layout` | 全站横向溢出（96 次检查） |
+| `npm run check:content` | 41 条演示能不能返回非空正文 |
+| `npm run check:demos` | 只查 37 条 JS 演示 |
+| `npm run check:python` | 只查 3 条 Python 演示 |
+| `npm run check:agent` | 工具调用回路两轮都要跑通 |
+| `npm run check:prose` | 读者要读多少字 |
+| `npm run check:fat` | 列出所有 ≥N 字的段落，便于规划删减 |
+| `npm run verify` | 线上真实浏览器验收 |
+| `npm run check:token-ratio` | 实测中文 token 换算比例 |
+
+### 一条教训
+
+这一轮里有三次「改文档反而把文档改坏」：用 PowerShell 的字符串替换修改
+Markdown 标题，把 `\n` 写成了字面量、把下一个标题吃掉。
+**规则：源码与文档一律用编辑工具改，不要用 PowerShell 的字符串替换 + Set-Content。**
 
 
