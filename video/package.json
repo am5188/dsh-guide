@@ -1,0 +1,21 @@
+{
+  "name": "dsh-guide-video",
+  "version": "0.1.0",
+  "private": true,
+  "description": "关键节点的带旁白短片（Remotion）。与站点分开，不污染站点的依赖。",
+  "scripts": {
+    "studio": "remotion studio",
+    "render": "remotion render"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.532",
+    "@remotion/google-fonts": "^4.0.532",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "remotion": "^4.0.532"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "typescript": "^5"
+  }
+}

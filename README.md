@@ -55,13 +55,16 @@ npm run deploy         # 构建并推送 gh-pages（需要 Git Bash）
 
 ## 状态
 
+**已完成。** 线上地址：**https://am5188.github.io/dsh-guide/**
+
 - [x] 站点骨架、设计系统、浅色/深色主题
-- [x] 第 1–4 节：动画 + 图文 + 可现场运行的实践面板（第一部完成）
-- [x] 22 节路由；内容拆成 `src/content/units/NN.tsx`，可并行写稿
-- [x] 浏览器端真实调用 DeepSeek 已端到端验证（CDP，HTTP 200）
-- [ ] 第 5–22 节内容
-- [ ] Pyodide 版 Python 原理演示
-- [ ] Remotion 带旁白短片（关键节点 3–5 个）
+- [x] **四部 22 节内容全部完成**，每节都是「动画 + 图文 + 可现场运行」三段式
+- [x] 可试运行的两条路都经真实 API 验证：
+  - JavaScript 版：浏览器直连 DeepSeek（CORS 预检实测放行，端到端 HTTP 200）
+  - Python 版：Pyodide 在浏览器里跑真 Python，`requests` 直连
+- [x] 关键节点带旁白短片：`the-wall`（约 48 秒，Remotion + Windows 中文语音离线合成），已嵌进第 1 节
+- [x] 内容拆成 `src/content/units/NN.tsx`，一节一文件
+- [x] 可复现的构建与发布说明：[docs/BUILD.md](docs/BUILD.md)
 
 ### 演示参数的实测依据
 
@@ -70,6 +73,13 @@ npm run deploy         # 构建并推送 gh-pages（需要 Git Bash）
 `max_tokens=1200` 时思考把额度吃光，**正文完全为空**（`finish_reason=length`）；
 `max_tokens=3000` 才拿到正文。所以各演示的 `max_tokens` 都按实测放宽，
 而不是随手写个小值。
+
+### 短片
+
+短片工程在 [video/](video/)，与站点依赖完全分开。
+旁白用 Windows 自带的中文语音（`Microsoft Huihui Desktop`）离线合成，
+渲染由 Remotion 自带的合成器完成，**不需要系统安装 ffmpeg**。
+详见 [video/README.md](video/README.md)。
 
 ## 许可
 
